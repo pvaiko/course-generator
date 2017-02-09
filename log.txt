@@ -2184,3 +2184,1450 @@ dataS2/character/player/player01.i3d (252.63) ms
 [dbg7 lp5470] (7) FINAL COURSE DATA
 [dbg7 lp5470] 8340: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=0 ==> hasValidCourseGenerationData=false
 [dbg7 lp5470] generateCourse() finished: 100 lanes, 2 headland lanes
+GIANTS Engine Runtime 7.0.0 (14095) 64bit (Build Date: Jan 26 2017)
+Copyright (c) 2008-2016, GIANTS Software GmbH (giants-software.com), All Rights Reserved.
+Copyright (c) 2003-2016, Christian Ammann and Stefan Geiger, All Rights Reserved.
+Application: FarmingSimulator2017
+Main System
+  CPU: Intel(R) Core(TM) i5-4690K CPU @ 3.50GHz
+  Memory: 8142 MB
+  OS: Windows NT 10.0 64-bit
+Physics System
+  Version: 5.9.5
+  Thread(s): 2
+Input System
+  Keyboard enabled
+  Mouse enabled
+  Gamepad/Joystick enabled
+  Force Feedback disabled
+  Name: T.16000M
+  Name: CH PRO PEDALS USB 
+Audio System
+  Driver: OpenAL
+  Version: 1.1
+  Device: Generic Software
+Render System
+  Driver: Direct 3D 11
+  Card Vendor: AMD/ATI
+  Renderer: Radeon(TM) RX 460 Graphics
+  Version: 21.19.384.0 (4.12.2016)
+  Revision: 207
+  Feature level: DirectX 11 ON
+Info: Effective window resolution 1280 x 989
+Started 2 threads for threadpool 'Render threadpool'
+Hardware Profile
+  Level: Custom Very High
+  View Distance Factor: 1.300000
+  Shadow Quality: 2.000000 Size: 4096 Filter-Size: 16
+  Shader Quality: 3
+  Skip Mipmaps: 0
+  LOD Distance Factor: 1.300000
+  Terrain LOD Distance Factor: 2.000000
+  Terrain Normal Mapping: Yes
+  Foliage View Distance Factor: 1.600000
+  Foliage Density: 0.500000
+  Volume Mesh Tessellation Factor: 0.750000
+  Tyre Tracks Segments Factor: 4.000000
+  Max. Number of Shadow Lights: 5
+  Max. Number of Lights: 512
+  Max. Number of Lights Per Cluster: 32
+  MSAA: 8
+Farming Simulator 17 (Steam)
+  Version: 1.4.0.0 1.4RC7
+  Available Languages: en de jp pl cz fr es ru it pt hu nl cs ct br tr ro kr
+  Language: en
+  Time: 2017-02-08 20:10:30
+  Register configuration 'inputAttacherJoint'
+  Register configuration 'attacherJoint'
+  Register configuration 'frontloader'
+  Register configuration 'motor'
+  Register configuration 'baseColor'
+  Register configuration 'wheel'
+  Register configuration 'rimColor'
+  Register configuration 'design'
+  Register configuration 'designColor'
+  Register configuration 'vehicleType'
+Game vehicle types loaded
+Load mod: FS17_challengerMT700EFieldViper (Version: 1.0.0.0)
+Load mod: FS17_valtraTSeriesCowEdition (Version: 1.0.0.0)
+Load mod: courseplay (Version: 5.01.00071)
+Load mod: FS17_chellington17 (Version: 2.0.0.1)
+Load mod: FS17_coldboroughParkFarm (Version: 2.0.0.0)
+Load mod: FS17_Fichtelberg (Version: 1.0.0.0)
+Load mod: FS17_Lossberg (Version: 1.1.0.0)
+Load mod: FS17_newHollandBalerPack (Version: 1.0.0.1)
+Load mod: FS17_placeableRefillStation (Version: 1.0.0.0)
+Error: Failed to open xml file 'C:/Users/peter/Documents/My Games/FarmingSimulator2017/mods/headland/modDesc.xml'.
+Load mod: headland
+Error: Missing descVersion attribute in mod headland
+### Courseplay: initialized 39/39 files (v5.01.00071)
+    ******************************************* WARNING *******************************************
+    * You are using a development version of Courseplay, which may and will contain errors, bugs, *
+    * mistakes and unfinished code. Chances are your computer will explode when using it. Twice.  *
+    * If you have no idea what "beta", "alpha", or "developer" means and entails, remove this     *
+    * version of Courseplay immediately. The Courseplay team will not take any responsibility for *
+    * crop destroyed, savegames deleted or baby pandas killed.                                    *
+    ***********************************************************************************************
+  adding Courseplay to "selfPropelledSprayer"
+  adding Courseplay to "tractor"
+  adding Courseplay to "car_dynamicMountAttacher"
+  adding Courseplay to "combine_animated"
+  adding Courseplay to "loaderVehicle"
+  adding Courseplay to "wheelLoader"
+  adding Courseplay to "conveyorTrailerDrivable"
+  adding Courseplay to "selfPropelledMixerWagon"
+  adding Courseplay to "woodHarvester"
+  adding Courseplay to "skidSteer"
+  adding Courseplay to "combine_animated_crawler"
+  adding Courseplay to "tractor_articulatedAxis"
+  adding Courseplay to "car"
+  adding Courseplay to "ridingMower"
+  adding Courseplay to "woodCrusherTrailerDrivable"
+  adding Courseplay to "conveyorTrailerHireable"
+  adding Courseplay to "tractor_crawler"
+  adding Courseplay to "selfPropelledMower"
+  adding Courseplay to "combine_animated_articulatedAxis"
+  adding Courseplay to "tractor_foldable"
+  adding Courseplay to "loadingTrailerDrivable"
+  adding Courseplay to "combine"
+  adding Courseplay to "selfPropelledPotatoHarvester"
+  adding Courseplay to "telehandler_articulatedAxis"
+  adding Courseplay to "telehandler"
+  adding Courseplay to "forwarder"
+  adding Courseplay to "combine_cylindered"
+  adding Courseplay to "tractor_reverseDriving"
+### Courseplay: installed into 28 vehicles
+dataS/cameraPath01.i3d (0.10) ms
+dataS/cameraPath02.i3d (0.12) ms
+dataS/cameraPath03.i3d (0.16) ms
+data/sky/skyUS_day_night.i3d (32.40) ms
+data/sky/rain.i3d (20.70) ms
+data/sky/hail.i3d (3.46) ms
+data/sky/dust.i3d (4.81) ms
+data/maps/map01.i3d (4952.59) ms
+data/objects/basketball/basketball.i3d (10.32) ms
+## Courseplay: setting up signs
+C:/Users/peter/Documents/My Games/FarmingSimulator2017/mods/courseplay/img/signs/normal.i3d (5.37) ms
+C:/Users/peter/Documents/My Games/FarmingSimulator2017/mods/courseplay/img/signs/cross.i3d (5.62) ms
+C:/Users/peter/Documents/My Games/FarmingSimulator2017/mods/courseplay/img/signs/unload.i3d (4.23) ms
+C:/Users/peter/Documents/My Games/FarmingSimulator2017/mods/courseplay/img/signs/wait.i3d (3.68) ms
+C:/Users/peter/Documents/My Games/FarmingSimulator2017/mods/courseplay/img/signs/start.i3d (5.09) ms
+C:/Users/peter/Documents/My Games/FarmingSimulator2017/mods/courseplay/img/signs/stop.i3d (6.89) ms
+## Courseplay: setting up fields (basic)
+## Courseplay: loading settings from "courseplaySettings.xml"
+## Courseplay: setting up hud
+## Courseplay: setting up debug channels
+## Courseplay: setting up globalInfoText
+## Courseplay: loading courses and folders from "courseManager.xml"
+Enabled withering
+data/vehicles/tools/vaderstad/vaderstadRapid600s.i3d (88.81) ms
+data/vehicles/tools/stoll/stollFrontLoaderFZ60.i3d (24.07) ms
+data/vehicles/tools/stoll/stollToolPalletFork.i3d (25.85) ms
+data/vehicles/trailers/kroeger/kroegerTKD302.i3d (69.16) ms
+data/vehicles/steerable/masseyFerguson/MF7347Activa.i3d (87.58) ms
+data/vehicles/cutters/masseyFerguson/MFActivaHeader.i3d (71.67) ms
+data/vehicles/tools/poettinger/poettingerNovaCat301.i3d (44.01) ms
+data/vehicles/steerable/valtra/valtraTSeries.i3d (128.30) ms
+data/vehicles/trailers/kroeger/kroegerTAW30.i3d (48.21) ms
+data/vehicles/tools/vogelNoot/vogelNootTerraDisc600.i3d (42.47) ms
+data/vehicles/tools/vaderstad/vaderstadTempoF8.i3d (50.56) ms
+data/vehicles/steerable/masseyFerguson/MF7700.i3d (116.34) ms
+data/vehicles/trailers/fliegl/flieglDPW180.i3d (63.77) ms
+data/vehicles/tools/bredal/F2WS4000.i3d (39.20) ms
+data/vehicles/cutters/capello/capelloDiamantHS8.i3d (49.21) ms
+data/vehicles/tools/amazone/amazoneCayron200.i3d (42.07) ms
+data/vehicles/trailers/joskin/joskinAquaTrans7300.i3d (35.10) ms
+data/vehicles/steerable/newHolland/newHollandT6.i3d (80.33) ms
+data/vehicles/trailers/poettinger/poettingerEuroboss330T.i3d (121.30) ms
+data/objects/pallets/fertilizerTank.i3d (10.51) ms
+data/placeables/shelters/storageShelter01.i3d (9.65) ms
+data/objects/pallets/woolPallet.i3d (46.09) ms
+data/placeables/shelters/vehicleShelter.i3d (4.29) ms
+data/objects/bigBagContainer/bigBagContainerFertilizer.i3d (17.88) ms
+data/placeables/shelters/storageShelter02.i3d (6.74) ms
+C:/Users/peter/Documents/My Games/FarmingSimulator2017/mods/FS17_placeableRefillStation/seedRefillTank.i3d (38.21) ms
+data/vehicles/train/locomotive.i3d (38.73) ms
+data/vehicles/train/wagonTimber.i3d (20.45) ms
+data/vehicles/train/wagonWoodChips.i3d (23.34) ms
+data/vehicles/train/wagonGrain.i3d (22.65) ms
+data/vehicles/train/wagonSugarbeets.i3d (20.86) ms
+dataS2/character/player/player01.i3d (245.19) ms
+data/firstPerson/chainsaws/stihl/stihlMS261.i3d (272.35) ms
+[dbg7 lp5029] MF Activa 7347 S: hasGeneratedCourse=false, hasEnoughWaypoints=true, hasStartingCorner=false, hasStartingDirection=false, numCourses=1, fieldEdge.selectedField.fieldNum=12 ==> hasValidCourseGenerationData=false
+[dbg7 lp5059] MF Activa 7347 S: hasGeneratedCourse=false, hasEnoughWaypoints=true, hasStartingCorner=false, hasStartingDirection=false, numCourses=1, fieldEdge.selectedField.fieldNum=14 ==> hasValidCourseGenerationData=false
+[dbg7 lp5483] MF Activa 7347 S: hasGeneratedCourse=false, hasEnoughWaypoints=true, hasStartingCorner=false, hasStartingDirection=false, numCourses=1, fieldEdge.selectedField.fieldNum=12 ==> hasValidCourseGenerationData=false
+[dbg7 lp5568] MF Activa 7347 S: hasGeneratedCourse=false, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=false, numCourses=1, fieldEdge.selectedField.fieldNum=12 ==> hasValidCourseGenerationData=false
+[dbg7 lp5654] MF Activa 7347 S: hasGeneratedCourse=false, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=12 ==> hasValidCourseGenerationData=true
+[dbg7 lp5725] MF Activa 7347 S: hasGeneratedCourse=false, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=12 ==> hasValidCourseGenerationData=true
+[dbg7 lp5734] MF Activa 7347 S: hasGeneratedCourse=false, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=12 ==> hasValidCourseGenerationData=true
+[dbg7 lp5828] generateCourse() called for "Field 12"
+[dbg7 lp5828] MF Activa 7347 S: hasGeneratedCourse=false, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=12 ==> hasValidCourseGenerationData=true
+[dbg7 lp5828] 148.81 93.37 -148.66
+
+[dbg7 lp5828] 153.81 93.13 -148.67
+
+[dbg7 lp5828] 158.81 92.90 -148.68
+
+[dbg7 lp5828] 163.81 92.68 -148.65
+
+[dbg7 lp5828] 168.81 92.49 -148.67
+
+[dbg7 lp5828] 173.81 92.29 -148.70
+
+[dbg7 lp5828] 178.81 92.06 -148.68
+
+[dbg7 lp5828] 183.81 91.83 -148.66
+
+[dbg7 lp5828] 188.81 91.56 -148.70
+
+[dbg7 lp5828] 193.81 91.28 -148.69
+
+[dbg7 lp5828] 198.81 91.07 -148.68
+
+[dbg7 lp5828] 203.81 90.86 -148.68
+
+[dbg7 lp5828] 208.81 90.63 -148.68
+
+[dbg7 lp5828] 213.81 90.41 -148.69
+
+[dbg7 lp5828] 218.81 90.24 -148.65
+
+[dbg7 lp5828] 223.81 90.12 -148.67
+
+[dbg7 lp5828] 228.81 90.02 -148.68
+
+[dbg7 lp5828] 233.81 89.99 -148.66
+
+[dbg7 lp5828] 239.15 89.99 -149.02
+
+[dbg7 lp5828] 239.15 89.99 -154.02
+
+[dbg7 lp5828] 239.14 89.99 -159.02
+
+[dbg7 lp5828] 239.14 90.00 -164.02
+
+[dbg7 lp5828] 239.12 90.05 -169.02
+
+[dbg7 lp5828] 239.11 90.11 -174.02
+
+[dbg7 lp5828] 239.14 90.10 -179.02
+
+[dbg7 lp5828] 239.11 90.07 -184.02
+
+[dbg7 lp5828] 239.13 90.02 -189.02
+
+[dbg7 lp5828] 239.15 89.98 -194.02
+
+[dbg7 lp5828] 239.11 89.96 -199.02
+
+[dbg7 lp5828] 239.12 89.95 -204.02
+
+[dbg7 lp5828] 239.13 89.98 -209.02
+
+[dbg7 lp5828] 239.13 90.07 -214.02
+
+[dbg7 lp5828] 239.13 90.19 -219.02
+
+[dbg7 lp5828] 239.12 90.35 -224.02
+
+[dbg7 lp5828] 239.11 90.58 -229.02
+
+[dbg7 lp5828] 239.14 90.83 -234.02
+
+[dbg7 lp5828] 238.82 90.95 -236.35
+
+[dbg7 lp5828] 233.82 91.11 -236.30
+
+[dbg7 lp5828] 228.82 91.29 -236.31
+
+[dbg7 lp5828] 223.82 91.51 -236.31
+
+[dbg7 lp5828] 218.82 91.76 -236.30
+
+[dbg7 lp5828] 213.82 91.98 -236.34
+
+[dbg7 lp5828] 208.82 92.25 -236.33
+
+[dbg7 lp5828] 203.82 92.55 -236.32
+
+[dbg7 lp5828] 198.82 92.86 -236.35
+
+[dbg7 lp5828] 193.82 93.20 -236.32
+
+[dbg7 lp5828] 188.82 93.56 -236.34
+
+[dbg7 lp5828] 183.82 93.93 -236.31
+
+[dbg7 lp5828] 178.83 94.30 -236.32
+
+[dbg7 lp5828] 173.83 94.68 -236.33
+
+[dbg7 lp5828] 168.83 95.07 -236.34
+
+[dbg7 lp5828] 163.83 95.45 -236.34
+
+[dbg7 lp5828] 158.83 95.83 -236.34
+
+[dbg7 lp5828] 153.83 96.19 -236.33
+
+[dbg7 lp5828] 148.83 96.56 -236.32
+
+[dbg7 lp5828] 143.83 96.84 -236.31
+
+[dbg7 lp5828] 138.83 97.05 -236.34
+
+[dbg7 lp5828] 133.83 97.28 -236.32
+
+[dbg7 lp5828] 128.83 97.55 -236.34
+
+[dbg7 lp5828] 123.83 97.86 -236.31
+
+[dbg7 lp5828] 118.83 98.16 -236.33
+
+[dbg7 lp5828] 113.83 98.42 -236.34
+
+[dbg7 lp5828] 108.83 98.68 -236.35
+
+[dbg7 lp5828] 103.83 98.91 -236.35
+
+[dbg7 lp5828] 98.83 99.10 -236.35
+
+[dbg7 lp5828] 93.83 99.28 -236.34
+
+[dbg7 lp5828] 88.83 99.46 -236.34
+
+[dbg7 lp5828] 83.83 99.66 -236.32
+
+[dbg7 lp5828] 78.83 99.85 -236.31
+
+[dbg7 lp5828] 73.83 100.04 -236.34
+
+[dbg7 lp5828] 68.83 100.22 -236.31
+
+[dbg7 lp5828] 63.83 100.38 -236.33
+
+[dbg7 lp5828] 58.83 100.51 -236.30
+
+[dbg7 lp5828] 53.83 100.63 -236.32
+
+[dbg7 lp5828] 48.83 100.73 -236.33
+
+[dbg7 lp5828] 45.68 100.77 -236.33
+
+[dbg7 lp5828] 45.69 100.59 -231.33
+
+[dbg7 lp5828] 45.66 100.42 -226.33
+
+[dbg7 lp5828] 45.67 100.25 -221.33
+
+[dbg7 lp5828] 45.70 100.04 -216.33
+
+[dbg7 lp5828] 45.67 99.84 -211.33
+
+[dbg7 lp5828] 45.65 99.66 -206.33
+
+[dbg7 lp5828] 45.69 99.53 -201.33
+
+[dbg7 lp5828] 45.68 99.42 -196.33
+
+[dbg7 lp5828] 45.67 99.23 -191.33
+
+[dbg7 lp5828] 45.67 98.93 -186.33
+
+[dbg7 lp5828] 45.67 98.68 -181.33
+
+[dbg7 lp5828] 45.67 98.49 -176.33
+
+[dbg7 lp5828] 45.68 98.30 -171.33
+
+[dbg7 lp5828] 45.70 98.12 -166.33
+
+[dbg7 lp5828] 45.66 97.96 -161.33
+
+[dbg7 lp5828] 45.69 97.77 -156.33
+
+[dbg7 lp5828] 45.66 97.63 -151.33
+
+[dbg7 lp5828] 46.19 97.58 -148.65
+
+[dbg7 lp5828] 51.19 97.47 -148.69
+
+[dbg7 lp5828] 56.19 97.32 -148.67
+
+[dbg7 lp5828] 61.19 97.15 -148.67
+
+[dbg7 lp5828] 66.19 96.97 -148.66
+
+[dbg7 lp5828] 71.19 96.83 -148.66
+
+[dbg7 lp5828] 76.19 96.62 -148.67
+
+[dbg7 lp5828] 81.19 96.35 -148.68
+
+[dbg7 lp5828] 86.19 96.09 -148.69
+
+[dbg7 lp5828] 91.19 95.87 -148.66
+
+[dbg7 lp5828] 96.19 95.65 -148.68
+
+[dbg7 lp5828] 101.19 95.43 -148.65
+
+[dbg7 lp5828] 106.19 95.20 -148.68
+
+[dbg7 lp5828] 111.19 94.96 -148.67
+
+[dbg7 lp5828] 116.19 94.73 -148.66
+
+[dbg7 lp5828] 121.19 94.51 -148.70
+
+[dbg7 lp5828] 126.19 94.29 -148.69
+
+[dbg7 lp5828] 131.19 94.07 -148.69
+
+[dbg7 lp5828] 136.19 93.87 -148.70
+
+[dbg7 lp5828] 141.19 93.68 -148.66
+
+[dbg7 lp5828] 146.19 93.49 -148.67
+
+[dbg7 lp5828] before headland: poly=table: 0x0195493e2978, poly.points=table: 0x0195493e29c0, poly.numPoints=114
+[dbg7 lp5828] MF Activa 7347 S: hasGeneratedCourse=false, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=0, fieldEdge.selectedField.fieldNum=12 ==> hasValidCourseGenerationData=true
+[dbg7 lp5828] (1) SET UP CORNERS AND DIRECTIONS
+[dbg7 lp5828] (2) HEADLAND
+[dbg7 lp5828] isPolyClockwise(): isClockwise=false, offsetLeft.isInPoly=true -> match
+[dbg7 lp5828] headland: poly isClockwise=false
+[dbg7 lp5828] 	userDirClockwise=true -> reverse poly.points
+[dbg7 lp5828] generateCourse(94): headland.numLanes=2, headland.orderBefore=true
+[dbg7 lp5828] headland lane 1: laneRidgeMarker=2, offset offsetWidth=3.0, noGoWidth=2.92
+[dbg7 lp5828] (2.1) CREATE INITIAL OFFSET POINTS
+[dbg7 lp5828] 	point 22: intersection with previous offset vector -> skip this point
+[dbg7 lp5828] 	point 79: intersection with previous offset vector -> skip this point
+[dbg7 lp5828] generateCourse(201): #lane 1 = 111
+[dbg7 lp5828] (2.2) CHECK AND DELETE OVERLAPS
+[dbg7 lp5828] 	offset point 21: OVERLAP!
+[dbg7 lp5828] 		count=1, swingDir=1, checkNum=21
+[dbg7 lp5828] 		dx,dy,dz=-0.6,0.1,2.9
+[dbg7 lp5828] 	offset point 38: OVERLAP!
+[dbg7 lp5828] 		count=2, swingDir=-1, checkNum=39
+[dbg7 lp5828] 		dx,dy,dz=0.0,-0.0,3.0
+[dbg7 lp5828] 	offset point 77: OVERLAP!
+[dbg7 lp5828] 		count=4, swingDir=-1, checkNum=79
+[dbg7 lp5828] 		dx,dy,dz=-0.3,-0.0,0.7
+[dbg7 lp5828] 	offset point 94: OVERLAP!
+[dbg7 lp5828] 		count=4, swingDir=-1, checkNum=96
+[dbg7 lp5828] 		dx,dy,dz=-0.2,0.0,3.0
+[dbg7 lp5828] delete offset point(21) -> new numOffsetPoints=110
+[dbg7 lp5828] delete offset point(38) -> new numOffsetPoints=109
+[dbg7 lp5828] delete offset point(77) -> new numOffsetPoints=108
+[dbg7 lp5828] delete offset point(94) -> new numOffsetPoints=107
+[dbg7 lp5828] (2.3) CHECK AND FIX DISTANCES
+[dbg7 lp5828] (2.4) FINALIZE (ADD POINT DATA)
+[dbg7 lp5828] generateCourse(388): inserting lane #1 (107 points) into headland.lanes
+[dbg7 lp5828] headland lane 2: laneRidgeMarker=0, offset offsetWidth=6.0, noGoWidth=5.85
+[dbg7 lp5828] (2.1) CREATE INITIAL OFFSET POINTS
+[dbg7 lp5828] 	point 21: intersection with previous offset vector -> skip this point
+[dbg7 lp5828] 	point 38: intersection with previous offset vector -> skip this point
+[dbg7 lp5828] 	point 75: intersection with previous offset vector -> skip this point
+[dbg7 lp5828] 	point 91: intersection with previous offset vector -> skip this point
+[dbg7 lp5828] generateCourse(201): #lane 2 = 103
+[dbg7 lp5828] (2.2) CHECK AND DELETE OVERLAPS
+[dbg7 lp5828] 	offset point 20: OVERLAP!
+[dbg7 lp5828] 		count=1, swingDir=1, checkNum=20
+[dbg7 lp5828] 		dx,dy,dz=-2.9,0.1,5.3
+[dbg7 lp5828] 	offset point 35: OVERLAP!
+[dbg7 lp5828] 		count=4, swingDir=-1, checkNum=37
+[dbg7 lp5828] 		dx,dy,dz=-2.0,-0.2,5.9
+[dbg7 lp5828] 	offset point 36: OVERLAP!
+[dbg7 lp5828] 		count=2, swingDir=-1, checkNum=37
+[dbg7 lp5828] 		dx,dy,dz=-0.4,-0.1,6.0
+[dbg7 lp5828] 	offset point 72: OVERLAP!
+[dbg7 lp5828] 		count=4, swingDir=-1, checkNum=74
+[dbg7 lp5828] 		dx,dy,dz=-2.8,-0.3,5.3
+[dbg7 lp5828] 	offset point 87: OVERLAP!
+[dbg7 lp5828] 		count=8, swingDir=-1, checkNum=91
+[dbg7 lp5828] 		dx,dy,dz=-2.3,0.0,3.5
+[dbg7 lp5828] delete offset point(20) -> new numOffsetPoints=102
+[dbg7 lp5828] delete offset point(35) -> new numOffsetPoints=101
+[dbg7 lp5828] delete offset point(36) -> new numOffsetPoints=100
+[dbg7 lp5828] delete offset point(72) -> new numOffsetPoints=99
+[dbg7 lp5828] delete offset point(87) -> new numOffsetPoints=98
+[dbg7 lp5828] (2.3) CHECK AND FIX DISTANCES
+[dbg7 lp5828] (2.4) FINALIZE (ADD POINT DATA)
+[dbg7 lp5828] generateCourse(388): inserting lane #2 (98 points) into headland.lanes
+[dbg7 lp5828] generateCourse(398):  #vehicle.cp.headland.lanes=2
+[dbg7 lp5828] headland: numCreatedLanes=2 -> poly=table: 0x0195493e2978, poly.points=table: 0x01954b5a7588, poly.numPoints=98, #poly.points=98
+[dbg7 lp5828] (3) DIMENSIONS, ALL PATH POINTS
+[dbg7 lp5828] minX=54.653637885833, maxX=230.14980694467
+[dbg7 lp5828] minZ=-227.34901429574, maxZ=-157.65018897778
+[dbg7 lp5828] generateCourse(419): width=175.49616905883, height=69.698825317961
+[dbg7 lp5828] generateCourse(433): numLanes=30, pointsPerLane=14
+[dbg7 lp5828] curLane = 1, curLaneDir = N
+[dbg7 lp5828] curLane = 2, curLaneDir = S
+[dbg7 lp5828] curLane = 3, curLaneDir = N
+[dbg7 lp5828] curLane = 4, curLaneDir = S
+[dbg7 lp5828] curLane = 5, curLaneDir = N
+[dbg7 lp5828] curLane = 6, curLaneDir = S
+[dbg7 lp5828] curLane = 7, curLaneDir = N
+[dbg7 lp5828] curLane = 8, curLaneDir = S
+[dbg7 lp5828] curLane = 9, curLaneDir = N
+[dbg7 lp5828] curLane = 10, curLaneDir = S
+[dbg7 lp5828] curLane = 11, curLaneDir = N
+[dbg7 lp5828] curLane = 12, curLaneDir = S
+[dbg7 lp5828] curLane = 13, curLaneDir = N
+[dbg7 lp5828] curLane = 14, curLaneDir = S
+[dbg7 lp5828] curLane = 15, curLaneDir = N
+[dbg7 lp5828] curLane = 16, curLaneDir = S
+[dbg7 lp5828] curLane = 17, curLaneDir = N
+[dbg7 lp5828] curLane = 18, curLaneDir = S
+[dbg7 lp5828] curLane = 19, curLaneDir = N
+[dbg7 lp5828] curLane = 20, curLaneDir = S
+[dbg7 lp5828] curLane = 21, curLaneDir = N
+[dbg7 lp5828] curLane = 22, curLaneDir = S
+[dbg7 lp5828] curLane = 23, curLaneDir = N
+[dbg7 lp5828] curLane = 24, curLaneDir = S
+[dbg7 lp5828] curLane = 25, curLaneDir = N
+[dbg7 lp5828] curLane = 26, curLaneDir = S
+[dbg7 lp5828] curLane = 27, curLaneDir = N
+[dbg7 lp5828] curLane = 28, curLaneDir = S
+[dbg7 lp5828] curLane = 29, curLaneDir = N
+[dbg7 lp5828] curLane = 30, curLaneDir = S
+[dbg7 lp5828] (4) CHECK PATH LANES FOR VALID START AND END POINTS and FILL fieldWorkCourse
+[dbg7 lp5828] (5) ROTATE HEADLAND COURSES
+[dbg7 lp5828] [before] rotating headland lane=1, closest=19 -> rotate: numPoints-(closest-1)=107-(19-1)=89
+[dbg7 lp5828] [before] rotating headland lane=2, closest=19 -> rotate: numPoints-(closest-1)=98-(19-1)=80
+[dbg7 lp5828] (6) CONCATENATE HEADLAND COURSE and FIELDWORK COURSE
+[dbg7 lp5828] (7) FINAL COURSE DATA
+[dbg7 lp5828] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=0 ==> hasValidCourseGenerationData=false
+[dbg7 lp5828] generateCourse() finished: 30 lanes, 2 headland lanes
+[dbg7 lp7887] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=12 ==> hasValidCourseGenerationData=true
+[dbg7 lp7911] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=14 ==> hasValidCourseGenerationData=true
+[dbg7 lp7925] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=15 ==> hasValidCourseGenerationData=true
+[dbg7 lp7937] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=22 ==> hasValidCourseGenerationData=true
+[dbg7 lp7961] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=23 ==> hasValidCourseGenerationData=true
+[dbg7 lp8215] generateCourse() called for "Field 23"
+[dbg7 lp8215] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=23 ==> hasValidCourseGenerationData=true
+[dbg7 lp8215] 108.87 84.83 339.83
+
+[dbg7 lp8215] 113.87 84.81 339.82
+
+[dbg7 lp8215] 118.87 84.80 339.85
+
+[dbg7 lp8215] 123.87 84.80 339.83
+
+[dbg7 lp8215] 128.87 84.80 339.85
+
+[dbg7 lp8215] 133.87 84.80 339.82
+
+[dbg7 lp8215] 138.87 84.80 339.84
+
+[dbg7 lp8215] 143.87 84.80 339.85
+
+[dbg7 lp8215] 148.87 84.80 339.81
+
+[dbg7 lp8215] 153.87 84.80 339.81
+
+[dbg7 lp8215] 158.87 84.80 339.81
+
+[dbg7 lp8215] 163.87 84.80 339.81
+
+[dbg7 lp8215] 168.87 84.80 339.85
+
+[dbg7 lp8215] 173.87 84.80 339.84
+
+[dbg7 lp8215] 178.87 84.80 339.82
+
+[dbg7 lp8215] 183.87 84.80 339.80
+
+[dbg7 lp8215] 188.87 84.80 339.83
+
+[dbg7 lp8215] 193.87 84.80 339.85
+
+[dbg7 lp8215] 198.87 84.80 339.82
+
+[dbg7 lp8215] 204.15 84.80 339.13
+
+[dbg7 lp8215] 204.10 84.80 334.13
+
+[dbg7 lp8215] 204.11 84.80 329.13
+
+[dbg7 lp8215] 204.10 84.80 324.13
+
+[dbg7 lp8215] 204.15 84.86 319.13
+
+[dbg7 lp8215] 204.14 85.00 314.13
+
+[dbg7 lp8215] 204.12 85.21 309.13
+
+[dbg7 lp8215] 204.11 85.48 304.13
+
+[dbg7 lp8215] 204.13 85.82 299.13
+
+[dbg7 lp8215] 204.11 86.11 294.13
+
+[dbg7 lp8215] 204.13 86.34 289.13
+
+[dbg7 lp8215] 204.15 86.47 284.13
+
+[dbg7 lp8215] 204.11 86.43 279.13
+
+[dbg7 lp8215] 204.12 86.39 274.13
+
+[dbg7 lp8215] 204.12 86.33 269.13
+
+[dbg7 lp8215] 204.26 86.28 265.35
+
+[dbg7 lp8215] 205.35 86.21 260.15
+
+[dbg7 lp8215] 203.60 86.17 258.66
+
+[dbg7 lp8215] 201.10 86.06 257.65
+
+[dbg7 lp8215] 196.12 86.04 257.18
+
+[dbg7 lp8215] 191.14 86.05 256.66
+
+[dbg7 lp8215] 186.25 86.04 255.66
+
+[dbg7 lp8215] 181.35 86.02 254.65
+
+[dbg7 lp8215] 176.57 86.00 253.17
+
+[dbg7 lp8215] 171.67 86.00 252.17
+
+[dbg7 lp8215] 168.16 86.00 252.17
+
+[dbg7 lp8215] 164.28 86.03 253.17
+
+[dbg7 lp8215] 159.38 86.16 254.17
+
+[dbg7 lp8215] 154.38 86.32 254.19
+
+[dbg7 lp8215] 149.41 86.47 253.66
+
+[dbg7 lp8215] 144.64 86.51 252.15
+
+[dbg7 lp8215] 140.29 86.33 249.69
+
+[dbg7 lp8215] 135.96 86.15 247.19
+
+[dbg7 lp8215] 131.63 86.10 244.69
+
+[dbg7 lp8215] 127.63 86.10 241.69
+
+[dbg7 lp8215] 123.32 86.05 239.16
+
+[dbg7 lp8215] 118.98 86.00 236.67
+
+[dbg7 lp8215] 114.97 86.00 233.68
+
+[dbg7 lp8215] 110.65 86.00 231.16
+
+[dbg7 lp8215] 106.33 86.00 230.15
+
+[dbg7 lp8215] 101.35 86.00 230.66
+
+[dbg7 lp8215] 96.38 86.01 230.18
+
+[dbg7 lp8215] 91.40 86.16 229.66
+
+[dbg7 lp8215] 86.40 86.09 229.69
+
+[dbg7 lp8215] 81.40 86.19 229.67
+
+[dbg7 lp8215] 76.43 86.26 229.15
+
+[dbg7 lp8215] 71.43 86.37 229.19
+
+[dbg7 lp8215] 66.43 86.48 229.19
+
+[dbg7 lp8215] 61.46 86.60 228.69
+
+[dbg7 lp8215] 56.46 86.77 228.69
+
+[dbg7 lp8215] 51.46 86.88 228.69
+
+[dbg7 lp8215] 46.46 86.86 228.65
+
+[dbg7 lp8215] 41.46 86.70 228.67
+
+[dbg7 lp8215] 36.46 86.56 228.68
+
+[dbg7 lp8215] 31.48 86.47 228.16
+
+[dbg7 lp8215] 26.48 86.42 228.18
+
+[dbg7 lp8215] 21.51 86.36 227.66
+
+[dbg7 lp8215] 16.51 86.35 227.69
+
+[dbg7 lp8215] 11.51 86.23 227.68
+
+[dbg7 lp8215] 4.65 86.09 227.38
+
+[dbg7 lp8215] 4.67 86.08 232.38
+
+[dbg7 lp8215] 4.69 86.08 237.38
+
+[dbg7 lp8215] 4.67 85.99 242.38
+
+[dbg7 lp8215] 4.65 85.83 247.38
+
+[dbg7 lp8215] 4.69 85.62 252.38
+
+[dbg7 lp8215] 4.68 85.38 257.38
+
+[dbg7 lp8215] 4.67 85.18 262.38
+
+[dbg7 lp8215] 4.67 85.02 267.38
+
+[dbg7 lp8215] 4.67 84.90 272.38
+
+[dbg7 lp8215] 4.67 84.83 277.38
+
+[dbg7 lp8215] 4.68 84.80 282.38
+
+[dbg7 lp8215] 4.70 84.80 287.38
+
+[dbg7 lp8215] 4.66 84.80 292.38
+
+[dbg7 lp8215] 4.68 84.80 297.38
+
+[dbg7 lp8215] 4.66 84.80 302.38
+
+[dbg7 lp8215] 4.69 84.80 307.38
+
+[dbg7 lp8215] 4.67 84.80 312.38
+
+[dbg7 lp8215] 4.66 84.80 317.38
+
+[dbg7 lp8215] 4.65 84.81 322.38
+
+[dbg7 lp8215] 4.70 84.86 327.38
+
+[dbg7 lp8215] 4.70 84.93 332.38
+
+[dbg7 lp8215] 4.70 84.99 337.38
+
+[dbg7 lp8215] 5.07 85.01 339.85
+
+[dbg7 lp8215] 10.07 85.01 339.84
+
+[dbg7 lp8215] 15.07 85.01 339.82
+
+[dbg7 lp8215] 20.07 85.01 339.80
+
+[dbg7 lp8215] 25.07 85.00 339.83
+
+[dbg7 lp8215] 30.07 84.99 339.80
+
+[dbg7 lp8215] 35.07 84.99 339.82
+
+[dbg7 lp8215] 40.07 84.98 339.84
+
+[dbg7 lp8215] 45.07 84.99 339.85
+
+[dbg7 lp8215] 50.07 84.98 339.81
+
+[dbg7 lp8215] 55.07 84.98 339.81
+
+[dbg7 lp8215] 60.07 85.00 339.81
+
+[dbg7 lp8215] 65.07 84.89 339.80
+
+[dbg7 lp8215] 70.07 84.83 339.85
+
+[dbg7 lp8215] 75.07 84.86 339.83
+
+[dbg7 lp8215] 80.07 84.90 339.82
+
+[dbg7 lp8215] 85.07 84.95 339.85
+
+[dbg7 lp8215] 90.07 84.95 339.82
+
+[dbg7 lp8215] 95.07 84.92 339.84
+
+[dbg7 lp8215] 100.07 84.90 339.81
+
+[dbg7 lp8215] 105.07 84.86 339.82
+
+[dbg7 lp8215] before headland: poly=table: 0x01954c549098, poly.points=table: 0x01954c5490e0, poly.numPoints=122
+[dbg7 lp8215] MF Activa 7347 S: hasGeneratedCourse=false, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=0, fieldEdge.selectedField.fieldNum=23 ==> hasValidCourseGenerationData=true
+[dbg7 lp8215] (1) SET UP CORNERS AND DIRECTIONS
+[dbg7 lp8215] (2) HEADLAND
+[dbg7 lp8215] isPolyClockwise(): isClockwise=false, offsetLeft.isInPoly=true -> match
+[dbg7 lp8215] headland: poly isClockwise=false
+[dbg7 lp8215] 	userDirClockwise=true -> reverse poly.points
+[dbg7 lp8215] generateCourse(94): headland.numLanes=2, headland.orderBefore=true
+[dbg7 lp8215] headland lane 1: laneRidgeMarker=2, offset offsetWidth=3.0, noGoWidth=2.92
+[dbg7 lp8215] (2.1) CREATE INITIAL OFFSET POINTS
+[dbg7 lp8215] 	point 22: intersection with previous offset vector -> skip this point
+[dbg7 lp8215] generateCourse(201): #lane 1 = 121
+[dbg7 lp8215] (2.2) CHECK AND DELETE OVERLAPS
+[dbg7 lp8215] 	offset point 21: OVERLAP!
+[dbg7 lp8215] 		count=1, swingDir=1, checkNum=21
+[dbg7 lp8215] 		dx,dy,dz=-0.4,-0.0,3.0
+[dbg7 lp8215] 	offset point 43: OVERLAP!
+[dbg7 lp8215] 		count=2, swingDir=-1, checkNum=44
+[dbg7 lp8215] 		dx,dy,dz=0.1,0.1,3.0
+[dbg7 lp8215] 	offset point 63: OVERLAP!
+[dbg7 lp8215] 		count=2, swingDir=-1, checkNum=64
+[dbg7 lp8215] 		dx,dy,dz=-2.8,0.0,1.0
+[dbg7 lp8215] 	offset point 64: OVERLAP!
+[dbg7 lp8215] 		count=2, swingDir=-1, checkNum=65
+[dbg7 lp8215] 		dx,dy,dz=-2.9,0.0,0.9
+[dbg7 lp8215] 	offset point 77: OVERLAP!
+[dbg7 lp8215] 		count=2, swingDir=-1, checkNum=78
+[dbg7 lp8215] 		dx,dy,dz=-2.9,0.0,0.7
+[dbg7 lp8215] 	offset point 84: OVERLAP!
+[dbg7 lp8215] 		count=2, swingDir=-1, checkNum=85
+[dbg7 lp8215] 		dx,dy,dz=-2.9,0.1,0.8
+[dbg7 lp8215] 	offset point 85: OVERLAP!
+[dbg7 lp8215] 		count=2, swingDir=-1, checkNum=86
+[dbg7 lp8215] 		dx,dy,dz=-2.8,0.0,1.0
+[dbg7 lp8215] 	offset point 86: OVERLAP!
+[dbg7 lp8215] 		count=2, swingDir=-1, checkNum=87
+[dbg7 lp8215] 		dx,dy,dz=-1.4,0.0,2.6
+[dbg7 lp8215] 	offset point 102: OVERLAP!
+[dbg7 lp8215] 		count=2, swingDir=-1, checkNum=103
+[dbg7 lp8215] 		dx,dy,dz=-0.4,0.0,3.0
+[dbg7 lp8215] delete offset point(21) -> new numOffsetPoints=120
+[dbg7 lp8215] delete offset point(43) -> new numOffsetPoints=119
+[dbg7 lp8215] delete offset point(63) -> new numOffsetPoints=118
+[dbg7 lp8215] delete offset point(64) -> new numOffsetPoints=117
+[dbg7 lp8215] delete offset point(77) -> new numOffsetPoints=116
+[dbg7 lp8215] delete offset point(84) -> new numOffsetPoints=115
+[dbg7 lp8215] delete offset point(85) -> new numOffsetPoints=114
+[dbg7 lp8215] delete offset point(86) -> new numOffsetPoints=113
+[dbg7 lp8215] delete offset point(102) -> new numOffsetPoints=112
+[dbg7 lp8215] (2.3) CHECK AND FIX DISTANCES
+[dbg7 lp8215] 	point 62: distance to next [65] = 12.7 -> smooth with 3 steps
+[dbg7 lp8215] 	with points { pp [91.4/232.7], offsP [101.1/233.7], np1 [113.5/236.3], np2 [117.2/239.1] }
+[dbg7 lp8215] 		 not inserted smoothPoint because of double entry
+[dbg7 lp8215] 		insert smoothPoint 6 (cx,cz=105.3,234.4) into "finalPoints"
+[dbg7 lp8215] (2.4) FINALIZE (ADD POINT DATA)
+[dbg7 lp8215] generateCourse(388): inserting lane #1 (113 points) into headland.lanes
+[dbg7 lp8215] headland lane 2: laneRidgeMarker=0, offset offsetWidth=6.0, noGoWidth=5.85
+[dbg7 lp8215] (2.1) CREATE INITIAL OFFSET POINTS
+[dbg7 lp8215] 	point 21: intersection with previous offset vector -> skip this point
+[dbg7 lp8215] 	point 42: intersection with previous offset vector -> skip this point
+[dbg7 lp8215] 	point 81: intersection with previous offset vector -> skip this point
+[dbg7 lp8215] 	point 95: intersection with previous offset vector -> skip this point
+[dbg7 lp8215] generateCourse(201): #lane 2 = 108
+[dbg7 lp8215] (2.2) CHECK AND DELETE OVERLAPS
+[dbg7 lp8215] 	offset point 20: OVERLAP!
+[dbg7 lp8215] 		count=1, swingDir=1, checkNum=20
+[dbg7 lp8215] 		dx,dy,dz=-2.8,-0.1,5.3
+[dbg7 lp8215] 	offset point 40: OVERLAP!
+[dbg7 lp8215] 		count=4, swingDir=-1, checkNum=42
+[dbg7 lp8215] 		dx,dy,dz=-1.7,0.1,2.3
+[dbg7 lp8215] 	offset point 60: OVERLAP!
+[dbg7 lp8215] 		count=4, swingDir=-1, checkNum=62
+[dbg7 lp8215] 		dx,dy,dz=-5.5,0.5,2.4
+[dbg7 lp8215] 	offset point 72: OVERLAP!
+[dbg7 lp8215] 		count=4, swingDir=-1, checkNum=74
+[dbg7 lp8215] 		dx,dy,dz=-5.6,0.3,2.1
+[dbg7 lp8215] 	offset point 77: OVERLAP!
+[dbg7 lp8215] 		count=4, swingDir=-1, checkNum=79
+[dbg7 lp8215] 		dx,dy,dz=-5.0,0.2,3.3
+[dbg7 lp8215] 	offset point 78: OVERLAP!
+[dbg7 lp8215] 		count=4, swingDir=-1, checkNum=80
+[dbg7 lp8215] 		dx,dy,dz=-3.6,0.1,4.8
+[dbg7 lp8215] 	offset point 91: OVERLAP!
+[dbg7 lp8215] 		count=6, swingDir=-1, checkNum=94
+[dbg7 lp8215] 		dx,dy,dz=-4.3,0.0,4.2
+[dbg7 lp8215] delete offset point(20) -> new numOffsetPoints=107
+[dbg7 lp8215] delete offset point(40) -> new numOffsetPoints=106
+[dbg7 lp8215] delete offset point(60) -> new numOffsetPoints=105
+[dbg7 lp8215] delete offset point(72) -> new numOffsetPoints=104
+[dbg7 lp8215] delete offset point(77) -> new numOffsetPoints=103
+[dbg7 lp8215] delete offset point(78) -> new numOffsetPoints=102
+[dbg7 lp8215] delete offset point(91) -> new numOffsetPoints=101
+[dbg7 lp8215] (2.3) CHECK AND FIX DISTANCES
+[dbg7 lp8215] 	point 59: distance to next [61] = 10.0 -> smooth with 2 steps
+[dbg7 lp8215] 	with points { pp [95.4/239.1], offsP [104.3/240.3], np1 [113.6/243.9], np2 [118.8/247.0] }
+[dbg7 lp8215] 		 not inserted smoothPoint because of double entry
+[dbg7 lp8215] 	point 71: distance to next [73] = 8.7 -> smooth with 2 steps
+[dbg7 lp8215] 	with points { pp [153.4/263.1], offsP [166.0/262.0], np1 [174.7/262.0], np2 [178.7/263.2] }
+[dbg7 lp8215] 		 not inserted smoothPoint because of double entry
+[dbg7 lp8215] 	point 76: distance to next [79] = 10.4 -> smooth with 3 steps
+[dbg7 lp8215] 	with points { pp [178.7/263.2], offsP [189.3/265.5], np1 [195.1/274.1], np2 [195.1/279.1] }
+[dbg7 lp8215] 		 not inserted smoothPoint because of double entry
+[dbg7 lp8215] 		insert smoothPoint 6 (cx,cz=191.8,268.0) into "finalPoints"
+[dbg7 lp8215] (2.4) FINALIZE (ADD POINT DATA)
+[dbg7 lp8215] generateCourse(388): inserting lane #2 (102 points) into headland.lanes
+[dbg7 lp8215] generateCourse(398):  #vehicle.cp.headland.lanes=2
+[dbg7 lp8215] headland: numCreatedLanes=2 -> poly=table: 0x01954c549098, poly.points=table: 0x01954c3d1740, poly.numPoints=102, #poly.points=102
+[dbg7 lp8215] (3) DIMENSIONS, ALL PATH POINTS
+[dbg7 lp8215] minX=13.650285468575, maxX=195.14752382411
+[dbg7 lp8215] minZ=236.66055189825, maxZ=330.8500756324
+[dbg7 lp8215] generateCourse(419): width=181.49723835553, height=94.189523734152
+[dbg7 lp8215] generateCourse(433): numLanes=31, pointsPerLane=19
+[dbg7 lp8215] curLane = 1, curLaneDir = N
+[dbg7 lp8215] curLane = 2, curLaneDir = S
+[dbg7 lp8215] curLane = 3, curLaneDir = N
+[dbg7 lp8215] curLane = 4, curLaneDir = S
+[dbg7 lp8215] curLane = 5, curLaneDir = N
+[dbg7 lp8215] curLane = 6, curLaneDir = S
+[dbg7 lp8215] curLane = 7, curLaneDir = N
+[dbg7 lp8215] curLane = 8, curLaneDir = S
+[dbg7 lp8215] curLane = 9, curLaneDir = N
+[dbg7 lp8215] curLane = 10, curLaneDir = S
+[dbg7 lp8215] curLane = 11, curLaneDir = N
+[dbg7 lp8215] curLane = 12, curLaneDir = S
+[dbg7 lp8215] curLane = 13, curLaneDir = N
+[dbg7 lp8215] curLane = 14, curLaneDir = S
+[dbg7 lp8215] curLane = 15, curLaneDir = N
+[dbg7 lp8215] curLane = 16, curLaneDir = S
+[dbg7 lp8215] curLane = 17, curLaneDir = N
+[dbg7 lp8215] curLane = 18, curLaneDir = S
+[dbg7 lp8215] curLane = 19, curLaneDir = N
+[dbg7 lp8215] curLane = 20, curLaneDir = S
+[dbg7 lp8215] curLane = 21, curLaneDir = N
+[dbg7 lp8215] curLane = 22, curLaneDir = S
+[dbg7 lp8215] curLane = 23, curLaneDir = N
+[dbg7 lp8215] curLane = 24, curLaneDir = S
+[dbg7 lp8215] curLane = 25, curLaneDir = N
+[dbg7 lp8215] curLane = 26, curLaneDir = S
+[dbg7 lp8215] curLane = 27, curLaneDir = N
+[dbg7 lp8215] curLane = 28, curLaneDir = S
+[dbg7 lp8215] curLane = 29, curLaneDir = N
+[dbg7 lp8215] curLane = 30, curLaneDir = S
+[dbg7 lp8215] curLane = 31, curLaneDir = N
+[dbg7 lp8215] (4) CHECK PATH LANES FOR VALID START AND END POINTS and FILL fieldWorkCourse
+[dbg7 lp8215] (5) ROTATE HEADLAND COURSES
+[dbg7 lp8215] [before] rotating headland lane=1, closest=19 -> rotate: numPoints-(closest-1)=113-(19-1)=95
+[dbg7 lp8215] [before] rotating headland lane=2, closest=19 -> rotate: numPoints-(closest-1)=102-(19-1)=84
+[dbg7 lp8215] (6) CONCATENATE HEADLAND COURSE and FIELDWORK COURSE
+[dbg7 lp8215] (7) FINAL COURSE DATA
+[dbg7 lp8215] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=0 ==> hasValidCourseGenerationData=false
+[dbg7 lp8215] generateCourse() finished: 31 lanes, 2 headland lanes
+[dbg7 lp8744] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=12 ==> hasValidCourseGenerationData=true
+[dbg7 lp8767] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=14 ==> hasValidCourseGenerationData=true
+[dbg7 lp8780] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=15 ==> hasValidCourseGenerationData=true
+[dbg7 lp8796] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=22 ==> hasValidCourseGenerationData=true
+[dbg7 lp8823] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=23 ==> hasValidCourseGenerationData=true
+[dbg7 lp8884] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=22 ==> hasValidCourseGenerationData=true
+[dbg7 lp9136] generateCourse() called for "Field 22"
+[dbg7 lp9136] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=22 ==> hasValidCourseGenerationData=true
+[dbg7 lp9136] -92.38 85.05 339.83
+
+[dbg7 lp9136] -87.38 85.06 339.85
+
+[dbg7 lp9136] -82.38 85.06 339.81
+
+[dbg7 lp9136] -77.38 85.05 339.82
+
+[dbg7 lp9136] -72.38 85.04 339.82
+
+[dbg7 lp9136] -67.38 85.03 339.82
+
+[dbg7 lp9136] -62.38 85.02 339.82
+
+[dbg7 lp9136] -57.38 85.01 339.81
+
+[dbg7 lp9136] -52.38 85.01 339.85
+
+[dbg7 lp9136] -47.38 85.00 339.83
+
+[dbg7 lp9136] -42.38 84.99 339.81
+
+[dbg7 lp9136] -37.38 84.99 339.84
+
+[dbg7 lp9136] -32.38 84.99 339.81
+
+[dbg7 lp9136] -27.38 84.99 339.83
+
+[dbg7 lp9136] -22.38 84.99 339.84
+
+[dbg7 lp9136] -16.85 85.00 339.48
+
+[dbg7 lp9136] -16.87 84.95 334.48
+
+[dbg7 lp9136] -16.88 84.89 329.48
+
+[dbg7 lp9136] -16.86 84.83 324.48
+
+[dbg7 lp9136] -16.88 84.80 319.48
+
+[dbg7 lp9136] -16.86 84.80 314.48
+
+[dbg7 lp9136] -16.90 84.80 309.48
+
+[dbg7 lp9136] -16.88 84.80 304.48
+
+[dbg7 lp9136] -16.87 84.80 299.48
+
+[dbg7 lp9136] -16.87 84.80 294.48
+
+[dbg7 lp9136] -16.87 84.80 289.48
+
+[dbg7 lp9136] -16.87 84.80 284.48
+
+[dbg7 lp9136] -16.88 84.80 279.48
+
+[dbg7 lp9136] -16.89 84.80 274.48
+
+[dbg7 lp9136] -16.86 84.80 269.48
+
+[dbg7 lp9136] -16.88 84.80 264.48
+
+[dbg7 lp9136] -16.85 84.83 259.48
+
+[dbg7 lp9136] -16.88 84.92 254.48
+
+[dbg7 lp9136] -16.86 85.05 249.48
+
+[dbg7 lp9136] -16.90 85.19 244.48
+
+[dbg7 lp9136] -16.89 85.33 239.48
+
+[dbg7 lp9136] -16.88 85.46 234.48
+
+[dbg7 lp9136] -16.88 85.58 229.48
+
+[dbg7 lp9136] -16.88 85.68 224.48
+
+[dbg7 lp9136] -16.88 85.77 219.48
+
+[dbg7 lp9136] -16.89 85.84 214.48
+
+[dbg7 lp9136] -17.40 85.85 212.65
+
+[dbg7 lp9136] -22.40 85.77 212.67
+
+[dbg7 lp9136] -27.40 85.69 212.70
+
+[dbg7 lp9136] -32.40 85.62 212.68
+
+[dbg7 lp9136] -37.40 85.53 212.66
+
+[dbg7 lp9136] -42.40 85.43 212.70
+
+[dbg7 lp9136] -47.40 85.32 212.69
+
+[dbg7 lp9136] -52.40 85.20 212.68
+
+[dbg7 lp9136] -57.40 85.08 212.68
+
+[dbg7 lp9136] -63.35 85.00 211.88
+
+[dbg7 lp9136] -63.38 85.14 206.88
+
+[dbg7 lp9136] -63.35 85.30 201.88
+
+[dbg7 lp9136] -63.38 85.50 196.88
+
+[dbg7 lp9136] -63.37 85.71 191.88
+
+[dbg7 lp9136] -63.36 85.91 186.88
+
+[dbg7 lp9136] -63.35 86.09 181.88
+
+[dbg7 lp9136] -63.40 86.27 176.88
+
+[dbg7 lp9136] -63.40 86.44 171.88
+
+[dbg7 lp9136] -63.35 86.60 166.88
+
+[dbg7 lp9136] -63.36 86.70 161.88
+
+[dbg7 lp9136] -63.38 86.76 156.88
+
+[dbg7 lp9136] -63.39 86.84 151.88
+
+[dbg7 lp9136] -63.36 86.90 146.88
+
+[dbg7 lp9136] -63.39 86.85 141.88
+
+[dbg7 lp9136] -63.37 86.72 136.88
+
+[dbg7 lp9136] -63.35 86.69 131.88
+
+[dbg7 lp9136] -63.39 86.74 126.88
+
+[dbg7 lp9136] -63.38 86.81 121.88
+
+[dbg7 lp9136] -63.37 86.92 116.88
+
+[dbg7 lp9136] -63.37 86.99 114.18
+
+[dbg7 lp9136] -68.37 87.33 114.20
+
+[dbg7 lp9136] -73.37 87.79 114.17
+
+[dbg7 lp9136] -78.37 88.19 114.19
+
+[dbg7 lp9136] -83.37 88.53 114.16
+
+[dbg7 lp9136] -88.37 88.80 114.20
+
+[dbg7 lp9136] -93.37 89.00 114.18
+
+[dbg7 lp9136] -98.37 89.14 114.17
+
+[dbg7 lp9136] -103.37 89.27 114.16
+
+[dbg7 lp9136] -108.37 89.39 114.16
+
+[dbg7 lp9136] -113.37 89.42 114.16
+
+[dbg7 lp9136] -118.37 89.37 114.17
+
+[dbg7 lp9136] -123.37 89.27 114.18
+
+[dbg7 lp9136] -128.37 89.13 114.19
+
+[dbg7 lp9136] -133.37 88.95 114.16
+
+[dbg7 lp9136] -138.37 88.72 114.18
+
+[dbg7 lp9136] -143.37 88.45 114.16
+
+[dbg7 lp9136] -148.85 87.95 114.77
+
+[dbg7 lp9136] -148.81 87.80 119.77
+
+[dbg7 lp9136] -148.81 87.76 124.77
+
+[dbg7 lp9136] -148.82 87.71 129.77
+
+[dbg7 lp9136] -148.82 87.60 134.77
+
+[dbg7 lp9136] -148.81 87.47 139.77
+
+[dbg7 lp9136] -148.80 87.33 144.77
+
+[dbg7 lp9136] -148.84 87.17 149.77
+
+[dbg7 lp9136] -148.82 86.87 154.77
+
+[dbg7 lp9136] -148.80 86.57 159.77
+
+[dbg7 lp9136] -148.83 86.34 164.77
+
+[dbg7 lp9136] -148.85 86.16 169.77
+
+[dbg7 lp9136] -148.82 86.01 174.77
+
+[dbg7 lp9136] -148.83 85.89 179.77
+
+[dbg7 lp9136] -148.84 85.80 184.77
+
+[dbg7 lp9136] -148.84 85.71 189.77
+
+[dbg7 lp9136] -148.84 85.64 194.77
+
+[dbg7 lp9136] -148.84 85.59 199.77
+
+[dbg7 lp9136] -148.83 85.54 204.77
+
+[dbg7 lp9136] -148.82 85.47 209.77
+
+[dbg7 lp9136] -148.90 85.42 212.65
+
+[dbg7 lp9136] -153.90 85.31 212.68
+
+[dbg7 lp9136] -158.90 85.17 212.66
+
+[dbg7 lp9136] -163.90 85.02 212.70
+
+[dbg7 lp9136] -168.90 84.90 212.69
+
+[dbg7 lp9136] -173.90 84.81 212.68
+
+[dbg7 lp9136] -179.35 84.80 213.02
+
+[dbg7 lp9136] -179.33 84.80 218.02
+
+[dbg7 lp9136] -179.35 84.80 223.02
+
+[dbg7 lp9136] -179.32 84.80 228.02
+
+[dbg7 lp9136] -179.33 84.80 233.02
+
+[dbg7 lp9136] -179.34 84.80 238.02
+
+[dbg7 lp9136] -179.35 84.80 243.02
+
+[dbg7 lp9136] -179.35 84.80 248.02
+
+[dbg7 lp9136] -179.34 84.80 253.02
+
+[dbg7 lp9136] -179.34 84.80 258.02
+
+[dbg7 lp9136] -179.33 84.83 263.02
+
+[dbg7 lp9136] -179.31 84.87 268.02
+
+[dbg7 lp9136] -179.34 84.90 273.02
+
+[dbg7 lp9136] -179.32 84.94 278.02
+
+[dbg7 lp9136] -179.34 84.98 283.02
+
+[dbg7 lp9136] -179.31 84.99 288.02
+
+[dbg7 lp9136] -179.33 84.99 293.02
+
+[dbg7 lp9136] -179.34 85.00 298.02
+
+[dbg7 lp9136] -179.34 85.02 303.02
+
+[dbg7 lp9136] -179.35 85.08 308.02
+
+[dbg7 lp9136] -179.34 85.09 313.02
+
+[dbg7 lp9136] -179.34 85.10 318.02
+
+[dbg7 lp9136] -179.33 85.10 323.02
+
+[dbg7 lp9136] -179.31 85.11 328.02
+
+[dbg7 lp9136] -179.34 85.11 333.02
+
+[dbg7 lp9136] -179.32 85.09 338.02
+
+[dbg7 lp9136] -178.92 85.08 339.85
+
+[dbg7 lp9136] -173.92 85.11 339.82
+
+[dbg7 lp9136] -168.92 85.11 339.83
+
+[dbg7 lp9136] -163.92 85.11 339.84
+
+[dbg7 lp9136] -158.92 85.11 339.80
+
+[dbg7 lp9136] -153.92 85.11 339.80
+
+[dbg7 lp9136] -148.92 85.11 339.80
+
+[dbg7 lp9136] -143.92 85.11 339.85
+
+[dbg7 lp9136] -138.92 85.11 339.84
+
+[dbg7 lp9136] -133.92 85.10 339.82
+
+[dbg7 lp9136] -128.92 85.10 339.80
+
+[dbg7 lp9136] -123.92 85.10 339.83
+
+[dbg7 lp9136] -118.92 85.08 339.81
+
+[dbg7 lp9136] -113.92 85.05 339.83
+
+[dbg7 lp9136] -108.92 85.01 339.84
+
+[dbg7 lp9136] -103.92 85.00 339.80
+
+[dbg7 lp9136] -98.92 85.05 339.81
+
+[dbg7 lp9136] -93.92 85.05 339.81
+
+[dbg7 lp9136] before headland: poly=table: 0x01954946fc90, poly.points=table: 0x01954af96cd0, poly.numPoints=157
+[dbg7 lp9136] MF Activa 7347 S: hasGeneratedCourse=false, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=0, fieldEdge.selectedField.fieldNum=22 ==> hasValidCourseGenerationData=true
+[dbg7 lp9136] (1) SET UP CORNERS AND DIRECTIONS
+[dbg7 lp9136] (2) HEADLAND
+[dbg7 lp9136] isPolyClockwise(): isClockwise=false, offsetLeft.isInPoly=true -> match
+[dbg7 lp9136] headland: poly isClockwise=false
+[dbg7 lp9136] 	userDirClockwise=true -> reverse poly.points
+[dbg7 lp9136] generateCourse(94): headland.numLanes=2, headland.orderBefore=true
+[dbg7 lp9136] headland lane 1: laneRidgeMarker=2, offset offsetWidth=3.0, noGoWidth=2.92
+[dbg7 lp9136] (2.1) CREATE INITIAL OFFSET POINTS
+[dbg7 lp9136] 	point 19: intersection with previous offset vector -> skip this point
+[dbg7 lp9136] 	point 117: intersection with previous offset vector -> skip this point
+[dbg7 lp9136] generateCourse(201): #lane 1 = 154
+[dbg7 lp9136] (2.2) CHECK AND DELETE OVERLAPS
+[dbg7 lp9136] 	offset point 18: OVERLAP!
+[dbg7 lp9136] 		count=2, swingDir=-1, checkNum=19
+[dbg7 lp9136] 		dx,dy,dz=-0.4,0.0,1.2
+[dbg7 lp9136] 	offset point 43: OVERLAP!
+[dbg7 lp9136] 		count=2, swingDir=-1, checkNum=44
+[dbg7 lp9136] 		dx,dy,dz=-0.2,0.0,3.0
+[dbg7 lp9136] 	offset point 69: OVERLAP!
+[dbg7 lp9136] 		count=2, swingDir=-1, checkNum=70
+[dbg7 lp9136] 		dx,dy,dz=-0.3,0.3,3.0
+[dbg7 lp9136] 	offset point 86: OVERLAP!
+[dbg7 lp9136] 		count=2, swingDir=-1, checkNum=87
+[dbg7 lp9136] 		dx,dy,dz=0.0,-0.1,3.0
+[dbg7 lp9136] 	offset point 87: OVERLAP!
+[dbg7 lp9136] 		count=3, swingDir=1, checkNum=86
+[dbg7 lp9136] 		dx,dy,dz=-2.7,-0.2,2.0
+[dbg7 lp9136] 	offset point 115: OVERLAP!
+[dbg7 lp9136] 		count=4, swingDir=-1, checkNum=117
+[dbg7 lp9136] 		dx,dy,dz=-0.5,-0.0,1.2
+[dbg7 lp9136] 	offset point 140: OVERLAP!
+[dbg7 lp9136] 		count=4, swingDir=-1, checkNum=142
+[dbg7 lp9136] 		dx,dy,dz=-0.2,-0.0,3.0
+[dbg7 lp9136] delete offset point(18) -> new numOffsetPoints=153
+[dbg7 lp9136] delete offset point(43) -> new numOffsetPoints=152
+[dbg7 lp9136] delete offset point(69) -> new numOffsetPoints=151
+[dbg7 lp9136] delete offset point(86) -> new numOffsetPoints=150
+[dbg7 lp9136] delete offset point(87) -> new numOffsetPoints=149
+[dbg7 lp9136] delete offset point(115) -> new numOffsetPoints=148
+[dbg7 lp9136] delete offset point(140) -> new numOffsetPoints=147
+[dbg7 lp9136] (2.3) CHECK AND FIX DISTANCES
+[dbg7 lp9136] 	point 106: distance to next [107] = 9.3 -> smooth with 2 steps
+[dbg7 lp9136] 	with points { pp [-66.4/201.9], offsP [-66.4/211.9], np1 [-57.8/215.7], np2 [-52.4/215.7] }
+[dbg7 lp9136] 		 not inserted smoothPoint because of double entry
+[dbg7 lp9136] (2.4) FINALIZE (ADD POINT DATA)
+[dbg7 lp9136] generateCourse(388): inserting lane #1 (147 points) into headland.lanes
+[dbg7 lp9136] headland lane 2: laneRidgeMarker=0, offset offsetWidth=6.0, noGoWidth=5.85
+[dbg7 lp9136] (2.1) CREATE INITIAL OFFSET POINTS
+[dbg7 lp9136] 	point 18: intersection with previous offset vector -> skip this point
+[dbg7 lp9136] 	point 42: intersection with previous offset vector -> skip this point
+[dbg7 lp9136] 	point 67: intersection with previous offset vector -> skip this point
+[dbg7 lp9136] 	point 83: intersection with previous offset vector -> skip this point
+[dbg7 lp9136] 	point 110: intersection with previous offset vector -> skip this point
+[dbg7 lp9136] 	point 134: intersection with previous offset vector -> skip this point
+[dbg7 lp9136] generateCourse(201): #lane 2 = 141
+[dbg7 lp9136] (2.2) CHECK AND DELETE OVERLAPS
+[dbg7 lp9136] 	offset point 17: OVERLAP!
+[dbg7 lp9136] 		count=1, swingDir=1, checkNum=17
+[dbg7 lp9136] 		dx,dy,dz=-3.2,-0.0,5.1
+[dbg7 lp9136] 	offset point 40: OVERLAP!
+[dbg7 lp9136] 		count=4, swingDir=-1, checkNum=42
+[dbg7 lp9136] 		dx,dy,dz=-2.4,0.0,3.4
+[dbg7 lp9136] 	offset point 64: OVERLAP!
+[dbg7 lp9136] 		count=4, swingDir=-1, checkNum=66
+[dbg7 lp9136] 		dx,dy,dz=-4.1,0.3,4.3
+[dbg7 lp9136] 	offset point 79: OVERLAP!
+[dbg7 lp9136] 		count=6, swingDir=-1, checkNum=82
+[dbg7 lp9136] 		dx,dy,dz=-2.4,-0.1,5.5
+[dbg7 lp9136] 	offset point 105: OVERLAP!
+[dbg7 lp9136] 		count=8, swingDir=-1, checkNum=109
+[dbg7 lp9136] 		dx,dy,dz=-3.3,-0.1,5.0
+[dbg7 lp9136] 	offset point 128: OVERLAP!
+[dbg7 lp9136] 		count=12, swingDir=-1, checkNum=134
+[dbg7 lp9136] 		dx,dy,dz=-2.3,-0.0,3.3
+[dbg7 lp9136] delete offset point(17) -> new numOffsetPoints=140
+[dbg7 lp9136] delete offset point(40) -> new numOffsetPoints=139
+[dbg7 lp9136] delete offset point(64) -> new numOffsetPoints=138
+[dbg7 lp9136] delete offset point(79) -> new numOffsetPoints=137
+[dbg7 lp9136] delete offset point(105) -> new numOffsetPoints=136
+[dbg7 lp9136] delete offset point(128) -> new numOffsetPoints=135
+[dbg7 lp9136] (2.3) CHECK AND FIX DISTANCES
+[dbg7 lp9136] 	point 45: distance to next [46] = 12.3 -> smooth with 3 steps
+[dbg7 lp9136] 	with points { pp [-158.8/221.7], offsP [-148.8/221.7], np1 [-140.5/212.7], np2 [-139.8/204.8] }
+[dbg7 lp9136] 		 not inserted smoothPoint because of double entry
+[dbg7 lp9136] 		insert smoothPoint 6 (cx,cz=-145.7,219.3) into "finalPoints"
+[dbg7 lp9136] 	point 46: distance to next [47] = 7.9 -> smooth with 2 steps
+[dbg7 lp9136] 	with points { pp [-148.8/221.7], offsP [-140.5/212.7], np1 [-139.8/204.8], np2 [-139.8/199.8] }
+[dbg7 lp9136] 		 not inserted smoothPoint because of double entry
+[dbg7 lp9136] 	point 97: distance to next [98] = 15.2 -> smooth with 4 steps
+[dbg7 lp9136] 	with points { pp [-72.4/201.9], offsP [-72.4/211.9], np1 [-60.2/221.1], np2 [-52.4/221.7] }
+[dbg7 lp9136] 		 not inserted smoothPoint because of double entry
+[dbg7 lp9136] 		insert smoothPoint 7 (cx,cz=-70.1,214.5) into "finalPoints"
+[dbg7 lp9136] 		insert smoothPoint 8 (cx,cz=-66.8,217.1) into "finalPoints"
+[dbg7 lp9136] 	point 98: distance to next [99] = 7.8 -> smooth with 2 steps
+[dbg7 lp9136] 	with points { pp [-70.1/214.5], offsP [-60.2/221.1], np1 [-52.4/221.7], np2 [-47.4/221.7] }
+[dbg7 lp9136] 		 not inserted smoothPoint because of double entry
+[dbg7 lp9136] (2.4) FINALIZE (ADD POINT DATA)
+[dbg7 lp9136] generateCourse(388): inserting lane #2 (138 points) into headland.lanes
+[dbg7 lp9136] generateCourse(398):  #vehicle.cp.headland.lanes=2
+[dbg7 lp9136] headland: numCreatedLanes=2 -> poly=table: 0x01954946fc90, poly.points=table: 0x01954c2ea170, poly.numPoints=138, #poly.points=138
+[dbg7 lp9136] (3) DIMENSIONS, ALL PATH POINTS
+[dbg7 lp9136] minX=-170.34835768094, maxX=-25.851009250132
+[dbg7 lp9136] minZ=123.15794873436, maxZ=330.84633053325
+[dbg7 lp9136] generateCourse(419): width=144.4973484308, height=207.6883817989
+[dbg7 lp9136] generateCourse(433): numLanes=25, pointsPerLane=42
+[dbg7 lp9136] curLane = 1, curLaneDir = N
+[dbg7 lp9136] curLane = 2, curLaneDir = S
+[dbg7 lp9136] curLane = 3, curLaneDir = N
+[dbg7 lp9136] curLane = 4, curLaneDir = S
+[dbg7 lp9136] curLane = 5, curLaneDir = N
+[dbg7 lp9136] curLane = 6, curLaneDir = S
+[dbg7 lp9136] curLane = 7, curLaneDir = N
+[dbg7 lp9136] curLane = 8, curLaneDir = S
+[dbg7 lp9136] curLane = 9, curLaneDir = N
+[dbg7 lp9136] curLane = 10, curLaneDir = S
+[dbg7 lp9136] curLane = 11, curLaneDir = N
+[dbg7 lp9136] curLane = 12, curLaneDir = S
+[dbg7 lp9136] curLane = 13, curLaneDir = N
+[dbg7 lp9136] curLane = 14, curLaneDir = S
+[dbg7 lp9136] curLane = 15, curLaneDir = N
+[dbg7 lp9136] curLane = 16, curLaneDir = S
+[dbg7 lp9136] curLane = 17, curLaneDir = N
+[dbg7 lp9136] curLane = 18, curLaneDir = S
+[dbg7 lp9136] curLane = 19, curLaneDir = N
+[dbg7 lp9136] curLane = 20, curLaneDir = S
+[dbg7 lp9136] curLane = 21, curLaneDir = N
+[dbg7 lp9136] curLane = 22, curLaneDir = S
+[dbg7 lp9136] curLane = 23, curLaneDir = N
+[dbg7 lp9136] curLane = 24, curLaneDir = S
+[dbg7 lp9136] curLane = 25, curLaneDir = N
+[dbg7 lp9136] (4) CHECK PATH LANES FOR VALID START AND END POINTS and FILL fieldWorkCourse
+[dbg7 lp9136] (5) ROTATE HEADLAND COURSES
+[dbg7 lp9136] [before] rotating headland lane=1, closest=16 -> rotate: numPoints-(closest-1)=147-(16-1)=132
+[dbg7 lp9136] [before] rotating headland lane=2, closest=16 -> rotate: numPoints-(closest-1)=138-(16-1)=123
+[dbg7 lp9136] (6) CONCATENATE HEADLAND COURSE and FIELDWORK COURSE
+[dbg7 lp9136] (7) FINAL COURSE DATA
+[dbg7 lp9136] MF Activa 7347 S: hasGeneratedCourse=true, hasEnoughWaypoints=true, hasStartingCorner=true, hasStartingDirection=true, numCourses=1, fieldEdge.selectedField.fieldNum=0 ==> hasValidCourseGenerationData=false
+[dbg7 lp9136] generateCourse() finished: 25 lanes, 2 headland lanes
+Physics System
+  Version: 5.9.5
+  Thread(s): 2
+Input System
+  Keyboard enabled
+  Mouse enabled
+  Gamepad/Joystick enabled
+  Force Feedback disabled
+  Name: T.16000M
+  Name: CH PRO PEDALS USB 
+Audio System
+  Driver: OpenAL
+  Version: 1.1
+  Device: Generic Software
+Render System
+  Driver: Direct 3D 11
+  Card Vendor: AMD/ATI
+  Renderer: Radeon(TM) RX 460 Graphics
+  Version: 21.19.384.0 (4.12.2016)
+  Revision: 207
+  Feature level: DirectX 11 ON
+Info: Effective window resolution 1280 x 989
+Started 2 threads for threadpool 'Render threadpool'
+Hardware Profile
+  Level: Custom Very High
+  View Distance Factor: 1.300000
+  Shadow Quality: 2.000000 Size: 4096 Filter-Size: 16
+  Shader Quality: 3
+  Skip Mipmaps: 0
+  LOD Distance Factor: 1.300000
+  Terrain LOD Distance Factor: 2.000000
+  Terrain Normal Mapping: Yes
+  Foliage View Distance Factor: 1.600000
+  Foliage Density: 0.500000
+  Volume Mesh Tessellation Factor: 0.750000
+  Tyre Tracks Segments Factor: 4.000000
+  Max. Number of Shadow Lights: 5
+  Max. Number of Lights: 512
+  Max. Number of Lights Per Cluster: 32
+  MSAA: 8
+Farming Simulator 17 (Steam)
+  Version: 1.4.0.0 1.4RC7
+  Available Languages: en de jp pl cz fr es ru it pt hu nl cs ct br tr ro kr
+  Language: en
+  Time: 2017-02-08 20:13:32
+  Register configuration 'inputAttacherJoint'
+  Register configuration 'attacherJoint'
+  Register configuration 'frontloader'
+  Register configuration 'motor'
+  Register configuration 'baseColor'
+  Register configuration 'wheel'
+  Register configuration 'rimColor'
+  Register configuration 'design'
+  Register configuration 'designColor'
+  Register configuration 'vehicleType'
+Game vehicle types loaded
+Load mod: FS17_challengerMT700EFieldViper (Version: 1.0.0.0)
+Load mod: FS17_valtraTSeriesCowEdition (Version: 1.0.0.0)
+Load mod: courseplay (Version: 5.01.00071)
+Load mod: FS17_chellington17 (Version: 2.0.0.1)
+Load mod: FS17_coldboroughParkFarm (Version: 2.0.0.0)
+Load mod: FS17_Fichtelberg (Version: 1.0.0.0)
+Load mod: FS17_Lossberg (Version: 1.1.0.0)
+Load mod: FS17_newHollandBalerPack (Version: 1.0.0.1)
+Load mod: FS17_placeableRefillStation (Version: 1.0.0.0)
+Error: Failed to open xml file 'C:/Users/peter/Documents/My Games/FarmingSimulator2017/mods/headland/modDesc.xml'.
+Load mod: headland
+Error: Missing descVersion attribute in mod headland
