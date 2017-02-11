@@ -15,7 +15,7 @@ marks = {}
 -- read the log.txt to get field polygons. I changed generateCourse.lua
 -- so it writes the coordinates to log.txt when a course is generated for a field.
 
-function loadFields( fileName )
+function loadFields( fileName, fieldName )
   local i = 1 
   for line in io.lines(fileName )
   do
@@ -35,7 +35,7 @@ function loadFields( fileName )
       i = i + 1
     end
   end
-  fields[ "rect" ] = { boundary = createRectangularPolynom( 40, 300, 200, 100, 4 ), name = "rect" }
+  --fields[ "rect" ] = { boundary = createRectangularPolynom( 40, 300, 200, 100, 4 ), name = "rect" }
 end
 
 function getHeadlandTrack( polygon, offset )
@@ -82,8 +82,8 @@ function drawMarks( points )
   end
 end 
 
-function love.load()
-  loadFields("log.txt")
+function love.load( arg )
+  loadFields(arg[ 2 ])
   for i, field in pairs( fields ) do
     print( " =========== Field " .. i .. " ==================" )
     field.vertices = getVertices( field.boundary )
