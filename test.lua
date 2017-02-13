@@ -1,9 +1,11 @@
 require( "geo" )
+require( "Pickle" )
 
 function eq( a, b )
   local epsilon = 0.00001
   return a < ( b + epsilon ) and a > ( b - epsilon )
 end
+
 a, l = toPolar( 3, 4 )
 assert( l == 5, "Got " .. l  )
 a, l = toPolar( -3, 4 )
@@ -43,3 +45,14 @@ avg = math.deg( getAverageAngle( math.rad( -89 ), math.rad( 89 )))
 assert( eq( avg, 0), "Got " ..  avg );
 avg = math.deg( getAverageAngle( math.rad( -89 ), math.rad( 91 )))
 assert( eq( avg, 1), "Got " ..  avg );
+
+local t = { name='hello', loc = {{x=1,y=2},{x=3,y=4}}}
+
+local f = io.output( "test.pickle" )
+io.write( pickle( t )) 
+io.close( f )
+
+io.input( "test.pickle" )
+local r = unpickle( io.read( "*all" ))
+assert( r.loc[ 1 ].x == 1 and r.loc[ 1 ].y == 2 )
+

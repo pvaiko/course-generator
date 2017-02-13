@@ -31,7 +31,7 @@ function loadFieldsFromLogFile( fileName, fieldName )
     end
     x, y, z = string.match( line, "%[dbg7 %w+%] ([%d%.-]+) ([%d%.-]+) ([%d%.-]+)" )
     if x then 
-      inputFields[ field ].boundary[ i ] = { x=tonumber(x), z=tonumber(z) }
+      inputFields[ field ].boundary[ i ] = { cx=tonumber(x), cz=tonumber(z) }
       i = i + 1
     end
   end
@@ -42,7 +42,7 @@ function loadFieldsFromLogFile( fileName, fieldName )
     for i in ipairs( field.boundary ) do
       -- z axis is actually y and is  from north to south 
       -- so need to invert it to get a useful direction
-      fields[ key ].boundary[ i ] = { x=field.boundary[ i ].x, y=-field.boundary[ i ].z }
+      fields[ key ].boundary[ i ] = { x=field.boundary[ i ].cx, y=-field.boundary[ i ].cz }
     end
   end
 end
@@ -50,7 +50,7 @@ end
 --- convert a field from the CP representation to a format we are 
 -- more comfortable with, for example turn it into x,y from x,-z
 function fromCpField( fileName, field )
-  result= { boundary = {}, name=fileName }
+  result = { boundary = {}, name=fileName }
   for i in ipairs( field ) do
     -- z axis is actually y and is  from north to south 
     -- so need to invert it to get a useful direction
@@ -60,8 +60,14 @@ function fromCpField( fileName, field )
 end
 
 function loadFieldFromPickle( fileName )
-  io.input( fileName )
-  fields[ fileName ] = fromCpField( fileName, unpickle( io.read( "*all" )))
+  local f = io.input( fileName .. ".pickle" )
+  fields[ fileName ] = fromCpField( fileName, unpickle( io.read( "*all" )).boundary )
+  io.close( f )
+  f = io.open( fileName .. "_vehicle.pickle" )
+  if f then
+    fields[ fileName ].vehicle = unpickle( f:read( "*all" )) 
+    io.close( f )
+  end
 end
 
 function getHeadlandTrack( polygon, offset )
@@ -110,6 +116,7 @@ end
 
 function love.load( arg )
   loadFieldFromPickle(arg[ 2 ])
+  --loadFieldsFromLogFile(arg[ 2 ])
   if ( arg[ 3 ] == "showOnly" ) then 
     showOnly = true
   else
@@ -154,6 +161,15 @@ function drawFieldData( field )
     0, 2 )
 end
 
+function drawVehicle( vehicle )
+  -- as always, we invert the y axis for LOVE
+  love.graphics.setColor( 200, 0, 200 )
+  love.graphics.circle( "line", vehicle.location.x, -vehicle.location.y, 5 )
+  -- show vehicle heading
+  local d = addPolarVectorToPoint( vehicle.location.x, vehicle.location.y, math.rad( vehicle.heading ), 20 )
+  love.graphics.line( vehicle.location.x, -vehicle.location.y, d.x, -d.y )
+end
+
 function drawFields()
   for i, field in pairs( fields ) do
     if field.vertices then
@@ -167,6 +183,9 @@ function drawFields()
       end
       drawMarks( marks )
       drawFieldData( field )
+      if ( field.vehicle ) then 
+        drawVehicle( field.vehicle )
+      end
     end
   end
 end
