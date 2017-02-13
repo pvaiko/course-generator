@@ -1,12 +1,14 @@
 --loadfile( 'courseplay/generateCourse.lua')
 require( 'geo' )
 require( 'bspline' )
+require( 'Pickle' )
+inputFields = {}
 fields = {}
 
 leftMouseKeyPressedAt = {}
 leftMouseKeyPressed = false
 pointSize = 1
-lineWidth = 1
+lineWidth = 0.1
 scale = 2.0
 xOffset, yOffset = 1000, 1000
 
@@ -15,7 +17,7 @@ marks = {}
 -- read the log.txt to get field polygons. I changed generateCourse.lua
 -- so it writes the coordinates to log.txt when a course is generated for a field.
 
-function loadFields( fileName, fieldName )
+function loadFieldsFromLogFile( fileName, fieldName )
   local i = 1 
   for line in io.lines(fileName )
   do
@@ -25,17 +27,41 @@ function loadFields( fileName, fieldName )
       field = match
       print("Reading field " .. field ) 
       i = 1
-      fields[ field ] = { boundary = {}, name=field }
+      inputFields[ field ] = { boundary = {}, name=field }
     end
     x, y, z = string.match( line, "%[dbg7 %w+%] ([%d%.-]+) ([%d%.-]+) ([%d%.-]+)" )
     if x then 
-      -- z axis is actually y and is  from north to south 
-      -- so need to invert it to get a useful direction
-      fields[ field ].boundary[ i ] = { x=tonumber(x)*2, y=-tonumber(z)*2  }
+      inputFields[ field ].boundary[ i ] = { x=tonumber(x), z=tonumber(z) }
       i = i + 1
     end
   end
-  --fields[ "rect" ] = { boundary = createRectangularPolynom( 40, 300, 200, 100, 4 ), name = "rect" }
+  for key, field in pairs( inputFields ) do
+    io.output( field.name .. ".pickle" )
+    io.write( pickle( field )) 
+    fields[ key ] = { boundary = {}, name=field.name }
+    for i in ipairs( field.boundary ) do
+      -- z axis is actually y and is  from north to south 
+      -- so need to invert it to get a useful direction
+      fields[ key ].boundary[ i ] = { x=field.boundary[ i ].x, y=-field.boundary[ i ].z }
+    end
+  end
+end
+
+--- convert a field from the CP representation to a format we are 
+-- more comfortable with, for example turn it into x,y from x,-z
+function fromCpField( fileName, field )
+  result= { boundary = {}, name=fileName }
+  for i in ipairs( field ) do
+    -- z axis is actually y and is  from north to south 
+    -- so need to invert it to get a useful direction
+    result.boundary[ i ] = { x=field[ i ].cx, y=-field[ i ].cz }
+  end
+  return result
+end
+
+function loadFieldFromPickle( fileName )
+  io.input( fileName )
+  fields[ fileName ] = fromCpField( fileName, unpickle( io.read( "*all" )))
 end
 
 function getHeadlandTrack( polygon, offset )
@@ -49,7 +75,7 @@ function getHeadlandTrack( polygon, offset )
   removeLoops( track, 20 )
   removeLoops( track, 20 )
   applyLowPassFilter( track, math.deg( 120 ), 4.1 )
-  track = smooth( track, 2 )
+  track = smooth( track, 1 )
   -- don't filter for angle, only distance
   applyLowPassFilter( track, 2 * math.pi, 3 )
   return track
@@ -83,44 +109,52 @@ function drawMarks( points )
 end 
 
 function love.load( arg )
-  loadFields(arg[ 2 ])
-  for i, field in pairs( fields ) do
-    print( " =========== Field " .. i .. " ==================" )
-    field.vertices = getVertices( field.boundary )
-    field.boundingBox = getBoundingBox( field.boundary )
-    print( field.boundingBox.minX, field.boundingBox.minY )
-    print( field.boundingBox.maxX, field.boundingBox.maxY )
-    calculatePolygonData( field.boundary )
-    field.headlandTracks = {}
-    local previousTrack = field.boundary
-    for j = 1, 6 do
-      field.headlandTracks[ j ] = getHeadlandTrack( previousTrack, 4.3 )
-      previousTrack = field.headlandTracks[ j ]
+  loadFieldFromPickle(arg[ 2 ])
+  if ( arg[ 3 ] == "showOnly" ) then 
+    showOnly = true
+  else
+    showOnly = false
+    for i, field in pairs( fields ) do
+      print( " =========== Field " .. i .. " ==================" )
+      field.vertices = getVertices( field.boundary )
+      field.boundingBox = getBoundingBox( field.boundary )
+      print( field.boundingBox.minX, field.boundingBox.minY )
+      print( field.boundingBox.maxX, field.boundingBox.maxY )
+      calculatePolygonData( field.boundary )
+      field.headlandTracks = {}
+      local previousTrack = field.boundary
+      local implementWidth = 3
+      for j = 1, 6 do
+        local width
+        if j == 1 then 
+          width = implementWidth / 2 
+        else 
+          width = implementWidth
+        end
+        field.headlandTracks[ j ] = getHeadlandTrack( previousTrack, width )
+        previousTrack = field.headlandTracks[ j ]
+      end
+      -- get the bounding box of all fields
+      if xOffset > field.boundingBox.minX then xOffset = field.boundingBox.minX end
+      if yOffset > field.boundingBox.minY then yOffset = field.boundingBox.minY end
     end
-    -- get the bounding box of all fields
-    if xOffset > field.boundingBox.minX then xOffset = field.boundingBox.minX end
-    if yOffset > field.boundingBox.minY then yOffset = field.boundingBox.minY end
   end
   -- translate everything so they are visible
   xOffset = -xOffset
-  yOffset = -yOffset
+  yOffset = yOffset
   love.graphics.setPointSize( pointSize )
   love.graphics.setLineWidth( lineWidth )
 end
 
 function drawFieldData( field )
-   
   love.graphics.setColor( 200, 200, 0 )
   love.graphics.print( string.format( "Field " .. field.name .. " dir = " 
     .. field.boundary.bestDirection.dir), 
-    field.boundingBox.minX, field.boundingBox.minY,
+    field.boundingBox.minX, -field.boundingBox.minY,
     0, 2 )
 end
 
-function love.draw()
-  love.graphics.scale( scale, scale )
-  love.graphics.translate( xOffset, yOffset )
-  love.graphics.setPointSize( pointSize )
+function drawFields()
   for i, field in pairs( fields ) do
     if field.vertices then
       love.graphics.setColor( 100, 100, 100 )
@@ -135,6 +169,28 @@ function love.draw()
       drawFieldData( field )
     end
   end
+end
+
+function drawWaypoints()
+  for name, course in pairs( fields ) do
+    love.graphics.setColor( 0, 255, 255 )
+    love.graphics.points( getVertices( course.boundary ))
+    for i, point in pairs( course.boundary ) do
+      love.graphics.print( string.format( "%d", i ))
+    end
+  end
+end
+
+function love.draw()
+  love.graphics.scale( scale, scale )
+  love.graphics.translate( xOffset, yOffset )
+  love.graphics.setPointSize( pointSize )
+  if ( showOnly ) then
+    drawWaypoints()
+  else
+    drawFields()
+  end
+
 end
 
 
