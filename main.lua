@@ -2,6 +2,16 @@
 require( 'geo' )
 require( 'bspline' )
 require( 'Pickle' )
+
+-- parameters 
+--
+-- how close the vehicle must be to the field to automatically 
+-- calculate a track starting near the vehicle's location
+-- This is in meters
+maxDistanceFromField = 30
+--
+--
+
 inputFields = {}
 fields = {}
 
@@ -74,7 +84,7 @@ function getHeadlandTrack( polygon, offset )
   local track = {}
   for i, point in ipairs( polygon ) do
     -- get a point perpendicular to the current point in offset distance
-    local newPoint = addPolarVectorToPoint( point.x, point.y, point.tangent.angle + math.pi / 2, offset )
+    local newPoint = addPolarVectorToPoint( point, point.tangent.angle + math.pi / 2, offset )
     table.insert( track, { x = newPoint.x, y = newPoint.y })
   end
   calculatePolygonData( track )
@@ -85,6 +95,55 @@ function getHeadlandTrack( polygon, offset )
   -- don't filter for angle, only distance
   applyLowPassFilter( track, 2 * math.pi, 3 )
   return track
+end
+
+--- We have to find where to start our course. 
+--  If we work on the headland first:
+--  - the starting point will be on the outermost headland track
+--    close to the current vehicle position. The vehicle's heading 
+--    is used to decide the direction, clockwise or counterclockwise
+--
+function addHeadlandTrackChanges( field )
+  -- find the intersection of the outermost headland track and the 
+  -- vehicles heading vector. 
+  local fromIndex, toIndex = getIntersectionOfLineAndPolygon( field.headlandTracks[ 1 ], field.vehicle.location, addPolarVectorToPoint( field.vehicle.location, math.rad( field.vehicle.heading ), maxDistanceFromField ))
+  local headlandPath = {}
+  if fromIndex then
+    -- now find out which direction we have to drive on the headland pass.
+    -- This depends on the order of the points in the polygon: clockwise or 
+    -- counterclockwise. Basically we have to know if we follow the points
+    -- of the polygon in increasing or decreasing index order. So, if 
+    -- fromIndex (the smaller one) is closer to us, we need to follow
+    -- the points as they defined in the polygon. Otherwise it is the 
+    -- reverse order.
+    local distanceFromFromIndex = getDistanceBetweenPoints( field.headlandTracks[ 1 ][ fromIndex ], field.vehicle.location )
+    local distanceFromToIndex = getDistanceBetweenPoints( field.headlandTracks[ 1 ][ toIndex ], field.vehicle.location )
+    if distanceFromToIndex < distanceFromFromIndex then
+      -- must reverse direction
+      print( "Reversing track" )
+      addTrackToHeadlandPath( headlandPath, field.headlandTracks[ 1 ], 1, toIndex, fromIndex )
+    else
+      -- driving direction is in increasing index
+      addTrackToHeadlandPath( headlandPath, field.headlandTracks[ 1 ], 1, fromIndex, toIndex )
+    end
+
+    table.insert( marks, field.headlandTracks[ 1 ][ fromIndex ])
+    table.insert( marks, field.headlandTracks[ 1 ][ toIndex ])
+    field.headlandPath = headlandPath
+  end
+
+end
+
+--- add a series of points (track) to the headland path. This is to 
+-- assemble the complete spiral headland path from the individual 
+-- parallell headland tracks.
+function addTrackToHeadlandPath( headlandPath, track, passNumber, to, from)
+  local step = ( to > from ) and 1 or -1
+  print( from, to, step )
+  for i = from, to, step do
+    table.insert( headlandPath, track[ i ])
+    headlandPath[ #headlandPath ].passNumber = passNumber
+  end
 end
 
 -- get the vertices for LOVE of a polygon
@@ -108,7 +167,7 @@ function drawPoints( polygon )
 end
 
 function drawMarks( points )
-  love.graphics.setColor( 128, 0, 0 )
+  love.graphics.setColor( 200, 200, 0 )
   for i, point in pairs( points ) do
     love.graphics.circle( "line", point.x, -point.y, 1 )
   end
@@ -125,8 +184,6 @@ function love.load( arg )
       print( " =========== Field " .. i .. " ==================" )
       field.vertices = getVertices( field.boundary )
       field.boundingBox = getBoundingBox( field.boundary )
-      print( field.boundingBox.minX, field.boundingBox.minY )
-      print( field.boundingBox.maxX, field.boundingBox.maxY )
       calculatePolygonData( field.boundary )
       field.headlandTracks = {}
       local previousTrack = field.boundary
@@ -141,6 +198,7 @@ function love.load( arg )
         field.headlandTracks[ j ] = getHeadlandTrack( previousTrack, width )
         previousTrack = field.headlandTracks[ j ]
       end
+      addHeadlandTrackChanges( field )
       -- get the bounding box of all fields
       if xOffset > field.boundingBox.minX then xOffset = field.boundingBox.minX end
       if yOffset > field.boundingBox.minY then yOffset = field.boundingBox.minY end
@@ -166,7 +224,7 @@ function drawVehicle( vehicle )
   love.graphics.setColor( 200, 0, 200 )
   love.graphics.circle( "line", vehicle.location.x, -vehicle.location.y, 5 )
   -- show vehicle heading
-  local d = addPolarVectorToPoint( vehicle.location.x, vehicle.location.y, math.rad( vehicle.heading ), 20 )
+  local d = addPolarVectorToPoint( vehicle.location, math.rad( vehicle.heading ), 20 )
   love.graphics.line( vehicle.location.x, -vehicle.location.y, d.x, -d.y )
 end
 
@@ -180,6 +238,10 @@ function drawFields()
         love.graphics.setColor( 0, 0, 255 )
         love.graphics.polygon('line', getVertices( track ))
         drawPoints( track )
+      end
+      love.graphics.setColor( 100, 200, 100 )
+      if field.headlandPath then
+        love.graphics.line( field.headlandPath )
       end
       drawMarks( marks )
       drawFieldData( field )

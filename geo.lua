@@ -31,15 +31,20 @@ function toPolar( x, y )
   end
 end
 
+function getDistanceBetweenPoints( p1, p2 )
+  local dx = p2.x - p1.x
+  local dy = p2.y - p1.y
+  return math.sqrt( dx * dx + dy * dy )
+end
+
 --- Add a vector defined by polar coordinates to a point
--- @param x x coordinate of point
--- @param x y coordinate of point
+-- @param point x and y coordinates of point
 -- @param angle angle of polar vector
 -- @param length length of polar vector
 -- @return x and y of the resulting point
-function addPolarVectorToPoint( x, y, angle, length )
-  return { x = x + length * math.cos( angle ),
-           y = y + length * math.sin( angle )}
+function addPolarVectorToPoint( point, angle, length )
+  return { x = point.x + length * math.cos( angle ),
+           y = point.y + length * math.sin( angle )}
 end
 --- Get the average of two angles. 
 -- Works fine even for the transition from -pi/2 to +pi/2
@@ -203,17 +208,20 @@ function removeLoops( polygon, loopFilterLength )
   calculatePolygonData( polygon )
 end
 
---- Iterate through an elements of a polygon with 
--- an overlap, that is, more than a full circle
+--- Iterate through an elements of a polygon starting
+-- between any from and to indexes with the given step.
+-- This will do a full circle, that is roll over from 
+-- #polygon to 1 or 1 to #polygon if step < 0
 --
-function polygonIterator( polygon, overlap )
-  local i = 0
-  local n = #polygon
+function polygonIterator( polygon, from, to, step )
+  local i = from
+  local lastOne = false
   return function()
-           i = i + 1
-           if i > #polygon then i = 1 end
-           if i <= #polygon + overlap then 
-             return i, polygon[ i ] 
+           if ( not lastOne ) then
+             lastOne = ( i == to )
+             local index, value = i, polygon[ i ] 
+             i = getPolygonIndex( t, i + step )
+             return index, value
            end
          end
 end
@@ -230,6 +238,23 @@ function getPolygonIndex( polygon, index )
   else
     return #polygon + index 
   end
+end
+
+-- Does the line defined by p1 and p2 intersect the polygon?
+-- If yes, return two indices. The line intersects the polygon between
+-- these two indices
+function getIntersectionOfLineAndPolygon( polygon, p1, p2 ) 
+  local ix = function( a ) return getPolygonIndex( polygon, a ) end
+  -- loop through the polygon and check each vector from 
+  -- the current point to the next
+  for i, cp in ipairs( polygon ) do
+    local np = polygon[ ix( i + 1 )] 
+    if getIntersection( cp.x, cp.y, np.x, np.y, p1.x, p1.y, p2.x, p2.y ) then
+      -- the line between p1 and p2 intersects the vector from cp to np
+      return i, ix( i + 1 )
+    end
+  end
+  return nil, nil
 end
 
 function getIntersection(A1x, A1y, A2x, A2y, B1x, B1y, B2x, B2y)
