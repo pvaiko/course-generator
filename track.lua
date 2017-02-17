@@ -5,6 +5,8 @@
 require( 'geo' )
 require( 'bspline' )
 
+local rotatedMarks = {}
+
 function getHeadlandTrack( polygon, offset )
   local track = {}
   for i, point in ipairs( polygon ) do
@@ -127,11 +129,13 @@ function generateTracks( field, width )
   -- using the best angle
   local rotated = rotatePoints( translated, math.rad( bestAngle ))
   local parallelTracks = generateParallelTracks( rotated, width )
-  cutTrackEnds( parallelTracks )
   
-  local track = convertTracksToWaypoints( parallelTracks )
+  local track = convertTracksToWaypoints( parallelTracks, width )
   
-  marks = translatePoints( rotatePoints( marks, -math.rad( bestAngle )), dx, dy )
+  rotatedMarks = translatePoints( rotatePoints( rotatedMarks, -math.rad( bestAngle )), dx, dy )
+  for i = 1, #rotatedMarks do
+    table.insert( marks, rotatedMarks[ i ])
+  end
   return translatePoints( rotatePoints( track, -math.rad( bestAngle )), dx, dy )
 end
 
@@ -182,24 +186,28 @@ end
 --
 -- Also, we expect the tracks already have the intersection points with
 -- the field boundary and there are exactly two intersection points
-function convertTracksToWaypoints( tracks )
+function convertTracksToWaypoints( tracks, width )
   local track = {}
-  local nTracks = 1
   for i, t in ipairs( tracks ) do
-    local newFrom = math.min( t.intersections[ 1 ].x, t.intersections[ 2 ].x )
-    local newTo = math.max( t.intersections[ 1 ].x, t.intersections[ 2 ].x )
+    local newFrom = math.min( t.intersections[ 1 ].x, t.intersections[ 2 ].x ) + width / 2
+    local newTo = math.max( t.intersections[ 1 ].x, t.intersections[ 2 ].x ) - width / 2
     t.waypoints = {}
     for x = newFrom, newTo, waypointDistance do
-      table.insert( t.waypoints, { x=x, y=t.from.y })
+      table.insert( t.waypoints, { x=x, y=t.from.y, track=i })
+    end
+    -- make sure we actually reached newTo, if waypointDistance is too big we may end up 
+    -- well before the innermost headland track or field boundary
+    if newTo - t.waypoints[ #t.waypoints ].x > waypointDistance * 0.25 then
+      table.insert( t.waypoints, { x=newTo, y=t.from.y, track=i })
+      table.insert( rotatedMarks, t.waypoints[ #t.waypoints ])
     end
     -- reverse every other track
-    if nTracks % 2 == 0 then
+    if i % 2 == 0 then
       t.waypoints = reverse( t.waypoints )
     end
     for i, point in ipairs( t.waypoints ) do
       table.insert( track, point )
     end
-    nTracks = nTracks + 1
   end
   return track
 end
