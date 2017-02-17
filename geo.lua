@@ -1,3 +1,8 @@
+--
+--  Geometry functions. No dependency on track/field/FS/courseplay
+--  2D functions in the x,y plane
+--
+
 loadfile( 'courseplay/generateCourse.lua')
 
 -- a point has the following attributes:
@@ -124,7 +129,7 @@ function calculatePolygonData( polygon )
 end
 
 function addToDirectionStats( directionStats, angle, length )
-  local width = 10
+  local width = 10 
   local range = math.floor( math.deg( angle ) / width ) * width + width / 2
   if directionStats[ range ] then  
     directionStats[ range ].length = directionStats[ range ].length + length
@@ -188,7 +193,6 @@ function removeLoops( polygon, loopFilterLength )
     if intersectionAt then
       -- replace that point with the intersection
       polygon[ intersectionAt ] = { x = xPoint.x, y = xPoint.y }
-     -- table.insert( marks, polygon[ intersectionAt])
       -- and mark the rest up until and including the current for
       -- removal (don't remove here as we are iterating through the table
       for j = intersectionAt + 1, i do
@@ -199,7 +203,6 @@ function removeLoops( polygon, loopFilterLength )
   local i = 1
   repeat
     if ( polygon[ i ].remove ~= nil ) then 
-      --table.insert( marks, polygon[ i ])
       table.remove( polygon, i )
     else
       i = i + 1
@@ -220,7 +223,7 @@ function polygonIterator( polygon, from, to, step )
            if ( not lastOne ) then
              lastOne = ( i == to )
              local index, value = i, polygon[ i ] 
-             i = getPolygonIndex( t, i + step )
+             i = getPolygonIndex( polygon, i + step )
              return index, value
            end
          end
@@ -311,4 +314,41 @@ function getBoundingBox( polygon )
   return { minX=minX, maxX=maxX, minY=minY, maxY=maxY }
 end 
 
+function translatePoints( points, dx, dy )
+  local result = {}
+  for i, point in ipairs( points ) do
+    local newPoint = { x = points[ i ].x + dx, y = points[ i ].y + dy }
+    table.insert( result, newPoint )
+  end
+  return result
+end
 
+function rotatePoints( points, angle )
+  local result = {}
+  local sin = math.sin( angle )
+  local cos = math.cos( angle )
+  for i, point in ipairs( points ) do
+    local x = points[ i ].x * cos - points[ i ].y  * sin
+    local y = points[ i ].x * sin + points[ i ].y  * cos
+    table.insert( result, { x = x, y = y })
+    result[ i ].x = x
+    result[ i ].y = y
+  end
+  result.boundingBox = getBoundingBox( result )
+  return result
+end
+
+--- Rotates a set of points around the center of the bounding 
+-- box
+function rotatePointsInPlace( points, angle )
+  result = rotatePoints( result, angle )
+  return result
+end
+
+function reverse( t )
+  local result = {}
+  for i = #t, 1, -1 do
+    table.insert( result, t[ i ])
+  end
+  return result
+end

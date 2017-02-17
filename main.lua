@@ -1,6 +1,5 @@
 --loadfile( 'courseplay/generateCourse.lua')
-require( 'geo' )
-require( 'bspline' )
+require( 'track' )
 require( 'Pickle' )
 
 -- parameters 
@@ -10,7 +9,19 @@ require( 'Pickle' )
 -- This is in meters
 maxDistanceFromField = 30
 --
---
+-- Direction of the next headland track. If we travel clockwise,
+-- this will be +90 degrees. Travelling counterclockwise: -90 degrees
+inwardDirection = math.pi / 4 
+
+-- Number of headland tracks to generate
+nHeadlandPasses = 6
+
+-- Enable generating parallel tracks which intersect a field boundary
+-- more than twice: that is, try to fit the tracks into a concave field
+enableSplitTracks = false
+
+-- Distance of waypoints on the generated track in meters
+waypointDistance = 5
 
 inputFields = {}
 fields = {}
@@ -80,71 +91,6 @@ function loadFieldFromPickle( fileName )
   end
 end
 
-function getHeadlandTrack( polygon, offset )
-  local track = {}
-  for i, point in ipairs( polygon ) do
-    -- get a point perpendicular to the current point in offset distance
-    local newPoint = addPolarVectorToPoint( point, point.tangent.angle + math.pi / 2, offset )
-    table.insert( track, { x = newPoint.x, y = newPoint.y })
-  end
-  calculatePolygonData( track )
-  removeLoops( track, 20 )
-  removeLoops( track, 20 )
-  applyLowPassFilter( track, math.deg( 120 ), 4.1 )
-  track = smooth( track, 1 )
-  -- don't filter for angle, only distance
-  applyLowPassFilter( track, 2 * math.pi, 3 )
-  return track
-end
-
---- We have to find where to start our course. 
---  If we work on the headland first:
---  - the starting point will be on the outermost headland track
---    close to the current vehicle position. The vehicle's heading 
---    is used to decide the direction, clockwise or counterclockwise
---
-function addHeadlandTrackChanges( field )
-  -- find the intersection of the outermost headland track and the 
-  -- vehicles heading vector. 
-  local fromIndex, toIndex = getIntersectionOfLineAndPolygon( field.headlandTracks[ 1 ], field.vehicle.location, addPolarVectorToPoint( field.vehicle.location, math.rad( field.vehicle.heading ), maxDistanceFromField ))
-  local headlandPath = {}
-  if fromIndex then
-    -- now find out which direction we have to drive on the headland pass.
-    -- This depends on the order of the points in the polygon: clockwise or 
-    -- counterclockwise. Basically we have to know if we follow the points
-    -- of the polygon in increasing or decreasing index order. So, if 
-    -- fromIndex (the smaller one) is closer to us, we need to follow
-    -- the points as they defined in the polygon. Otherwise it is the 
-    -- reverse order.
-    local distanceFromFromIndex = getDistanceBetweenPoints( field.headlandTracks[ 1 ][ fromIndex ], field.vehicle.location )
-    local distanceFromToIndex = getDistanceBetweenPoints( field.headlandTracks[ 1 ][ toIndex ], field.vehicle.location )
-    if distanceFromToIndex < distanceFromFromIndex then
-      -- must reverse direction
-      print( "Reversing track" )
-      addTrackToHeadlandPath( headlandPath, field.headlandTracks[ 1 ], 1, toIndex, fromIndex )
-    else
-      -- driving direction is in increasing index
-      addTrackToHeadlandPath( headlandPath, field.headlandTracks[ 1 ], 1, fromIndex, toIndex )
-    end
-
-    table.insert( marks, field.headlandTracks[ 1 ][ fromIndex ])
-    table.insert( marks, field.headlandTracks[ 1 ][ toIndex ])
-    field.headlandPath = headlandPath
-  end
-
-end
-
---- add a series of points (track) to the headland path. This is to 
--- assemble the complete spiral headland path from the individual 
--- parallell headland tracks.
-function addTrackToHeadlandPath( headlandPath, track, passNumber, to, from)
-  local step = ( to > from ) and 1 or -1
-  print( from, to, step )
-  for i = from, to, step do
-    table.insert( headlandPath, track[ i ])
-    headlandPath[ #headlandPath ].passNumber = passNumber
-  end
-end
 
 -- get the vertices for LOVE of a polygon
 function getVertices( polygon )
@@ -161,7 +107,7 @@ function drawPoints( polygon )
   love.graphics.points( getVertices( polygon ))
   for i, point in pairs( polygon ) do
     if point.tangent then
-      --love.graphics.print( string.format( "-- %d: %3d --", i, math.deg( point.tangent )), point.x, -point.y, -point.tangent + math.pi/2, 0.2 )
+      love.graphics.print( string.format( "-- %d: %3d --", i, math.deg( point.tangent.angle )), point.x, -point.y, -point.tangent.angle + math.pi/2, 0.2 )
     end
   end
 end
@@ -188,7 +134,7 @@ function love.load( arg )
       field.headlandTracks = {}
       local previousTrack = field.boundary
       local implementWidth = 3
-      for j = 1, 6 do
+      for j = 1, nHeadlandPasses do
         local width
         if j == 1 then 
           width = implementWidth / 2 
@@ -198,7 +144,8 @@ function love.load( arg )
         field.headlandTracks[ j ] = getHeadlandTrack( previousTrack, width )
         previousTrack = field.headlandTracks[ j ]
       end
-      addHeadlandTrackChanges( field )
+      linkHeadlandTracks( field, implementWidth )
+      field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth )
       -- get the bounding box of all fields
       if xOffset > field.boundingBox.minX then xOffset = field.boundingBox.minX end
       if yOffset > field.boundingBox.minY then yOffset = field.boundingBox.minY end
@@ -214,7 +161,7 @@ end
 function drawFieldData( field )
   love.graphics.setColor( 200, 200, 0 )
   love.graphics.print( string.format( "Field " .. field.name .. " dir = " 
-    .. field.boundary.bestDirection.dir), 
+    .. field.headlandTracks[ nHeadlandPasses ].bestDirection.dir), 
     field.boundingBox.minX, -field.boundingBox.minY,
     0, 2 )
 end
@@ -233,21 +180,34 @@ function drawFields()
     if field.vertices then
       love.graphics.setColor( 100, 100, 100 )
       love.graphics.polygon('line', field.vertices)
-      drawPoints( field.boundary )
+      --drawPoints( field.boundary )
       for i, track in ipairs( field.headlandTracks ) do
         love.graphics.setColor( 0, 0, 255 )
         love.graphics.polygon('line', getVertices( track ))
-        drawPoints( track )
+        --drawPoints( track )
       end
-      love.graphics.setColor( 100, 200, 100 )
       if field.headlandPath then
-        love.graphics.line( field.headlandPath )
+        love.graphics.setColor( 100, 200, 100 )
+        love.graphics.line( getVertices( field.headlandPath ))
+        --drawPoints( field.headlandPath )
+      end
+      if field.rotated then
+        love.graphics.setColor( 200, 100, 100 )
+        love.graphics.line( getVertices( field.rotated ))
+      end
+      if field.track then
+        love.graphics.setColor( 100, 100, 200 )
+        love.graphics.line( getVertices( field.track ))
       end
       drawMarks( marks )
       drawFieldData( field )
       if ( field.vehicle ) then 
         drawVehicle( field.vehicle )
       end
+      if ( v) then 
+        drawVehicle( v)
+      end
+
     end
   end
 end
