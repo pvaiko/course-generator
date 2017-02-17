@@ -1,0 +1,9 @@
+﻿<courseManager>
+    <saveSlot>
+        <slot fileName="courseStorage0001.xml" id="1" parent="0" isUsed="true" name="22 mowing"/>
+        <slot fileName="courseStorage0002.xml" id="2" parent="0" isUsed="true" name="8 harvest"/>
+        <slot fileName="courseStorage0003.xml" id="3" parent="0" isUsed="true" name="9 harvest"/>
+        <slot fileName="courseStorage0004.xml" id="4" parent="0" isUsed="true" name="Silo to Wynn"/>
+        <slot fileName="courseStorage0005.xml" id="5" parent="0" isUsed="true" name="Silo to biogas"/>
+    </saveSlot>
+</courseManager>
