@@ -9,9 +9,6 @@ require( 'Pickle' )
 -- This is in meters
 maxDistanceFromField = 30
 --
--- Direction of the next headland track. If we travel clockwise,
--- this will be +90 degrees. Travelling counterclockwise: -90 degrees
-inwardDirection = math.pi / 4 
 
 -- Number of headland tracks to generate
 nHeadlandPasses = 6
@@ -82,8 +79,13 @@ end
 
 function loadFieldFromPickle( fileName )
   local f = io.input( fileName .. ".pickle" )
-  fields[ fileName ] = fromCpField( fileName, unpickle( io.read( "*all" )).boundary )
+  local unpickled = unpickle( io.read( "*all" ))
+  fields[ fileName ] = fromCpField( fileName, unpickled.boundary )
   io.close( f )
+  --local reversed = reverse( unpickled.boundary )
+  --local new  = { name=fileName, boundary=reversed }
+  --io.output( fileName .. "_reversed.pickle" )
+  --io.write( pickle( new ))
   f = io.open( fileName .. "_vehicle.pickle" )
   if f then
     fields[ fileName ].vehicle = unpickle( f:read( "*all" )) 
@@ -105,9 +107,9 @@ end
 function drawPoints( polygon )
   love.graphics.setColor( 0, 255, 255 )
   love.graphics.points( getVertices( polygon ))
-  for i, point in pairs( polygon ) do
+  for i, point in ipairs( polygon ) do
     if point.tangent then
-      love.graphics.print( string.format( "-- %d: %3d --", i, math.deg( point.tangent.angle )), point.x, -point.y, -point.tangent.angle + math.pi/2, 0.2 )
+      love.graphics.print( string.format( "- %d -", i ), point.x, -point.y, -point.tangent.angle + math.pi/2, 0.2 )
     end
   end
 end
@@ -141,7 +143,7 @@ function love.load( arg )
         else 
           width = implementWidth
         end
-        field.headlandTracks[ j ] = getHeadlandTrack( previousTrack, width )
+        field.headlandTracks[ j ] = calculateHeadlandTrack( previousTrack, width )
         previousTrack = field.headlandTracks[ j ]
       end
       linkHeadlandTracks( field, implementWidth )
@@ -156,6 +158,7 @@ function love.load( arg )
   yOffset = yOffset
   love.graphics.setPointSize( pointSize )
   love.graphics.setLineWidth( lineWidth )
+  love.window.setMode( 1024, 800 )
 end
 
 function drawFieldData( field )
@@ -180,11 +183,11 @@ function drawFields()
     if field.vertices then
       love.graphics.setColor( 100, 100, 100 )
       love.graphics.polygon('line', field.vertices)
-      --drawPoints( field.boundary )
+      drawPoints( field.boundary )
       for i, track in ipairs( field.headlandTracks ) do
         love.graphics.setColor( 0, 0, 255 )
         love.graphics.polygon('line', getVertices( track ))
-        --drawPoints( track )
+        drawPoints( track )
       end
       if field.headlandPath then
         love.graphics.setColor( 100, 200, 100 )

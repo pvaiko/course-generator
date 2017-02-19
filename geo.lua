@@ -110,6 +110,7 @@ end
 function calculatePolygonData( polygon )
   local ix = function( a ) return getPolygonIndex( polygon, a ) end
   local directionStats = {}
+  local dAngle = 0
   for i, point in ipairs( polygon ) do
     local pp, cp, np = polygon[ ix( i - 1 )], polygon[ ix( i )], polygon[ ix( i + 1 )]
     local dx = np.x - pp.x 
@@ -122,10 +123,16 @@ function calculatePolygonData( polygon )
     angle, length = toPolar( dx, dy )
     -- vector from the previous to this point
     polygon[ i ].edge = { angle=angle, length=length, dx=dx, dy=dy }
+    if pp.edge and cp.edge then
+      if pp.edge.angle and cp.edge.angle then
+        dAngle = dAngle + getDeltaAngle( cp.edge.angle, pp.edge.angle )
+      end
+    end
     addToDirectionStats( directionStats, angle, length )
   end
   polygon.directionStats = directionStats
   polygon.bestDirection = getBestDirection( directionStats )
+  polygon.isClockwise = dAngle > 0
 end
 
 function addToDirectionStats( directionStats, angle, length )
@@ -345,10 +352,20 @@ function rotatePointsInPlace( points, angle )
   return result
 end
 
+--- Reverse elements of an array
 function reverse( t )
   local result = {}
   for i = #t, 1, -1 do
     table.insert( result, t[ i ])
   end
   return result
+end
+
+
+function getInwardDirection( isClockwise )
+  if isClockwise then
+    return - math.pi / 2 
+  else
+    return math.pi / 2
+  end
 end
