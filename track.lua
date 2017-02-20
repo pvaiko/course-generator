@@ -42,12 +42,14 @@ function linkHeadlandTracks( field, implementWidth )
   -- vehicles heading vector. 
   local startLocation = field.vehicle.location
   local heading = math.rad( field.vehicle.heading )
-  local distance = maxDistanceFromField
+  local distance = maxDistanceFromField 
   local headlandPath = {}
+  vectors = {}
   for i = 1, #field.headlandTracks do
+    table.insert( vectors, { startLocation, addPolarVectorToPoint( startLocation, heading, distance )})
     local fromIndex, toIndex = getIntersectionOfLineAndPolygon( field.headlandTracks[ i ], startLocation, 
                                addPolarVectorToPoint( startLocation, heading, distance ))
-    print( "Pass #" .. i, fromIndex, toIndex )
+    print( "Pass #" .. i, fromIndex, toIndex, startLocation.x, startLocation.y,  math.deg( heading ))
     if fromIndex then
       -- now find out which direction we have to drive on the headland pass.
       -- This depends on the order of the points in the polygon: clockwise or 
@@ -64,17 +66,23 @@ function linkHeadlandTracks( field, implementWidth )
         -- driving direction is in decreasing index, so we start at fromIndex and go a full circle
         -- to toIndex 
         addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], 1, fromIndex, toIndex, -1 )
-        heading = field.headlandTracks[ i ][ toIndex ].tangent.angle + getInwardDirection( field..headlandTracks[ i ].isClockwise )
+        print( math.deg( field.headlandTracks[ i ][ toIndex ].tangent.angle ), math.deg( heading ))
         startLocation = field.headlandTracks[ i ][ fromIndex ]
+        field.headlandTracks[ i ].circleStart = fromIndex
+        field.headlandTracks[ i ].circleEnd = toIndex 
+        field.headlandTracks[ i ].circleStep = -1
       else
         -- driving direction is in increasing index, so we start at toIndex and go a full circle
         -- back to fromIndex
         addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], 1, toIndex, fromIndex, 1 )
-        heading = field.headlandTracks[ i ][ fromIndex ].tangent.angle + getInwardDirection( field.headlandTracks[ i ].isClockwise )
         startLocation = field.headlandTracks[ i ][ toIndex ]
+        field.headlandTracks[ i ].circleStart = toIndex
+        field.headlandTracks[ i ].circleEnd = fromIndex 
+        field.headlandTracks[ i ].circleStep = 1
       end
-      distance = 2 * implementWidth
       v = { location = startLocation, heading=math.deg( heading ) }
+      -- remember this, we'll need when generating the link from the last headland pass
+      -- to the parallel tracks
       table.insert( marks, field.headlandTracks[ i ][ fromIndex ])
       table.insert( marks, field.headlandTracks[ i ][ toIndex ])
       field.headlandPath = headlandPath
@@ -86,7 +94,7 @@ end
 -- assemble the complete spiral headland path from the individual 
 -- parallel headland tracks.
 function addTrackToHeadlandPath( headlandPath, track, passNumber, from, to, step)
-  for i in polygonIterator( track, from, to, step ) do
+  for i, point in polygonIterator( track, from, to, step ) do
     table.insert( headlandPath, track[ i ])
     headlandPath[ #headlandPath ].passNumber = passNumber
   end
@@ -131,8 +139,19 @@ function generateTracks( field, width )
   -- using the best angle
   local rotated = rotatePoints( translated, math.rad( bestAngle ))
   local parallelTracks = generateParallelTracks( rotated, width )
+
+  table.insert( rotatedMarks, rotated.bottomIntersections[ 1 ].point )
+  table.insert( rotatedMarks, rotated.bottomIntersections[ 2 ].point )
+  table.insert( rotatedMarks, rotated.topIntersections[ 1 ].point )
+  table.insert( rotatedMarks, rotated.topIntersections[ 2 ].point )
   
-  local track = convertTracksToWaypoints( parallelTracks, width )
+  addWaypointsToTracks( parallelTracks, width )
+  -- Now we have the waypoints for each track, going from left to right
+  -- Next, find out where to start: bottom left, bottom rigth, top left or top right
+  -- whichever is closer to the end of the headland track.
+  -- So start walking on the headland track until we bump on to one of those corners.
+  local bottomToTop, leftToRight = findStartOfParallelTracks( rotated, field.circleStart, field.circleEnd, field.circleStep, parallelTracks )
+  local track = generateWaypointsForParallelTracks( parallelTracks, bottomToTop, leftToRight ) 
   
   -- now rotate and translate everything back to the original coordinate system
   rotatedMarks = translatePoints( rotatePoints( rotatedMarks, -math.rad( bestAngle )), dx, dy )
@@ -147,8 +166,9 @@ end
 -- horizontal ( y = constant ). This makes track calculation really easy.
 ----------------------------------------------------------------------------------
 
+
 --- Generate a list of parallel tracks within the field's boundary
--- at this points, tracks are defined only by they endpoints and 
+-- At this point, tracks are defined only by they endpoints and 
 -- are not connected
 function generateParallelTracks( field, width )
   local tracks = {}
@@ -173,6 +193,8 @@ end
 --  boundary.
 function findTrackEnds( field, tracks )
   local ix = function( a ) return getPolygonIndex( field, a ) end
+  field.bottomIntersections = {}
+  field.topIntersections = {}
   -- loop through the polygon and check each vector from 
   -- the current point to the next
   for i, cp in ipairs( field ) do
@@ -182,6 +204,17 @@ function findTrackEnds( field, tracks )
       if is then
         -- the line between from and to (the track) intersects the vector from cp to np
         table.insert( t.intersections, is )
+        -- Remember the intersections with the first and the last track. 
+        -- This is were we will want to transition from the headland to the center
+        -- parallel tracks
+        if j == 1 then
+          -- bottommost track
+          table.insert( field.bottomIntersections, { index=i, point=is })
+        end
+        if j == #tracks then
+          -- topmost track
+          table.insert( field.topIntersections, { index=i, point=is })
+        end
       end
     end
   end
@@ -196,49 +229,104 @@ end
 --
 -- Also, we expect the tracks already have the intersection points with
 -- the field boundary and there are exactly two intersection points
-function convertTracksToWaypoints( tracks, width )
+function addWaypointsToTracks( tracks, width )
   local track = {}
-  -- are we starting with the top or the bottom track?
-  for i, t in ipairs( tracks ) do
-    local newFrom = math.min( t.intersections[ 1 ].x, t.intersections[ 2 ].x ) + width / 2
-    local newTo = math.max( t.intersections[ 1 ].x, t.intersections[ 2 ].x ) - width / 2
-    -- if a track is very short (shorter than width) we may end up with newTo being
-    -- less than newFrom. Just skip that track
-    if newTo > newFrom then
-      t.waypoints = {}
-      for x = newFrom, newTo, waypointDistance do
-        table.insert( t.waypoints, { x=x, y=t.from.y, track=i })
-      end
-      -- make sure we actually reached newTo, if waypointDistance is too big we may end up 
-      -- well before the innermost headland track or field boundary
-      if newTo - t.waypoints[ #t.waypoints ].x > waypointDistance * 0.25 then
-        table.insert( t.waypoints, { x=newTo, y=t.from.y, track=i })
-      end
-      -- reverse every other track
-      if i % 2 == 0 then
-        t.waypoints = reverse( t.waypoints )
-      end
-      for i, point in ipairs( t.waypoints ) do
-        table.insert( track, point )
+  for i = 1, #tracks do
+    if #tracks[ i ].intersections > 1 then
+      local newFrom = math.min( tracks[ i ].intersections[ 1 ].x, tracks[ i ].intersections[ 2 ].x ) + width / 2
+      local newTo = math.max( tracks[ i ].intersections[ 1 ].x, tracks[ i ].intersections[ 2 ].x ) - width / 2
+      -- if a track is very short (shorter than width) we may end up with newTo being
+      -- less than newFrom. Just skip that track
+      if newTo > newFrom then
+        tracks[ i ].waypoints = {}
+        for x = newFrom, newTo, waypointDistance do
+          table.insert( tracks[ i ].waypoints, { x=x, y=tracks[ i ].from.y, track=i })
+          table.insert( track, tracks[ i ].waypoints[ #tracks[ i ].waypoints ])
+        end
+        -- make sure we actually reached newTo, if waypointDistance is too big we may end up 
+        -- well before the innermost headland track or field boundary
+        if newTo - tracks[ i ].waypoints[ #tracks[ i ].waypoints ].x > waypointDistance * 0.25 then
+          table.insert( tracks[ i ].waypoints, { x=newTo, y=tracks[ i ].from.y, track=i })
+          table.insert( track, tracks[ i ].waypoints[ #tracks[ i ].waypoints ])
+        end
       end
     end
-    -- find the four corners of the generated parallel tracks. At one of these 
-    -- will we have to start working on the middle part of the field.
-    if i == 1 then
-      -- this is the first, bottommost track. Remember corners
-      track.bottomLeft = { x=newFrom, y=t.from.y }
-      table.insert( rotatedMarks, track.bottomLeft )
-      track.bottomRight = { x=newTo, y=t.from.y }
-      table.insert( rotatedMarks, track.bottomRight )
-    end
-    if i == #tracks then
-      -- this is the last, topmost track. Remember corners
-      track.topLeft = { x=newFrom, y=t.from.y }
-      table.insert( rotatedMarks, track.topLeft )
-      track.topRight = { x=newTo, y=t.from.y }
-      table.insert( rotatedMarks, track.topRight )
-    end
+  end
+  return track
+end 
 
+function findStartOfParallelTracks( field, from, to, step, tracks )
+  -- field.toIndex is the last point of the headland path
+  -- the point with the smallest x is on the left
+  local bottomLeftIx, bottomRightIx, topLeftIx, topRightIx
+  if field.bottomIntersections[ 2 ].point.x >= field.bottomIntersections[ 1 ].point.x then
+    bottomLeftIx = field.bottomIntersections[ 1 ].index
+    bottomRightIx = field.bottomIntersections[ 2 ].index
+  else
+    bottomLeftIx = field.bottomIntersections[ 2 ].index
+    bottomRightIx = field.bottomIntersections[ 1 ].index
+  end
+  if field.topIntersections[ 2 ].point.x >= field.topIntersections[ 1 ].point.x then
+    topLeftIx = field.topIntersections[ 1 ].index
+    topRightIx = field.topIntersections[ 2 ].index
+  else
+    topLeftIx = field.topIntersections[ 2 ].index
+    topRightIx = field.topIntersections[ 1 ].index
+  end
+  print( bottomLeftIx, bottomRightIx, topLeftIx, topRightIx )
+  for i in polygonIterator( field, from, to, step ) do
+    print( i )
+    if i == bottomLeftIx then
+      print( "Starting at bottom left" )
+      return true, true
+    elseif i == bottomRightIx then
+      print( "Starting at bottom right" )
+      return true, false
+    elseif i == topLeftIx then 
+      print( "Starting at top left" )
+      return false, true
+    elseif i == topRightIx then
+      print( "Starting at top right" )
+      return false, false
+    end
+  end
+  print( "Start not found, starting at bottom left" )
+  return true, true
+end
+
+--- generate waypoints for the parallel tracks in the center of the field.
+-- if bottomToTop == true then start at the bottom and work our way up
+-- if leftToRight == true then start the first track on the left 
+function generateWaypointsForParallelTracks( parallelTracks, bottomToTop, leftToRight ) 
+  local track = {}
+  local startTrack, endTrack, trackStep
+  if bottomToTop then
+    startTrack = 1
+    endTrack = #parallelTracks
+    trackStep = 1
+  else
+    startTrack = #parallelTracks
+    endTrack = 1
+    trackStep = -1
+  end
+  local evenOrOdd
+  if leftToRight then
+    -- every odd track is in the normal direction
+    evenOrOdd = 0
+  else
+    evenOrOdd = 1
+  end
+  print( bottomToTop, leftToRight )
+  local nTrack = 1
+  for i = startTrack, endTrack, trackStep do
+    -- every second track is in the other direction
+    if nTrack % 2 == evenOrOdd then
+      parallelTracks[ i ].waypoints = reverse( parallelTracks[ i ].waypoints)
+    end
+    for j, point in ipairs( parallelTracks[ i ].waypoints) do
+      table.insert( track, point )
+    end      
+    nTrack = nTrack + 1
   end
   return track
 end

@@ -108,9 +108,7 @@ function drawPoints( polygon )
   love.graphics.setColor( 0, 255, 255 )
   love.graphics.points( getVertices( polygon ))
   for i, point in ipairs( polygon ) do
-    if point.tangent then
-      love.graphics.print( string.format( "- %d -", i ), point.x, -point.y, -point.tangent.angle + math.pi/2, 0.2 )
-    end
+    love.graphics.print( string.format( "%d", i ), point.x, -point.y, 0, 0.2 )
   end
 end
 
@@ -183,11 +181,11 @@ function drawFields()
     if field.vertices then
       love.graphics.setColor( 100, 100, 100 )
       love.graphics.polygon('line', field.vertices)
-      drawPoints( field.boundary )
+      --drawPoints( field.boundary )
       for i, track in ipairs( field.headlandTracks ) do
-        love.graphics.setColor( 0, 0, 255 )
-        love.graphics.polygon('line', getVertices( track ))
-        drawPoints( track )
+        --love.graphics.setColor( 0, 0, 255 )
+        --love.graphics.polygon('line', getVertices( track ))
+        --drawPoints( track )
       end
       if field.headlandPath then
         love.graphics.setColor( 100, 200, 100 )
@@ -201,13 +199,20 @@ function drawFields()
       if field.track then
         love.graphics.setColor( 100, 100, 200 )
         love.graphics.line( getVertices( field.track ))
+        drawPoints( field.track )
       end
       drawMarks( marks )
       drawFieldData( field )
       if ( field.vehicle ) then 
         drawVehicle( field.vehicle )
       end
-      if ( v) then 
+      if vectors then
+        for i, vec in ipairs( vectors ) do
+          love.graphics.circle( "line", vec[ 1 ].x, -vec[ 1 ].y , 3 )
+          love.graphics.line( getVertices( vec ))
+        end
+      end
+      if ( v ) then 
         drawVehicle( v)
       end
 
