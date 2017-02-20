@@ -1,11 +1,51 @@
 --
 -- Functions to manipulate tracks 
 --
+--
+-- how close the vehicle must be to the field to automatically 
+-- calculate a track starting near the vehicle's location
+-- This is in meters
+maxDistanceFromField = 30
+
+-- Distance of waypoints on the generated track in meters
+waypointDistance = 5
+
+-- Enable generating parallel tracks which intersect a field boundary
+-- more than twice: that is, try to fit the tracks into a concave field
+enableSplitTracks = false
   
 require( 'geo' )
 require( 'bspline' )
 
 local rotatedMarks = {}
+--- Generate course for a field.
+-- The result will be:
+-- field.headlandPath 
+--   array of points containing all headland passes
+-- field.headlandTracks[ nHeadlandPasses ].pathFromHeadlandToCenter 
+--   this is the path from the end of the innermost headland track to the start
+--   of the parallel tracks in the middle of the field.
+-- field.track
+--   parallel tracks in the middle of the field.
+--
+function generateCourseForField( field, implementWidth, firstImplementWidth, nHeadlandPasses )
+  field.boundingBox = getBoundingBox( field.boundary )
+  calculatePolygonData( field.boundary )
+  field.headlandTracks = {}
+  local previousTrack = field.boundary
+  for j = 1, nHeadlandPasses do
+    local width
+    if j == 1 then 
+      width = firstImplementWidth
+    else 
+      width = implementWidth
+    end
+    field.headlandTracks[ j ] = calculateHeadlandTrack( previousTrack, width )
+    previousTrack = field.headlandTracks[ j ]
+  end
+  linkHeadlandTracks( field, implementWidth )
+  field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth )
+end
 
 --- Calculate a headland track inside polygon in offset distance
 function calculateHeadlandTrack( polygon, offset )
@@ -49,7 +89,6 @@ function linkHeadlandTracks( field, implementWidth )
     table.insert( vectors, { startLocation, addPolarVectorToPoint( startLocation, heading, distance )})
     local fromIndex, toIndex = getIntersectionOfLineAndPolygon( field.headlandTracks[ i ], startLocation, 
                                addPolarVectorToPoint( startLocation, heading, distance ))
-    print( "Pass #" .. i, fromIndex, toIndex, startLocation.x, startLocation.y,  math.deg( heading ))
     if fromIndex then
       -- now find out which direction we have to drive on the headland pass.
       -- This depends on the order of the points in the polygon: clockwise or 
@@ -62,11 +101,9 @@ function linkHeadlandTracks( field, implementWidth )
       local distanceFromToIndex = getDistanceBetweenPoints( field.headlandTracks[ i ][ toIndex ], field.vehicle.location )
       if distanceFromToIndex < distanceFromFromIndex then
         -- must reverse direction
-        print( "Reversing headland track" )
         -- driving direction is in decreasing index, so we start at fromIndex and go a full circle
         -- to toIndex 
         addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], 1, fromIndex, toIndex, -1 )
-        print( math.deg( field.headlandTracks[ i ][ toIndex ].tangent.angle ), math.deg( heading ))
         startLocation = field.headlandTracks[ i ][ fromIndex ]
         field.headlandTracks[ i ].circleStart = fromIndex
         field.headlandTracks[ i ].circleEnd = toIndex 
@@ -150,7 +187,9 @@ function generateTracks( field, width )
   -- Next, find out where to start: bottom left, bottom rigth, top left or top right
   -- whichever is closer to the end of the headland track.
   -- So start walking on the headland track until we bump on to one of those corners.
-  local bottomToTop, leftToRight = findStartOfParallelTracks( rotated, field.circleStart, field.circleEnd, field.circleStep, parallelTracks )
+
+  local bottomToTop, leftToRight, pathFromHeadlandToCenter = 
+    findStartOfParallelTracks( rotated, field.circleStart, field.circleEnd, field.circleStep )
   local track = generateWaypointsForParallelTracks( parallelTracks, bottomToTop, leftToRight ) 
   
   -- now rotate and translate everything back to the original coordinate system
@@ -158,6 +197,8 @@ function generateTracks( field, width )
   for i = 1, #rotatedMarks do
     table.insert( marks, rotatedMarks[ i ])
   end
+  field.pathFromHeadlandToCenter = 
+    translatePoints( rotatePoints( pathFromHeadlandToCenter, -math.rad( bestAngle )), dx, dy )
   return translatePoints( rotatePoints( track, -math.rad( bestAngle )), dx, dy )
 end
 
@@ -255,7 +296,11 @@ function addWaypointsToTracks( tracks, width )
   return track
 end 
 
-function findStartOfParallelTracks( field, from, to, step, tracks )
+--- Find the 'corner' closest to the end of the last headland pass.
+-- The vehicle then will move on the last headland track until it
+-- reaches this corner and starts working on the parallel tracks in 
+-- the middle of the field.
+function findStartOfParallelTracks( field, from, to, step )
   -- field.toIndex is the last point of the headland path
   -- the point with the smallest x is on the left
   local bottomLeftIx, bottomRightIx, topLeftIx, topRightIx
@@ -273,25 +318,25 @@ function findStartOfParallelTracks( field, from, to, step, tracks )
     topLeftIx = field.topIntersections[ 2 ].index
     topRightIx = field.topIntersections[ 1 ].index
   end
-  print( bottomLeftIx, bottomRightIx, topLeftIx, topRightIx )
+  local track = {}
   for i in polygonIterator( field, from, to, step ) do
-    print( i )
+    table.insert( track, field[ i ])
     if i == bottomLeftIx then
       print( "Starting at bottom left" )
-      return true, true
+      return true, true, track
     elseif i == bottomRightIx then
       print( "Starting at bottom right" )
-      return true, false
+      return true, false, track
     elseif i == topLeftIx then 
       print( "Starting at top left" )
-      return false, true
+      return false, true, track
     elseif i == topRightIx then
       print( "Starting at top right" )
-      return false, false
+      return false, false, track
     end
   end
   print( "Start not found, starting at bottom left" )
-  return true, true
+  return true, true, track
 end
 
 --- generate waypoints for the parallel tracks in the center of the field.
@@ -316,17 +361,21 @@ function generateWaypointsForParallelTracks( parallelTracks, bottomToTop, leftTo
   else
     evenOrOdd = 1
   end
-  print( bottomToTop, leftToRight )
   local nTrack = 1
   for i = startTrack, endTrack, trackStep do
-    -- every second track is in the other direction
-    if nTrack % 2 == evenOrOdd then
-      parallelTracks[ i ].waypoints = reverse( parallelTracks[ i ].waypoints)
+    if parallelTracks[ i ].waypoints then
+      -- every second track is in the other direction
+      if nTrack % 2 == evenOrOdd then
+        parallelTracks[ i ].waypoints = reverse( parallelTracks[ i ].waypoints)
+      end
+      for j, point in ipairs( parallelTracks[ i ].waypoints) do
+        table.insert( track, point )
+      end      
+      nTrack = nTrack + 1
+    else
+      print( string.format( "Track %d has no waypoints, skipping.", i ))
     end
-    for j, point in ipairs( parallelTracks[ i ].waypoints) do
-      table.insert( track, point )
-    end      
-    nTrack = nTrack + 1
+    
   end
   return track
 end

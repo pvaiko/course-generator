@@ -1,12 +1,13 @@
 require( "geo" )
+require( "track" )
+require( "file" )
 require( "Pickle" )
 
 function eq( a, b )
   local epsilon = 0.00001
   return a < ( b + epsilon ) and a > ( b - epsilon )
 end
-
-
+--
 --------------------------------------------------------------
 -- Polygon iterator
 --------------------------------------------------------------
@@ -111,3 +112,24 @@ t = { 1, 2, 3, 4 }
 r = reverse( t )
 assert( #r == #t )
 assert( r[ 1 ] == 4, r[ 2 ] == 3, r[ 3 ] == 2, r[ 4 ] == 1 )
+
+
+--------------------------------------------------------------
+-- Smoke test
+--------------------------------------------------------------
+--
+
+local field = loadFieldFromSavedCourse( "courses/courseStorage0003.xml" )
+generateCourseForField( field, 4, 4, 5 )
+
+
+marks = {}
+for i, fieldName in ipairs( { "8", "9", "23" }) do
+  for width = 3, 2 do
+    print( string.format( "\nGenerating course for field %s with width %d", fieldName, width ))
+    local field = loadFieldFromPickle( fieldName )
+    generateCourseForField( field, width, width / 2, 5)
+    field = loadFieldFromPickle( fieldName .. "_reversed" )
+    generateCourseForField( field, width, width / 2,  5)
+  end
+end

@@ -1,24 +1,14 @@
 --loadfile( 'courseplay/generateCourse.lua')
 require( 'track' )
+require( 'file' )
 require( 'Pickle' )
 
 -- parameters 
 --
--- how close the vehicle must be to the field to automatically 
--- calculate a track starting near the vehicle's location
--- This is in meters
-maxDistanceFromField = 30
 --
 
 -- Number of headland tracks to generate
 nHeadlandPasses = 6
-
--- Enable generating parallel tracks which intersect a field boundary
--- more than twice: that is, try to fit the tracks into a concave field
-enableSplitTracks = false
-
--- Distance of waypoints on the generated track in meters
-waypointDistance = 5
 
 inputFields = {}
 fields = {}
@@ -31,68 +21,6 @@ scale = 2.0
 xOffset, yOffset = 1000, 1000
 
 marks = {}
---
--- read the log.txt to get field polygons. I changed generateCourse.lua
--- so it writes the coordinates to log.txt when a course is generated for a field.
-
-function loadFieldsFromLogFile( fileName, fieldName )
-  local i = 1 
-  for line in io.lines(fileName )
-  do
-    match = string.match( line, '%[dbg7 %w+%] generateCourse%(%) called for "Field (%w+)"' )
-    if match then 
-      -- start of a new field data 
-      field = match
-      print("Reading field " .. field ) 
-      i = 1
-      inputFields[ field ] = { boundary = {}, name=field }
-    end
-    x, y, z = string.match( line, "%[dbg7 %w+%] ([%d%.-]+) ([%d%.-]+) ([%d%.-]+)" )
-    if x then 
-      inputFields[ field ].boundary[ i ] = { cx=tonumber(x), cz=tonumber(z) }
-      i = i + 1
-    end
-  end
-  for key, field in pairs( inputFields ) do
-    io.output( field.name .. ".pickle" )
-    io.write( pickle( field )) 
-    fields[ key ] = { boundary = {}, name=field.name }
-    for i in ipairs( field.boundary ) do
-      -- z axis is actually y and is  from north to south 
-      -- so need to invert it to get a useful direction
-      fields[ key ].boundary[ i ] = { x=field.boundary[ i ].cx, y=-field.boundary[ i ].cz }
-    end
-  end
-end
-
---- convert a field from the CP representation to a format we are 
--- more comfortable with, for example turn it into x,y from x,-z
-function fromCpField( fileName, field )
-  result = { boundary = {}, name=fileName }
-  for i in ipairs( field ) do
-    -- z axis is actually y and is  from north to south 
-    -- so need to invert it to get a useful direction
-    result.boundary[ i ] = { x=field[ i ].cx, y=-field[ i ].cz }
-  end
-  return result
-end
-
-function loadFieldFromPickle( fileName )
-  local f = io.input( fileName .. ".pickle" )
-  local unpickled = unpickle( io.read( "*all" ))
-  fields[ fileName ] = fromCpField( fileName, unpickled.boundary )
-  io.close( f )
-  --local reversed = reverse( unpickled.boundary )
-  --local new  = { name=fileName, boundary=reversed }
-  --io.output( fileName .. "_reversed.pickle" )
-  --io.write( pickle( new ))
-  f = io.open( fileName .. "_vehicle.pickle" )
-  if f then
-    fields[ fileName ].vehicle = unpickle( f:read( "*all" )) 
-    io.close( f )
-  end
-end
-
 
 -- get the vertices for LOVE of a polygon
 function getVertices( polygon )
@@ -108,7 +36,9 @@ function drawPoints( polygon )
   love.graphics.setColor( 0, 255, 255 )
   love.graphics.points( getVertices( polygon ))
   for i, point in ipairs( polygon ) do
-    love.graphics.print( string.format( "%d", i ), point.x, -point.y, 0, 0.2 )
+    if i < 5 or i > #polygon - 5 then
+      love.graphics.print( string.format( "%d", i ), point.x, -point.y, 0, 0.2 )
+    end
   end
 end
 
@@ -120,7 +50,7 @@ function drawMarks( points )
 end 
 
 function love.load( arg )
-  loadFieldFromPickle(arg[ 2 ])
+  fields[ arg[ 2 ]] = loadFieldFromPickle(arg[ 2 ])
   --loadFieldsFromLogFile(arg[ 2 ])
   if ( arg[ 3 ] == "showOnly" ) then 
     showOnly = true
@@ -128,24 +58,8 @@ function love.load( arg )
     showOnly = false
     for i, field in pairs( fields ) do
       print( " =========== Field " .. i .. " ==================" )
+      generateCourseForField( field, 5, nHeadlandPasses )
       field.vertices = getVertices( field.boundary )
-      field.boundingBox = getBoundingBox( field.boundary )
-      calculatePolygonData( field.boundary )
-      field.headlandTracks = {}
-      local previousTrack = field.boundary
-      local implementWidth = 3
-      for j = 1, nHeadlandPasses do
-        local width
-        if j == 1 then 
-          width = implementWidth / 2 
-        else 
-          width = implementWidth
-        end
-        field.headlandTracks[ j ] = calculateHeadlandTrack( previousTrack, width )
-        previousTrack = field.headlandTracks[ j ]
-      end
-      linkHeadlandTracks( field, implementWidth )
-      field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth )
       -- get the bounding box of all fields
       if xOffset > field.boundingBox.minX then xOffset = field.boundingBox.minX end
       if yOffset > field.boundingBox.minY then yOffset = field.boundingBox.minY end
@@ -200,6 +114,10 @@ function drawFields()
         love.graphics.setColor( 100, 100, 200 )
         love.graphics.line( getVertices( field.track ))
         drawPoints( field.track )
+      end
+      if field.headlandTracks[ nHeadlandPasses ].pathFromHeadlandToCenter then
+        love.graphics.setColor( 255, 000, 000 )
+        love.graphics.line( getVertices( field.headlandTracks[ nHeadlandPasses ].pathFromHeadlandToCenter ))
       end
       drawMarks( marks )
       drawFieldData( field )
