@@ -30,7 +30,6 @@ function loadFieldFromPickle( fileName )
   return field
 end
 
-
 --
 -- read the log.txt to get field polygons. I changed generateCourse.lua
 -- so it writes the coordinates to log.txt when a course is generated for a field.
@@ -70,18 +69,62 @@ end
 function loadFieldFromSavedCourse( fileName )
   local f = io.input( fileName )
   local field = {}
+  field.name = fileName
+  field.boundary = {}
   for line in io.lines( fileName ) do
     local width, nHeadlandPasses, isClockwise = string.match( line, '<course workWidth="([%d%.-]+)" numHeadlandLanes="(%d+)" headlandDirectionCW="(%w+)"' )
     if width then
-      print(  width, nHeadlandPasses, isClockwise )
+      field.width = tonumber( width )
+      field.nHeadlandPasses = tonumber( nHeadlandPasses )
+      field.isClockwise = isClockwise 
     end
     local num, cx, cz, lane = string.match( line, '<waypoint(%d+).+pos="([%d%.-]+) ([%d%.-]+)" lane="([%d-]+)"')
     -- lane -1 is the outermost headland track
     if lane == "-1" then
-      table.insert( field, { cx=tonumber( cx ), cz=tonumber( cz )})
+      table.insert( field.boundary, { x=tonumber( cx ), y=-tonumber( cz )})
     end
   end
-  return fromCpField( fileName, field )
+  return field
 end
 
+function toCpAngle( angle )
+  local a = math.deg( angle ) + 90
+  if a > 180 then
+    a = 180 - a
+  end
+  return a
+end
 
+function writeCourseToFile( field, fileName )
+  local f = io.output( fileName .. "_new.xml" )
+  io.write( 
+    string.format( '<course workWidth="%.6f" numHeadlandLanes="%d" headlandDirectionCW="%s">\n', 
+      field.width, field.nHeadlandPasses, field.isClockwise ))
+  local wp = 1
+  for i, point in ipairs( field.course ) do
+    local lane = ""
+    if point.passNumber then
+      lane = string.format( 'lane="%d"', -point.passNumber)
+    end
+    local turn = ""
+    if point.turnStart then
+      turn = 'turnstart="1"'
+    end
+    if point.turnEnd then
+      turn = 'turnend="1"'
+    end
+    local crossing = ""
+    if i == 1 then 
+      crossing = 'crossing="1" wait="1"'
+    end
+    if i == #field.course then
+      crossing = 'crossing="1" wait="1"'
+    end
+    io.write( 
+      string.format( '  <waypoint%d angle="%.2f" generated="true" speed="0" pos="%.2f %.2f" %s %s %s/>\n',
+                     wp, toCpAngle( point.tangent.angle ), point.x, -point.y, turn, lane, crossing ))
+    wp = wp + 1
+  end
+  io.write( " </course>" )
+  io.close( f )
+end

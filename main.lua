@@ -50,7 +50,13 @@ function drawMarks( points )
 end 
 
 function love.load( arg )
+  --fields[ arg[ 2 ]] = loadFieldFromSavedCourse( "courses/courseStorage0003.xml" )
+  --fields[ arg[ 2 ]].vehicle = { location = { y=220, x=280 }, heading = -80 }
+  --calculatePolygonData( fields[ arg[ 2 ]].boundary )
+  fields[ arg[ 2 ]] = {}
   fields[ arg[ 2 ]] = loadFieldFromPickle(arg[ 2 ])
+  fields[ arg[ 2 ]].nHeadlandPasses = 5
+  fields[ arg[ 2 ]].width = 4.4
   --loadFieldsFromLogFile(arg[ 2 ])
   if ( arg[ 3 ] == "showOnly" ) then 
     showOnly = true
@@ -58,7 +64,7 @@ function love.load( arg )
     showOnly = false
     for i, field in pairs( fields ) do
       print( " =========== Field " .. i .. " ==================" )
-      generateCourseForField( field, 5, nHeadlandPasses )
+      generateCourseForField( field, field.width, field.nHeadlandPasses, false )
       field.vertices = getVertices( field.boundary )
       -- get the bounding box of all fields
       if xOffset > field.boundingBox.minX then xOffset = field.boundingBox.minX end
@@ -76,7 +82,7 @@ end
 function drawFieldData( field )
   love.graphics.setColor( 200, 200, 0 )
   love.graphics.print( string.format( "Field " .. field.name .. " dir = " 
-    .. field.headlandTracks[ nHeadlandPasses ].bestDirection.dir), 
+    .. field.headlandTracks[ #field.headlandTracks ].bestDirection.dir), 
     field.boundingBox.minX, -field.boundingBox.minY,
     0, 2 )
 end
@@ -97,8 +103,8 @@ function drawFields()
       love.graphics.polygon('line', field.vertices)
       --drawPoints( field.boundary )
       for i, track in ipairs( field.headlandTracks ) do
-        --love.graphics.setColor( 0, 0, 255 )
-        --love.graphics.polygon('line', getVertices( track ))
+        love.graphics.setColor( 0, 0, 255 )
+        love.graphics.polygon('line', getVertices( track ))
         --drawPoints( track )
       end
       if field.headlandPath then
@@ -115,9 +121,14 @@ function drawFields()
         love.graphics.line( getVertices( field.track ))
         drawPoints( field.track )
       end
-      if field.headlandTracks[ nHeadlandPasses ].pathFromHeadlandToCenter then
+      if field.headlandTracks[ #field.headlandTracks ].pathFromHeadlandToCenter then
         love.graphics.setColor( 255, 000, 000 )
-        love.graphics.line( getVertices( field.headlandTracks[ nHeadlandPasses ].pathFromHeadlandToCenter ))
+        local points = field.headlandTracks[ #field.headlandTracks ].pathFromHeadlandToCenter
+        if #points > 1 then
+          love.graphics.line( getVertices( points ))
+        else
+          love.graphics.circle( "line", points[ 1 ].x, -points[ 1 ].y, 1 )
+        end
       end
       drawMarks( marks )
       drawFieldData( field )

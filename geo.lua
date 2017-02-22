@@ -324,7 +324,9 @@ end
 function translatePoints( points, dx, dy )
   local result = {}
   for i, point in ipairs( points ) do
-    local newPoint = { x = points[ i ].x + dx, y = points[ i ].y + dy }
+    local newPoint = copyPoint( point )
+    newPoint.x = points[ i ].x + dx
+    newPoint.y = points[ i ].y + dy 
     table.insert( result, newPoint )
   end
   return result
@@ -335,11 +337,10 @@ function rotatePoints( points, angle )
   local sin = math.sin( angle )
   local cos = math.cos( angle )
   for i, point in ipairs( points ) do
-    local x = points[ i ].x * cos - points[ i ].y  * sin
-    local y = points[ i ].x * sin + points[ i ].y  * cos
-    table.insert( result, { x = x, y = y })
-    result[ i ].x = x
-    result[ i ].y = y
+    local newPoint = copyPoint( point )
+    newPoint.x = points[ i ].x * cos - points[ i ].y  * sin
+    newPoint.y = points[ i ].x * sin + points[ i ].y  * cos
+    table.insert( result, newPoint )
   end
   result.boundingBox = getBoundingBox( result )
   return result
@@ -369,3 +370,14 @@ function getInwardDirection( isClockwise )
     return math.pi / 2
   end
 end
+
+-- shallow copy for preserving point attributes through 
+-- transformations
+function copyPoint( point )
+  local result = {}
+  for k, v in pairs( point ) do
+    result[ k ] = v
+  end
+  return result
+end
+

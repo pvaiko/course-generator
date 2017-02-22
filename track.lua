@@ -28,15 +28,22 @@ local rotatedMarks = {}
 -- field.track
 --   parallel tracks in the middle of the field.
 --
-function generateCourseForField( field, implementWidth, firstImplementWidth, nHeadlandPasses )
+function generateCourseForField( field, implementWidth, nHeadlandPasses, useBoundaryAsFirstHeadlandPass )
   field.boundingBox = getBoundingBox( field.boundary )
   calculatePolygonData( field.boundary )
   field.headlandTracks = {}
+  local startHeadlandPass
+  if useBoundaryAsFirstHeadlandPass then
+    field.headlandTracks[ 1 ] = field.boundary 
+    startHeadlandPass = 2
+  else
+    startHeadlandPass = 1
+  end
   local previousTrack = field.boundary
-  for j = 1, nHeadlandPasses do
+  for j = startHeadlandPass, nHeadlandPasses do
     local width
     if j == 1 then 
-      width = firstImplementWidth
+      width = implementWidth / 2
     else 
       width = implementWidth
     end
@@ -45,6 +52,18 @@ function generateCourseForField( field, implementWidth, firstImplementWidth, nHe
   end
   linkHeadlandTracks( field, implementWidth )
   field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth )
+  -- assemble complete course now
+  field.course = {}
+  for i, point in ipairs( field.headlandPath ) do
+    table.insert( field.course, point )
+  end
+  for i, point in ipairs( field.headlandTracks[ #field.headlandTracks ].pathFromHeadlandToCenter ) do
+    table.insert( field.course, point )
+  end
+  for i, point in ipairs( field.track ) do
+    table.insert( field.course, point )
+  end
+  calculatePolygonData( field.course )
 end
 
 --- Calculate a headland track inside polygon in offset distance
@@ -86,7 +105,7 @@ function linkHeadlandTracks( field, implementWidth )
   local headlandPath = {}
   vectors = {}
   for i = 1, #field.headlandTracks do
-    table.insert( vectors, { startLocation, addPolarVectorToPoint( startLocation, heading, distance )})
+    --table.insert( vectors, { startLocation, addPolarVectorToPoint( startLocation, heading, distance )})
     local fromIndex, toIndex = getIntersectionOfLineAndPolygon( field.headlandTracks[ i ], startLocation, 
                                addPolarVectorToPoint( startLocation, heading, distance ))
     if fromIndex then
@@ -103,7 +122,7 @@ function linkHeadlandTracks( field, implementWidth )
         -- must reverse direction
         -- driving direction is in decreasing index, so we start at fromIndex and go a full circle
         -- to toIndex 
-        addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], 1, fromIndex, toIndex, -1 )
+        addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], i, fromIndex, toIndex, -1 )
         startLocation = field.headlandTracks[ i ][ fromIndex ]
         field.headlandTracks[ i ].circleStart = fromIndex
         field.headlandTracks[ i ].circleEnd = toIndex 
@@ -111,20 +130,21 @@ function linkHeadlandTracks( field, implementWidth )
       else
         -- driving direction is in increasing index, so we start at toIndex and go a full circle
         -- back to fromIndex
-        addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], 1, toIndex, fromIndex, 1 )
+        addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], i, toIndex, fromIndex, 1 )
         startLocation = field.headlandTracks[ i ][ toIndex ]
         field.headlandTracks[ i ].circleStart = toIndex
         field.headlandTracks[ i ].circleEnd = fromIndex 
         field.headlandTracks[ i ].circleStep = 1
       end
-      v = { location = startLocation, heading=math.deg( heading ) }
+      heading = field.headlandTracks[ i ][ fromIndex ].tangent.angle + getInwardDirection( field.headlandTracks[ i ].isClockwise )
+      --v = { location = startLocation, heading=math.deg( heading ) }
       -- remember this, we'll need when generating the link from the last headland pass
       -- to the parallel tracks
       table.insert( marks, field.headlandTracks[ i ][ fromIndex ])
       table.insert( marks, field.headlandTracks[ i ][ toIndex ])
-      field.headlandPath = headlandPath
     end
   end
+  field.headlandPath = headlandPath
 end
 
 --- add a series of points (track) to the headland path. This is to 
@@ -191,7 +211,6 @@ function generateTracks( field, width )
   local bottomToTop, leftToRight, pathFromHeadlandToCenter = 
     findStartOfParallelTracks( rotated, field.circleStart, field.circleEnd, field.circleStep )
   local track = generateWaypointsForParallelTracks( parallelTracks, bottomToTop, leftToRight ) 
-  
   -- now rotate and translate everything back to the original coordinate system
   rotatedMarks = translatePoints( rotatePoints( rotatedMarks, -math.rad( bestAngle )), dx, dy )
   for i = 1, #rotatedMarks do
@@ -369,6 +388,14 @@ function generateWaypointsForParallelTracks( parallelTracks, bottomToTop, leftTo
         parallelTracks[ i ].waypoints = reverse( parallelTracks[ i ].waypoints)
       end
       for j, point in ipairs( parallelTracks[ i ].waypoints) do
+        -- the first point of a track is the end of the turn (except for the first track)
+        if ( j == 1 and i > 1 ) then 
+          point.turnEnd = true
+        end
+        -- the last point of a track is the start of the turn (except for the last track)
+        if ( j == #parallelTracks[ i ].waypoints and i < endTrack ) then
+          point.turnStart = true
+        end
         table.insert( track, point )
       end      
       nTrack = nTrack + 1

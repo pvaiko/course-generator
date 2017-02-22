@@ -114,22 +114,28 @@ assert( #r == #t )
 assert( r[ 1 ] == 4, r[ 2 ] == 3, r[ 3 ] == 2, r[ 4 ] == 1 )
 
 
+
 --------------------------------------------------------------
 -- Smoke test
 --------------------------------------------------------------
---
-
-local field = loadFieldFromSavedCourse( "courses/courseStorage0003.xml" )
-generateCourseForField( field, 4, 4, 5 )
-
 
 marks = {}
 for i, fieldName in ipairs( { "8", "9", "23" }) do
   for width = 3, 2 do
     print( string.format( "\nGenerating course for field %s with width %d", fieldName, width ))
     local field = loadFieldFromPickle( fieldName )
-    generateCourseForField( field, width, width / 2, 5)
+    generateCourseForField( field, width, 5, false )
     field = loadFieldFromPickle( fieldName .. "_reversed" )
-    generateCourseForField( field, width, width / 2,  5)
+    generateCourseForField( field, width, 5, false )
   end
 end
+
+
+local fileName = "courses/courseStorage0003.xml"
+local field = loadFieldFromSavedCourse( fileName )
+calculatePolygonData( field.boundary )
+field.vehicle = { location = field.boundary[ 1 ], heading = field.boundary[ 2 ].edge.angle - math.pi / 2 }
+
+generateCourseForField( field, field.width, field.nHeadlandPasses, true )
+writeCourseToFile( field, fileName ) 
+
