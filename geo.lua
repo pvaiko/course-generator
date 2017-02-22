@@ -8,7 +8,8 @@ loadfile( 'courseplay/generateCourse.lua')
 -- a point has the following attributes:
 -- x
 -- y
--- edge : vector from this point to the next
+-- fromEdge : vector from the previous to this point
+-- toEdge : vector from this point to the next
 -- tangent : the tangent vector of the curve at this point,
 --           calculated as the vector between the 
 --           the previous and next points
@@ -93,7 +94,7 @@ function applyLowPassFilter( polygon, angleThreshold, distanceThreshold )
     -- around here
     local angle, length = toPolar( np.x - cp.x, np.y - cp.y )
     local isTooClose = length < distanceThreshold
-    local isTooSharp = math.abs( getDeltaAngle( np.edge.angle, cp.edge.angle )) > angleThreshold 
+    local isTooSharp = math.abs( getDeltaAngle( np.fromEdge.angle, cp.fromEdge.angle )) > angleThreshold 
     if isTooClose then
       -- replace current and next point with something in the middle
       polygon[ ix( index + 1 )].x, polygon[ ix( index + 1 )].y = _mid( cp, np )
@@ -113,19 +114,24 @@ function calculatePolygonData( polygon )
   local dAngle = 0
   for i, point in ipairs( polygon ) do
     local pp, cp, np = polygon[ ix( i - 1 )], polygon[ ix( i )], polygon[ ix( i + 1 )]
+    -- vector from the previous to the next point
     local dx = np.x - pp.x 
     local dy = np.y - pp.y
     local angle, length = toPolar( dx, dy )
-    -- vector from the previous to the next point
     polygon[ i ].tangent = { angle=angle, length=length, dx=dx, dy=dy }
+    -- vector from the previous to this point
     dx = cp.x - pp.x
     dy = cp.y - pp.y
     angle, length = toPolar( dx, dy )
-    -- vector from the previous to this point
-    polygon[ i ].edge = { angle=angle, length=length, dx=dx, dy=dy }
-    if pp.edge and cp.edge then
-      if pp.edge.angle and cp.edge.angle then
-        dAngle = dAngle + getDeltaAngle( cp.edge.angle, pp.edge.angle )
+    polygon[ i ].fromEdge = { angle=angle, length=length, dx=dx, dy=dy }
+    -- vector from this to the next point 
+    dx = np.x - cp.x
+    dy = np.y - cp.y
+    angle, length = toPolar( dx, dy )
+    polygon[ i ].toEdge = { angle=angle, length=length, dx=dx, dy=dy }
+    if pp.fromEdge and cp.fromEdge then
+      if pp.fromEdge.angle and cp.fromEdge.angle then
+        dAngle = dAngle + getDeltaAngle( cp.fromEdge.angle, pp.fromEdge.angle )
       end
     end
     addToDirectionStats( directionStats, angle, length )

@@ -90,7 +90,7 @@ end
 function toCpAngle( angle )
   local a = math.deg( angle ) + 90
   if a > 180 then
-    a = 180 - a
+    a = a - 360
   end
   return a
 end
@@ -121,8 +121,8 @@ function writeCourseToFile( field, fileName )
       crossing = 'crossing="1" wait="1"'
     end
     io.write( 
-      string.format( '  <waypoint%d angle="%.2f" generated="true" speed="0" pos="%.2f %.2f" %s %s %s/>\n',
-                     wp, toCpAngle( point.tangent.angle ), point.x, -point.y, turn, lane, crossing ))
+      string.format( '  <waypoint%d angle="%.2f" origangle="%.2f" generated="true" speed="0" pos="%.2f %.2f" %s %s %s/>\n',
+                     wp, toCpAngle( point.toEdge.angle ), math.deg( point.toEdge.angle ), point.x, -point.y, turn, lane, crossing ))
     wp = wp + 1
   end
   io.write( " </course>" )

@@ -131,10 +131,16 @@ for i, fieldName in ipairs( { "8", "9", "23" }) do
 end
 
 
-local fileName = "courses/courseStorage0003.xml"
-local field = loadFieldFromSavedCourse( fileName )
-calculatePolygonData( field.boundary )
-field.vehicle = { location = field.boundary[ 1 ], heading = field.boundary[ 2 ].edge.angle - math.pi / 2 }
+local fileName = "courses/courseStorage0004.xml"
+--local field = loadFieldFromSavedCourse( fileName )
+--calculatePolygonData( field.boundary )
+--field.vehicle = { location = field.boundary[ 1 ], heading = field.boundary[ 2 ].fromEdge.angle - math.pi / 2 }
+
+  field = {}
+  field = loadFieldFromPickle(23)
+  field.nHeadlandPasses = 5
+  field.width = 4.4
+  field.isClockwise = "true"
 
 generateCourseForField( field, field.width, field.nHeadlandPasses, true )
 writeCourseToFile( field, fileName ) 

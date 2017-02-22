@@ -12,7 +12,7 @@ function _refine( points )
     local point = points[ i ];
     refined[ rIx ] = point
     if points[ ix( i + 1 )] then 
-      if( isSharpTurn( points[ i ].edge, points[ ix( i + 1 )].edge )) then 
+      if( isSharpTurn( points[ i ].fromEdge, points[ ix( i + 1 )].fromEdge )) then 
         -- insert points only when there is really a curve here
         -- table.insert( marks, points[ i ])
         local x, y =  _mid( point, points[ ix( i + 1 )]);
@@ -49,7 +49,7 @@ function _tuck( points, s )
   for i, point in ipairs( points ) do
     local pp, cp, np = points[ ix( i - 1 )], points[ ix( i )], points[ ix( i + 1 )]
     -- tuck points only when there is really a curve here
-    if ( isSharpTurn( points[ i ].edge, points[ ix( i + 1 )].edge )) then
+    if ( isSharpTurn( points[ i ].fromEdge, points[ ix( i + 1 )].fromEdge )) then
       -- mid point between the previous and next
       local midPNx, midPNy = _mid( pp, np )
       -- vector from current point to mid point
