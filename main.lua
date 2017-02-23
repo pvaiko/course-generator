@@ -50,11 +50,12 @@ function drawMarks( points )
 end 
 
 function love.load( arg )
-  --fields[ arg[ 2 ]] = loadFieldFromSavedCourse( "courses/courseStorage0003.xml" )
-  --fields[ arg[ 2 ]].vehicle = { location = { y=220, x=280 }, heading = -80 }
-  --calculatePolygonData( fields[ arg[ 2 ]].boundary )
-  fields[ arg[ 2 ]] = {}
-  fields[ arg[ 2 ]] = loadFieldFromPickle(arg[ 2 ])
+  fields[ arg[ 2 ]] = loadFieldFromSavedCourse( "courses/courseStorage0003.xml" )
+  fields[ arg[ 2 ]].vehicle = { location = { y=220, x=280 }, heading = -80 }
+  calculatePolygonData( fields[ arg[ 2 ]].boundary )
+  fields[ arg[ 2 ]].vehicle = { location = fields[ arg[ 2 ]].boundary[ 1 ], heading = fields[ arg[ 2 ]].boundary[ 1 ].toEdge.angle + math.pi / 2 }
+  --fields[ arg[ 2 ]] = {}
+  --fields[ arg[ 2 ]] = loadFieldFromPickle(arg[ 2 ])
   fields[ arg[ 2 ]].nHeadlandPasses = 5
   fields[ arg[ 2 ]].width = 4.4
   --loadFieldsFromLogFile(arg[ 2 ])

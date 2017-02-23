@@ -84,6 +84,7 @@ function loadFieldFromSavedCourse( fileName )
       table.insert( field.boundary, { x=tonumber( cx ), y=-tonumber( cz )})
     end
   end
+  calculatePolygonData( field.boundary )
   return field
 end
 
