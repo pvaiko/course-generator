@@ -1,5 +1,4 @@
-﻿<!-- 8 harvest, SE corner to N. N = 180, W = -90, S = 0, E = 90 -->
-<course workWidth="4.600000" numHeadlandLanes="6" headlandDirectionCW="true">
+﻿<course workWidth="4.600000" numHeadlandLanes="6" headlandDirectionCW="true">
     <waypoint1 angle="10.87" ridgemarker="2" speed="0" pos="447.44 15.63" crossing="1" lane="-1" wait="1" generated="true"/>
     <waypoint2 angle="16.98" ridgemarker="2" speed="0" pos="448.38 20.54" lane="-1" generated="true"/>
     <waypoint3 angle="7.55" ridgemarker="2" speed="0" pos="449.91 25.56" lane="-1" generated="true"/>
