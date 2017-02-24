@@ -106,42 +106,52 @@ function linkHeadlandTracks( field, implementWidth )
   vectors = {}
   for i = 1, #field.headlandTracks do
     --table.insert( vectors, { startLocation, addPolarVectorToPoint( startLocation, heading, distance )})
-    local fromIndex, toIndex = getIntersectionOfLineAndPolygon( field.headlandTracks[ i ], startLocation, 
-                               addPolarVectorToPoint( startLocation, heading, distance ))
-    if fromIndex then
-      -- now find out which direction we have to drive on the headland pass.
-      -- This depends on the order of the points in the polygon: clockwise or 
-      -- counterclockwise. Basically we have to know if we follow the points
-      -- of the polygon in increasing or decreasing index order. So, if 
-      -- fromIndex (the smaller one) is closer to us, we need to follow
-      -- the points as they defined in the polygon. Otherwise it is the 
-      -- reverse order.
-      local distanceFromFromIndex = getDistanceBetweenPoints( field.headlandTracks[ i ][ fromIndex ], field.vehicle.location )
-      local distanceFromToIndex = getDistanceBetweenPoints( field.headlandTracks[ i ][ toIndex ], field.vehicle.location )
-      if distanceFromToIndex < distanceFromFromIndex then
-        -- must reverse direction
-        -- driving direction is in decreasing index, so we start at fromIndex and go a full circle
-        -- to toIndex 
-        addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], i, fromIndex, toIndex, -1 )
-        startLocation = field.headlandTracks[ i ][ fromIndex ]
-        field.headlandTracks[ i ].circleStart = fromIndex
-        field.headlandTracks[ i ].circleEnd = toIndex 
-        field.headlandTracks[ i ].circleStep = -1
+
+    -- we may have an issue finding the next track around corners, so try a couple of other headings
+    local headings = { heading, heading + math.pi / 3, heading - math.pi / 3 }
+    local fromIndex, toIndex
+    local found = false
+    for _, h in pairs( headings ) do
+      fromIndex, toIndex = getIntersectionOfLineAndPolygon( field.headlandTracks[ i ], startLocation, 
+                           addPolarVectorToPoint( startLocation, h, distance ))
+      if fromIndex then
+        -- now find out which direction we have to drive on the headland pass.
+        -- This depends on the order of the points in the polygon: clockwise or 
+        -- counterclockwise. Basically we have to know if we follow the points
+        -- of the polygon in increasing or decreasing index order. So, if 
+        -- fromIndex (the smaller one) is closer to us, we need to follow
+        -- the points as they defined in the polygon. Otherwise it is the 
+        -- reverse order.
+        local distanceFromFromIndex = getDistanceBetweenPoints( field.headlandTracks[ i ][ fromIndex ], field.vehicle.location )
+        local distanceFromToIndex = getDistanceBetweenPoints( field.headlandTracks[ i ][ toIndex ], field.vehicle.location )
+        if distanceFromToIndex < distanceFromFromIndex then
+          -- must reverse direction
+          -- driving direction is in decreasing index, so we start at fromIndex and go a full circle
+          -- to toIndex 
+          addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], i, fromIndex, toIndex, -1 )
+          startLocation = field.headlandTracks[ i ][ fromIndex ]
+          field.headlandTracks[ i ].circleStart = fromIndex
+          field.headlandTracks[ i ].circleEnd = toIndex 
+          field.headlandTracks[ i ].circleStep = -1
+        else
+          -- driving direction is in increasing index, so we start at toIndex and go a full circle
+          -- back to fromIndex
+          addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], i, toIndex, fromIndex, 1 )
+          startLocation = field.headlandTracks[ i ][ toIndex ]
+          field.headlandTracks[ i ].circleStart = toIndex
+          field.headlandTracks[ i ].circleEnd = fromIndex 
+          field.headlandTracks[ i ].circleStep = 1
+        end
+        heading = field.headlandTracks[ i ][ fromIndex ].tangent.angle + getInwardDirection( field.headlandTracks[ i ].isClockwise )
+        --v = { location = startLocation, heading=math.deg( heading ) }
+        -- remember this, we'll need when generating the link from the last headland pass
+        -- to the parallel tracks
+        table.insert( marks, field.headlandTracks[ i ][ fromIndex ])
+        table.insert( marks, field.headlandTracks[ i ][ toIndex ])
+        break
       else
-        -- driving direction is in increasing index, so we start at toIndex and go a full circle
-        -- back to fromIndex
-        addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], i, toIndex, fromIndex, 1 )
-        startLocation = field.headlandTracks[ i ][ toIndex ]
-        field.headlandTracks[ i ].circleStart = toIndex
-        field.headlandTracks[ i ].circleEnd = fromIndex 
-        field.headlandTracks[ i ].circleStep = 1
+        print( string.format( "Could not link headland track %d at heading %d", i, math.deg( h )))
       end
-      heading = field.headlandTracks[ i ][ fromIndex ].tangent.angle + getInwardDirection( field.headlandTracks[ i ].isClockwise )
-      --v = { location = startLocation, heading=math.deg( heading ) }
-      -- remember this, we'll need when generating the link from the last headland pass
-      -- to the parallel tracks
-      table.insert( marks, field.headlandTracks[ i ][ fromIndex ])
-      table.insert( marks, field.headlandTracks[ i ][ toIndex ])
     end
   end
   field.headlandPath = headlandPath
