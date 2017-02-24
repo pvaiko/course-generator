@@ -1,5 +1,6 @@
 -- all functions dealing with reading/writing files
 --
+inputFields = {}
 
 --- convert a field from the CP representation to a format we are 
 -- more comfortable with, for example turn it into x,y from x,-z
@@ -33,7 +34,7 @@ end
 --
 -- read the log.txt to get field polygons. I changed generateCourse.lua
 -- so it writes the coordinates to log.txt when a course is generated for a field.
-
+--
 function loadFieldsFromLogFile( fileName, fieldName )
   local i = 1 
   for line in io.lines(fileName ) do
@@ -66,6 +67,7 @@ end
 --- Reconstruct a field from a Courseplay saved course.
 -- As the saved course does not contain the field data we use the 
 -- first headland track as the field boundary
+--
 function loadFieldFromSavedCourse( fileName )
   local f = io.input( fileName )
   local field = {}
@@ -78,7 +80,7 @@ function loadFieldFromSavedCourse( fileName )
       field.nHeadlandPasses = tonumber( nHeadlandPasses )
       field.isClockwise = isClockwise 
     end
-    local num, cx, cz, lane = string.match( line, '<waypoint(%d+).+pos="([%d%.-]+) ([%d%.-]+)" lane="([%d-]+)"')
+    local num, cx, cz, lane = string.match( line, '<waypoint(%d+).+pos="([%d%.-]+) ([%d%.-]+)" +lane="([%d-]+)"')
     -- lane -1 is the outermost headland track
     if lane == "-1" then
       table.insert( field.boundary, { x=tonumber( cx ), y=-tonumber( cz )})
@@ -88,6 +90,10 @@ function loadFieldFromSavedCourse( fileName )
   return field
 end
 
+
+--- Convert our angle representation (measured from the x axis up in radians)
+-- into CP's, where 0 is to the south, to our negative y axis.
+--
 function toCpAngle( angle )
   local a = math.deg( angle ) + 90
   if a > 180 then
@@ -96,8 +102,11 @@ function toCpAngle( angle )
   return a
 end
 
+
+--- Write field.course to a CP saved course file
+--
 function writeCourseToFile( field, fileName )
-  local f = io.output( fileName .. "_new.xml" )
+  local f = io.output( fileName )
   io.write( 
     string.format( '<course workWidth="%.6f" numHeadlandLanes="%d" headlandDirectionCW="%s">\n', 
       field.width, field.nHeadlandPasses, field.isClockwise ))
@@ -128,4 +137,48 @@ function writeCourseToFile( field, fileName )
   end
   io.write( " </course>" )
   io.close( f )
+end
+--- Read the CP course manager files to find out which courses are 
+-- saved in that directory
+function getSavedCourses( f )
+  local savedCourses = {}
+  for line in f:lines() do
+    local fileName, id, name = string.match( line, 'fileName="(%g+)" +id="(%d+)".+name="(.+)"' )
+    if id then
+      table.insert( savedCourses, { fileName=fileName, id=tonumber(id), name=name })
+    end
+  end
+  return savedCourses
+end
+
+--- Copy oldCourse to newCourse in dir, and also update the manager file
+function copyCourse( dir, oldCourse, newCourse, managerFileName )
+  -- first copy the course file
+  print( string.format( "Copying %s to %s", oldCourse.fileName, newCourse.fileName ))
+  local from = io.open( dir .. "/" .. oldCourse.fileName, "r" )
+  local to = io.open( dir .. "/" .. newCourse.fileName, "w" )
+  for line in from:lines() do
+    to:write( line .. "\n" )
+  end
+  from:close()
+  to:close()
+
+  -- now update the manager file
+  local managerFileContents = ""
+  local man = io.open( dir .. "/" .. managerFileName, "r" )
+  for line in man:lines() do
+    managerFileContents = managerFileContents .. line .. "\n"
+    local fileName, id, name = string.match( line, 'fileName="(%g+)" +id="(%d+)".+name="(.+)"' )
+    -- append new course data after the original courses
+    if tonumber( id ) == ( newCourse.id - 1 ) then
+      managerFileContents = managerFileContents .. string.format(
+        '        <slot fileName="%s" id="%d" parent="0" isUsed="true" name="%s"/>\n',
+        newCourse.fileName, newCourse.id, newCourse.name )
+    end
+  end
+  man:close() 
+
+  local man = io.open( dir .. "/" .. managerFileName, "w" )
+  man:write( managerFileContents )
+  man:close()
 end

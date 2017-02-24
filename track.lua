@@ -52,6 +52,8 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, useBoun
   end
   linkHeadlandTracks( field, implementWidth )
   field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth )
+  field.bestAngle = field.headlandTracks[ nHeadlandPasses ].bestAngle
+  field.nTracks = field.headlandTracks[ nHeadlandPasses ].nTracks
   -- assemble complete course now
   field.course = {}
   for i, point in ipairs( field.headlandPath ) do
@@ -185,7 +187,7 @@ function findBestTrackAngle( field, width )
   if bestAngle then 
     print( "Best angle: " .. bestAngle .. " tracks: " .. minTracks )
   end
-  return bestAngle
+  return bestAngle, minTracks
 end
 
 --- Generate up/down tracks covering a field at the optimum angle
@@ -197,14 +199,14 @@ function generateTracks( field, width )
   local dx, dy = ( bb.maxX + bb.minX ) / 2, ( bb.maxY + bb.minY ) / 2 
   local translated = translatePoints( field, -dx , -dy )
   -- Now, determine the angle where the number of tracks is the minimum
-  local bestAngle = findBestTrackAngle( translated, width )
-  if not bestAngle then
-    bestAngle = field.bestDirection.dir
-    print( "No best angle found, use the longest edge direction " .. bestAngle )
+  field.bestAngle, field.nTracks = findBestTrackAngle( translated, width )
+  if not field.bestAngle then
+    field.bestAngle = field.bestDirection.dir
+    print( "No best angle found, use the longest edge direction " .. field.bestAngle )
   end
   -- now, generate the tracks according to the implement width within the rotated field's bounding box
   -- using the best angle
-  local rotated = rotatePoints( translated, math.rad( bestAngle ))
+  local rotated = rotatePoints( translated, math.rad( field.bestAngle ))
   local parallelTracks = generateParallelTracks( rotated, width )
 
   table.insert( rotatedMarks, rotated.bottomIntersections[ 1 ].point )
@@ -222,13 +224,13 @@ function generateTracks( field, width )
     findStartOfParallelTracks( rotated, field.circleStart, field.circleEnd, field.circleStep )
   local track = generateWaypointsForParallelTracks( parallelTracks, bottomToTop, leftToRight ) 
   -- now rotate and translate everything back to the original coordinate system
-  rotatedMarks = translatePoints( rotatePoints( rotatedMarks, -math.rad( bestAngle )), dx, dy )
+  rotatedMarks = translatePoints( rotatePoints( rotatedMarks, -math.rad( field.bestAngle )), dx, dy )
   for i = 1, #rotatedMarks do
     table.insert( marks, rotatedMarks[ i ])
   end
   field.pathFromHeadlandToCenter = 
-    translatePoints( rotatePoints( pathFromHeadlandToCenter, -math.rad( bestAngle )), dx, dy )
-  return translatePoints( rotatePoints( track, -math.rad( bestAngle )), dx, dy )
+    translatePoints( rotatePoints( pathFromHeadlandToCenter, -math.rad( field.bestAngle )), dx, dy )
+  return translatePoints( rotatePoints( track, -math.rad( field.bestAngle )), dx, dy )
 end
 
 ----------------------------------------------------------------------------------
