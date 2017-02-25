@@ -228,7 +228,7 @@ end
 function love.textinput( t )
   if t == "g" then
     marks = {}
-    if not pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, false ) then
+    if not pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, true ) then
       love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
     end
   end
