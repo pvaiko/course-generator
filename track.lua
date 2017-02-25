@@ -401,11 +401,11 @@ function generateWaypointsForParallelTracks( parallelTracks, bottomToTop, leftTo
       end
       for j, point in ipairs( parallelTracks[ i ].waypoints) do
         -- the first point of a track is the end of the turn (except for the first track)
-        if ( j == 1 and i > 1 ) then 
+        if ( j == 1 and i ~= startTrack ) then 
           point.turnEnd = true
         end
         -- the last point of a track is the start of the turn (except for the last track)
-        if ( j == #parallelTracks[ i ].waypoints and i < endTrack ) then
+        if ( j == #parallelTracks[ i ].waypoints and i ~= endTrack ) then
           point.turnStart = true
         end
         table.insert( track, point )
