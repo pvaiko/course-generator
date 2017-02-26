@@ -20,8 +20,10 @@ if not arg[ 1 ] then
   return 
 end
 
-dir = arg[ 1 ]
-managerFileFullPath = dir .. "/" .. managerFileName
+print( arg[1])
+
+dir =  arg[ 1 ] 
+managerFileFullPath =  dir .. "\\" .. managerFileName
 managerFile = io.open( managerFileFullPath, "r" )
 if not managerFile then
   print( string.format( "Can't open %s.", managerFileFullPath ))
@@ -77,5 +79,4 @@ end
 
 -- finally, start the course generator with the new saved course file
 
-os.execute( "love . " .. dir .. "/" .. newCourse.fileName )
-os.execute( "LOVE\\love.exe . " .. dir .. "\\" .. newCourse.fileName )
+os.execute( 'LOVE\\love.exe . "' .. dir .. "\\" .. newCourse.fileName .. '"' )

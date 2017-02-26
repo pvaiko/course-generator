@@ -148,8 +148,8 @@ function linkHeadlandTracks( field, implementWidth )
         --v = { location = startLocation, heading=math.deg( heading ) }
         -- remember this, we'll need when generating the link from the last headland pass
         -- to the parallel tracks
-        table.insert( marks, field.headlandTracks[ i ][ fromIndex ])
-        table.insert( marks, field.headlandTracks[ i ][ toIndex ])
+        table.insert( rotatedMarks, field.headlandTracks[ i ][ fromIndex ])
+        table.insert( rotatedMarks, field.headlandTracks[ i ][ toIndex ])
         break
       else
         print( string.format( "Could not link headland track %d at heading %d", i, math.deg( h )))
