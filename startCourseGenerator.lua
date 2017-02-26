@@ -69,7 +69,7 @@ else
   print( string.format( "Is it ok to create '%s?' [y/n]" , newCourse.name ))
   io.flush()
   local answer = io.stdin:read()
-  if answer <> "y" and answer <> "Y" then
+  if answer ~= "y" and answer ~= "Y" then
     return
   end
   copyCourse( dir, savedCourses[ selectedId ], newCourse, managerFileName )
@@ -77,4 +77,5 @@ end
 
 -- finally, start the course generator with the new saved course file
 
+os.execute( "love . " .. dir .. "/" .. newCourse.fileName )
 os.execute( "LOVE\\love.exe . " .. dir .. "\\" .. newCourse.fileName )

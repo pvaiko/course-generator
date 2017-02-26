@@ -1,0 +1,119 @@
+Fieldwork Course Generator
+==========================
+
+This tool is a preview of an extended course generator and
+may at some point be integrated into Courseplay.
+
+It is a standalone tool, that is, currently you won't be 
+able to use it from the game directly. Instead, it'll load
+a fieldwork course previously generated in Courseplay, then
+you make some adjustments and save the customized course.
+
+Note that you can only load fieldwork courses with a headland
+track as the tool uses the outermost headland track to find
+the field boundary.
+
+You can then load this customized course in the game just
+as a Courseplay generated course.
+
+What this preview does:
+
+- generates tracks in any direction
+- finds the optimum angle, that is the direction the parallel
+  tracks must run in order to have the minimum number of turns.
+- makes a best effort to find an angle for non-convex fields 
+  which results in continuous tracks
+- start the headland tracks at any location.
+- link the headland tracks with the parallel track (remember, 
+  the parallel tracks start location changes with the angle)
+
+Upcoming features:
+
+- integration with Courseplay so courses can be generated 
+  in game 
+- generate course starting in the center and finishing with
+  the headland for sowing and any fieldwork other than 
+  harvesting
+- interleaved parallel tracks (sorry, don't know the exact term) 
+  where you work every second track to prevent Y turns.
+- optimized headland track generation to prevent skipping
+  fruit at corners.
+
+Installation
+============
+
+The package is for Windows and contains everything needed
+to run, including a lua interpreter and the LÖVE graphical
+framework. 
+
+This is the Windows version, I don't have access to Mac 
+computers. If you are willing to install lua and LÖVE, 
+you can run the scripts on a Mac too. 
+
+Just unzip to any folder you like.
+
+Usage
+=====
+
+1. Find your game folder. On Windows, this will most likely
+   be under My Documents\My Games\FarmingSimulator2017
+
+2. Under that, there is a CoursePlay_Courses folder with
+   a subfolder for each installed map. This is where
+   the Courseplay courses are stored for each map.
+   Note the full path to these folders.
+
+3. MAKE A BACKUP OF YOUR CoursePlay_Courses FOLDER! This is
+   a beta version, there may be bugs in there I don't want 
+   you to lose your saved courses!
+
+4. Now switch to the folder where you unzipped the course
+   generator and type:
+   lua53.exe startCourseGenerator.lua <full path to course folder>
+   for example, on my computer this would be:
+
+   lua53.exe startCourseGenerator.lua "c:\Users\Peter\Documents\My Games\FramingSimulator2017\CoursePlay_Courses\FS17_coldboroughParkFarm.SampleModMap"
+   
+   for the Coldborough Farm map. Make sure there is _no_ \ at the very
+   end of the folder name just before the ".
+
+5. You should now see a list of the saved courses of that map.
+   Only the top folder works, courses in subfolders won't show up.
+   I can add that feature if people really need it, but please 
+   try to live with this limitation for now. 
+
+6. Select a fieldwork course by typing in the number of the course 
+   and pressing enter. You'll have to confirm the creation of a new
+   course. Remember, the course must have a headland track! 
+   Selecting non-fieldwork courses or fieldwork courses with no
+   headland tracks will result in errors.
+
+7. The course generator window appears showing the outline of the
+   field. 
+
+8. Set the width and number of passes using the w/W and p/P keys.
+
+9. Next, you'll have to define where to start the headland track.
+   Use the right mouse button to place a marker where your want to 
+   start it, just outside the field boundary. 
+
+10. Use the keys j and k to turn the marker. This will determine the
+    direction of the headland pass.
+
+11. Press g to generate the course. Green is the headland, blueish   
+    are the tracks in the center of the field and the red line is 
+    the path between the two.
+
+12. If you like what you see, press s to save the course.
+
+13. If you are in a game, you'll have to quit it and restart to be 
+    able to see the new course, otherwise it won't show up.
+
+14. Load the new course and test.
+
+Thanks for giving it a try. If you have any problems, report it on
+github https://github.com/Courseplay/courseplay/issues/1793 or 
+at courseplay@vajko.name.
+
+Peter
+
