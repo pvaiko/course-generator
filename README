@@ -88,6 +88,10 @@ Usage
    course. Remember, the course must have a headland track! 
    Selecting non-fieldwork courses or fieldwork courses with no
    headland tracks will result in errors.
+   Also, note that if you just created that course in the game 
+   then the course-generator may not be able to open it. If nothing 
+   happens when you select a course, try saving and reloading 
+   the game.
 
 7. The course generator window appears showing the outline of the
    field. 
