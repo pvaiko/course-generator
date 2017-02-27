@@ -2,7 +2,8 @@ Fieldwork Course Generator
 ==========================
 
 This tool is a preview of an extended course generator and
-may at some point be integrated into Courseplay.
+may at some point be integrated into Courseplay 
+(https://github.com/Courseplay/courseplay).
 
 It is a standalone tool, that is, currently you won't be 
 able to use it from the game directly. Instead, it'll load
@@ -116,7 +117,7 @@ Usage
 15. Load the new course and test.
 
 Thanks for giving it a try. If you have any problems, report it on
-github https://github.com/Courseplay/courseplay/issues/1793 or 
+github https://github.com/pvajko/course-generator/issues or 
 at courseplay@vajko.name.
 
 Peter
