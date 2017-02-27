@@ -87,6 +87,30 @@ function calculateHeadlandTrack( polygon, offset )
   return track
 end
 
+
+--- Reverse a course. This is to build a sowing/cultivating etc. course
+-- from a harvester course.
+-- We build our courses working from the outside inwards (harverster).
+-- This function reverses that course so it can be used for fieldwork
+-- starting in the middle of the course.
+--
+function reverseCourse( course )
+  local result = {}
+  for i = #course, 1, -1 do
+    local newPoint = copyPoint( course[ i ])
+    if newPoint.turnStart then
+      newPoint.turnStart = nil
+      newPoint.turnEnd = true
+    elseif newPoint.turnEnd then
+      newPoint.turnEnd = nil
+      newPoint.turnStart = true
+    end
+    table.insert( result, newPoint )
+  end
+  calculatePolygonData( result )
+  return result
+end
+
 --- Link the generated, parallel circular headland tracks to
 -- a single spiral track
 -- First, We have to find where to start our course. 
@@ -414,9 +438,36 @@ function generateWaypointsForParallelTracks( parallelTracks, bottomToTop, leftTo
     else
       print( string.format( "Track %d has no waypoints, skipping.", i ))
     end
-    
   end
   return track
+end
+
+--- Check parallel tracks to see if teh turn start and turn end waypoints
+-- are too far away. If this is the case, add waypoints
+-- Assume this is called at the first waypoint of a new track (turnEnd == true)
+--
+-- This may help the auto turn algorithm, sometimes it can't handle turns 
+-- when turnstart and turnend are too far apart
+--
+function addWaypointsForTurnsWhenNeeded( track )
+  local result = {}
+  for i, point in ipairs( track ) do
+    if point.turnEnd then
+      local distanceFromTurnStart = getDistanceBetweenPoints( point, track[ i - 1 ])
+      if distanceFromTurnStart > waypointDistance * 2 then
+        -- too far, add a waypoint between the start of the current track and 
+        -- the end of the previous one.
+        print( "adding a point at ", i )
+        local x, y = getPointInTheMiddle( point, track[ i - 1])
+        -- also, we are moving the turn end to this new point
+        track[ i - 1 ].turnStart = nil
+        table.insert( result, { x=x, y=y, turnStart=true })
+      end
+    end
+    table.insert( result, point )
+  end
+  print( "track had " .. #track .. ", result has " .. #result )
+  return result
 end
 
 --- count tracks based on their intersection with a field boundary

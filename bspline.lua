@@ -15,7 +15,7 @@ function _refine( points )
       if( isSharpTurn( points[ i ].fromEdge, points[ ix( i + 1 )].fromEdge )) then 
         -- insert points only when there is really a curve here
         -- table.insert( marks, points[ i ])
-        local x, y =  _mid( point, points[ ix( i + 1 )]);
+        local x, y =  getPointInTheMiddle( point, points[ ix( i + 1 )]);
         rIx = rIx + 1
         refined[ rIx ] = { x = x, y = y }
       end
@@ -33,7 +33,7 @@ function _dual( points )
   for i = 1, #points do
     point = points[ i ];
     if points[ ix( index + 1 )] then
-      x, y = _mid( point, points[ ix( index + 1 )]);
+      x, y = getPointInTheMiddle( point, points[ ix( index + 1 )]);
       dualed[ index ] = { x = x, y = y }
     end
     index = index + 1;
@@ -51,7 +51,7 @@ function _tuck( points, s )
     -- tuck points only when there is really a curve here
     if ( isSharpTurn( points[ i ].fromEdge, points[ ix( i + 1 )].fromEdge )) then
       -- mid point between the previous and next
-      local midPNx, midPNy = _mid( pp, np )
+      local midPNx, midPNy = getPointInTheMiddle( pp, np )
       -- vector from current point to mid point
       local mx, my = midPNx - cp.x, midPNy - cp.y
       -- move current point towards (or away from) the midpoint by the factor s
@@ -64,7 +64,7 @@ function _tuck( points, s )
   return tucked
 end
 
-function _mid( a, b ) 
+function getPointInTheMiddle( a, b ) 
   return a.x + (( b.x - a.x ) / 2 ),
          a.y + (( b.y - a.y ) / 2 )
 end

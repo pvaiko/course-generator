@@ -97,7 +97,7 @@ function applyLowPassFilter( polygon, angleThreshold, distanceThreshold )
     local isTooSharp = math.abs( getDeltaAngle( np.fromEdge.angle, cp.fromEdge.angle )) > angleThreshold 
     if isTooClose then
       -- replace current and next point with something in the middle
-      polygon[ ix( index + 1 )].x, polygon[ ix( index + 1 )].y = _mid( cp, np )
+      polygon[ ix( index + 1 )].x, polygon[ ix( index + 1 )].y = getPointInTheMiddle( cp, np )
     end
     if isTooSharp or isTooClose then
       table.remove( polygon, ix( index ))

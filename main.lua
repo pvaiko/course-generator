@@ -101,7 +101,7 @@ function drawSettings()
     love.graphics.print( string.format( "best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 50, 0, 1 )
   end
   -- help text
-  local y = windowHeight - 140
+  local y = windowHeight - 160
   love.graphics.setColor( 240, 240, 240 )
   love.graphics.print( "Keys:", 10, y, 0, 1 )
   y = y + 20
@@ -113,6 +113,8 @@ function drawSettings()
   love.graphics.print( "w/W - -/+ work width", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "p/P - -/+ headland passes", 10, y, 0, 1 )
+  y = y + 20
+  love.graphics.print( "r - reverse course", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "g - generate course", 10, y, 0, 1 )
   y = y + 20
@@ -148,6 +150,20 @@ function drawBoundingBox( bb )
   love.graphics.line( bb.minX, bb.minY, bb.maxX, bb.minY, bb.maxX, bb.maxY, bb.minX, bb.maxY, bb.minX, bb.minY )
 end
 
+function drawCoursePoints( course )
+  for i, point in ipairs( course ) do
+    if point.turnStart then
+      love.graphics.setColor( 255, 0, 0 )
+    elseif point.turnEnd then
+      love.graphics.setColor( 0, 255, 0 )
+    else
+      love.graphics.setColor( 255, 255, 0 )
+    end
+    love.graphics.points( point.x, point.y )
+  end
+end
+
+
 function drawField( field )
   if field.vertices then
     if ( field.boundingBox ) then
@@ -158,8 +174,12 @@ function drawField( field )
       love.graphics.setLineWidth( lineWidth * 10 )
       love.graphics.line( getVertices( field.course ))
       love.graphics.setLineWidth( lineWidth )
+      love.graphics.setColor( 0, 255, 0 )
+      love.graphics.circle( "fill", field.course[ 1 ].x, field.course[ 1 ].y, 5 )
+      love.graphics.setColor( 255, 0, 0 )
+      love.graphics.circle( "fill", field.course[ #field.course ].x, field.course[ #field.course ].y, 5 )
       love.graphics.setColor( 100, 100, 100 )
-      drawPoints( field.course )
+      drawCoursePoints( field.course )
     end
     love.graphics.setColor( 100, 100, 100 )
     love.graphics.polygon('line', field.vertices)
@@ -228,7 +248,9 @@ end
 function love.textinput( t )
   if t == "g" then
     marks = {}
-    if not pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, true ) then
+    status, err = pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, true )
+    if not status then
+      print( err )
       love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
     end
   end
@@ -252,6 +274,9 @@ function love.textinput( t )
   end
   if t == "p" then
     field.nHeadlandPasses = field.nHeadlandPasses - 1
+  end
+  if t == "r" then
+    field.course = reverseCourse( field.course )
   end
 end
 
