@@ -26,14 +26,14 @@ What this preview does:
 - start the headland tracks at any location.
 - link the headland tracks with the parallel track (remember, 
   the parallel tracks start location changes with the angle)
+- generate course starting in the center and finishing with
+  the headland for sowing and any fieldwork other than 
+  harvesting
 
 Upcoming features:
 
 - integration with Courseplay so courses can be generated 
   in game 
-- generate course starting in the center and finishing with
-  the headland for sowing and any fieldwork other than 
-  harvesting
 - interleaved parallel tracks (sorry, don't know the exact term) 
   where you work every second track to prevent Y turns.
 - optimized headland track generation to prevent skipping
@@ -43,11 +43,11 @@ Installation
 ============
 
 The package is for Windows and contains everything needed
-to run, including a lua interpreter and the LÖVE graphical
+to run, including a lua interpreter and the LOVE graphical
 framework. 
 
 This is the Windows version, I don't have access to Mac 
-computers. If you are willing to install lua and LÖVE, 
+computers. If you are willing to install lua and LOVE, 
 you can run the scripts on a Mac too. 
 
 Just unzip to any folder you like.
@@ -98,18 +98,22 @@ Usage
    start it, just outside the field boundary. 
 
 10. Use the keys j and k to turn the marker. This will determine the
-    direction of the headland pass.
+    direction of the headland pass (clockwise or counterclockwise).
 
 11. Press g to generate the course. Green is the headland, blueish   
     are the tracks in the center of the field and the red line is 
     the path between the two.
 
-12. If you like what you see, press s to save the course.
+12. If you want you can reverse the course so it starts in the middle
+    and ends with the headland passes. This is great for sowing and 
+    other, non harvesting fieldwork.
 
-13. If you are in a game, you'll have to quit it and restart to be 
+13. If you like what you see, press s to save the course.
+
+14. If you are in a game, you'll have to quit it and restart to be 
     able to see the new course, otherwise it won't show up.
 
-14. Load the new course and test.
+15. Load the new course and test.
 
 Thanks for giving it a try. If you have any problems, report it on
 github https://github.com/Courseplay/courseplay/issues/1793 or 
