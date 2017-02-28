@@ -7,6 +7,15 @@ function eq( a, b )
   local epsilon = 0.00001
   return a < ( b + epsilon ) and a > ( b - epsilon )
 end
+
+
+pt = { 1, 2, 3, 4, 5 }
+pt = reorderTracksForAlternateFieldwork( pt, 1 )
+assert( pt[ 1 ] == 1 and pt[ 2 ] == 3 and pt[ 3 ] == 5 and pt[ 4 ] == 4 and pt[ 5 ] == 2 )
+pt = { 1, 2, 3, 4, 5, 6 }
+pt = reorderTracksForAlternateFieldwork( pt, 1 )
+assert( pt[ 1 ] == 1 and pt[ 2 ] == 3 and pt[ 3 ] == 5 and pt[ 4 ] == 6 and pt[ 5 ] == 4 and pt[ 6 ] == 2 )
+
 --
 --------------------------------------------------------------
 -- Polygon iterator
@@ -121,7 +130,7 @@ assert( r[ 1 ] == 4, r[ 2 ] == 3, r[ 3 ] == 2, r[ 4 ] == 1 )
 
 marks = {}
 for i, fieldName in ipairs( { "pickles/8", "pickles/9", "pickles/23" }) do
-  for width = 3, 7 do
+  for width = 3, 2 do
     print( string.format( "\nGenerating course for field %s with width %d", fieldName, width ))
     local field = loadFieldFromPickle( fieldName )
     generateCourseForField( field, width, 5, false )

@@ -22,6 +22,7 @@ function love.load( arg )
   field.vehicle = { location = {x=335, y=145}, heading = 180 }
   field.boundingBox = getBoundingBox( field.boundary )
   field.vertices = getVertices( field.boundary )
+  field.alternateTracks = false
   
   -- translate and scale everything so they are visible
   fieldWidth = field.boundingBox.maxX - field.boundingBox.minX
@@ -101,7 +102,7 @@ function drawSettings()
     love.graphics.print( string.format( "best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 50, 0, 1 )
   end
   -- help text
-  local y = windowHeight - 160
+  local y = windowHeight - 180
   love.graphics.setColor( 240, 240, 240 )
   love.graphics.print( "Keys:", 10, y, 0, 1 )
   y = y + 20
@@ -115,6 +116,8 @@ function drawSettings()
   love.graphics.print( "p/P - -/+ headland passes", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "r - reverse course", 10, y, 0, 1 )
+  y = y + 20
+  love.graphics.print( "a - toggle alternate tracks", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "g - generate course", 10, y, 0, 1 )
   y = y + 20
@@ -245,14 +248,18 @@ function love.draw()
   drawSettings()
 end
 
+function generate()
+  status, err = pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, true, field.alternateTracks )
+  if not status then
+    print( err )
+    love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
+  end
+end
+
 function love.textinput( t )
   if t == "g" then
     marks = {}
-    status, err = pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, true )
-    if not status then
-      print( err )
-      love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
-    end
+    generate()
   end
   if t == "j" then
     field.vehicle.heading = field.vehicle.heading + 5
@@ -277,6 +284,10 @@ function love.textinput( t )
   end
   if t == "r" then
     field.course = reverseCourse( field.course )
+  end
+  if t == "a" then
+    field.alternateTracks = not field.alternateTracks
+    generate()
   end
 end
 
