@@ -153,4 +153,34 @@ local fileName = "courses/courseStorage0004.xml"
 
 generateCourseForField( field, field.width, field.nHeadlandPasses, true )
 writeCourseToFile( field, fileName ) 
+os.execute( "del " .. fileName )
+
+testDir = "courses\\test\\"
+managerFileName="courseManager.xml"
+
+
+for selected = 1, 14 do 
+  os.execute( "copy " .. testDir .. managerFileName .. " " .. testDir .. managerFileName .. ".orig" )
+  managerFile = io.open( testDir .. managerFileName, "r" )
+  savedCourses, nextFreeId, nextFreeSequence = getSavedCourses( managerFile )
+  managerFile:close()
+  oldCourse = savedCourses[ selected ]
+  print( oldCourse.id, oldCourse.fileName )
+  newCourse = { id=nextFreeId, 
+                name= "(test) " .. oldCourse.name,
+                fileName=string.format( "courseStorage%04d.xml", nextFreeSequence ),
+                sequence=nextFreeSequence }
+  copyCourse( testDir, oldCourse, newCourse, managerFileName ) 
+  -- reread managerfile
+  managerFile = io.open( testDir .. managerFileName, "r" )
+  savedCourses, nextFreeId, nextFreeSequence = getSavedCourses( managerFile )
+  managerFile:close()
+  assert( #savedCourses == 15 )
+  createdCourse = savedCourses[ 15 ]
+  assert( createdCourse.id == newCourse.id and createdCourse.fileName == newCourse.fileName and createdCourse.sequence == newCourse.sequence )
+  -- delete copied course file and restore the manager file
+  os.execute( "del " .. testDir .. createdCourse.fileName )
+  os.execute( "move " .. testDir .. managerFileName .. ".orig " .. testDir .. managerFileName  )
+
+end
 

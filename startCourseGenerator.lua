@@ -37,14 +37,14 @@ managerFile:close()
 print()
 
 for id, course in pairs( savedCourses ) do
-  print( string.format( " [ %d ] - '%s' (%s)", course.id, course.name, course.fileName ))
+  print( string.format( " [ %d ] - '%s' (%s)", course.sequence, course.name, course.fileName ))
 end
 print( string.format( "\nEnter number ( %d - %d ) for the selected course or 0 (zero) to exit\n", 1, #savedCourses ))
 
 while true do
-  selectedId = io.stdin:read( "*n" )
-  if selectedId == 0 then return end
-  if savedCourses[ selectedId ] ~= nil then
+  selectedSequence = io.stdin:read( "*n" )
+  if selectedSequence == 0 then return end
+  if savedCourses[ selectedSequence ] ~= nil then
     -- not sure why this is needed but if I don't do this
     -- the next stdin read won't wait
     io.stdin:read()
@@ -52,19 +52,20 @@ while true do
   end
 end
 
-local selectedName = savedCourses[ selectedId ].name
+local selectedName = savedCourses[ selectedSequence ].name
 local newCourse = {}
 
 if string.match( selectedName, prefix ) then
   -- already customized, don't create new
   alreadyCustomized = true
-  newCourse = savedCourses[ selectedId ]
+  newCourse = savedCourses[ selectedSequence ]
   print( string.format( [[You have selected '%s'. This seems to be a course customized
                           already. No new course will be created]], selectedName ))
 else
   newCourse = { id=nextFreeId, 
                 name= prefix .. " " .. selectedName,
-                fileName=string.format( "courseStorage%04d.xml", nextFreeSequence )}
+                fileName=string.format( "courseStorage%04d.xml", nextFreeSequence ),
+                sequence=nextFreeSequence }
   print( string.format( "You have selected '%s'. Will copy it to a new course named '%s'", 
                         selectedName, newCourse.name ))
   print( string.format( "Is it ok to create '%s (%s)?' [y/n]" , newCourse.name, newCourse.fileName ))
@@ -73,7 +74,7 @@ else
   if answer ~= "y" and answer ~= "Y" then
     return
   end
-  copyCourse( dir, savedCourses[ selectedId ], newCourse, managerFileName )
+  copyCourse( dir, savedCourses[ selectedSequence ], newCourse, managerFileName )
 end
 
 -- finally, start the course generator with the new saved course file

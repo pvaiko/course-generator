@@ -138,6 +138,15 @@ function writeCourseToFile( field, fileName )
   io.write( " </course>" )
   io.close( f )
 end
+
+function parseCourseData( line )
+  local fileName = string.match( line, 'fileName="([%w%.]+)"' )
+  local id = string.match( line, 'id="(%d+)"' )
+  local name = string.match( line, 'name="(.+)"' )
+  local sequence = string.match( line, 'courseStorage(%d+).xml' )
+  return fileName, id, name, sequence
+end
+
 --- Read the CP course manager files to find out which courses are 
 -- saved in that directory
 function getSavedCourses( f )
@@ -145,14 +154,11 @@ function getSavedCourses( f )
   local maxId = -1
   local maxSequence = -1
   for line in f:lines() do
-    local fileName = string.match( line, 'fileName="(%g+)"' )
-    local id = string.match( line, 'id="(%d+)"' )
-    local name = string.match( line, 'name="(.+)"' )
-    local sequence = string.match( line, 'courseStorage(%d+).xml' )
+    local fileName, id, name, sequence = parseCourseData( line )
     if id then
       id = tonumber( id )
       sequence = tonumber( sequence )
-      savedCourses[ id ] = { fileName=fileName, id=id, name=name, sequence=sequence }
+      savedCourses[ sequence ] = { fileName=fileName, id=id, name=name, sequence=sequence }
       if ( id > maxId ) then maxId = id end
       if ( id > maxSequence ) then maxSequence = sequence end
     end
@@ -177,11 +183,11 @@ function copyCourse( dir, oldCourse, newCourse, managerFileName )
   local man = io.open( dir .. "/" .. managerFileName, "r" )
   for line in man:lines() do
     managerFileContents = managerFileContents .. line .. "\n"
-    local fileName, id, name = string.match( line, 'fileName="(%g+)" +id="(%d+)".+name="(.+)"' )
+    local fileName, id, name, sequence = parseCourseData( line )
     -- append new course data after the original courses
-    if tonumber( id ) == ( newCourse.id - 1 ) then
+    if sequence and tonumber( sequence ) == ( newCourse.sequence - 1 ) then
       managerFileContents = managerFileContents .. string.format(
-        '        <slot fileName="%s" id="%d" parent="0" isUsed="true" name="%s"/>\n',
+        '    <slot fileName="%s" id="%d" parent="0" isUsed="true" name="%s"/>\n',
         newCourse.fileName, newCourse.id, newCourse.name )
     end
   end
