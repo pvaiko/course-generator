@@ -142,13 +142,22 @@ end
 -- saved in that directory
 function getSavedCourses( f )
   local savedCourses = {}
+  local maxId = -1
+  local maxSequence = -1
   for line in f:lines() do
-    local fileName, id, name = string.match( line, 'fileName="(%g+)" +id="(%d+)".+name="(.+)"' )
+    local fileName = string.match( line, 'fileName="(%g+)"' )
+    local id = string.match( line, 'id="(%d+)"' )
+    local name = string.match( line, 'name="(.+)"' )
+    local sequence = string.match( line, 'courseStorage(%d+).xml' )
     if id then
-      table.insert( savedCourses, { fileName=fileName, id=tonumber(id), name=name })
+      id = tonumber( id )
+      sequence = tonumber( sequence )
+      savedCourses[ id ] = { fileName=fileName, id=id, name=name, sequence=sequence }
+      if ( id > maxId ) then maxId = id end
+      if ( id > maxSequence ) then maxSequence = sequence end
     end
   end
-  return savedCourses
+  return savedCourses, maxId + 1, maxSequence + 1
 end
 
 --- Copy oldCourse to newCourse in dir, and also update the manager file

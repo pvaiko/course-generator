@@ -120,8 +120,8 @@ assert( r[ 1 ] == 4, r[ 2 ] == 3, r[ 3 ] == 2, r[ 4 ] == 1 )
 --------------------------------------------------------------
 
 marks = {}
-for i, fieldName in ipairs( { "8", "9", "23" }) do
-  for width = 3, 2 do
+for i, fieldName in ipairs( { "pickles/8", "pickles/9", "pickles/23" }) do
+  for width = 3, 7 do
     print( string.format( "\nGenerating course for field %s with width %d", fieldName, width ))
     local field = loadFieldFromPickle( fieldName )
     generateCourseForField( field, width, 5, false )
@@ -137,7 +137,7 @@ local fileName = "courses/courseStorage0004.xml"
 --field.vehicle = { location = field.boundary[ 1 ], heading = field.boundary[ 2 ].fromEdge.angle - math.pi / 2 }
 
   field = {}
-  field = loadFieldFromPickle(23)
+  field = loadFieldFromPickle("pickles/23")
   field.nHeadlandPasses = 5
   field.width = 4.4
   field.isClockwise = "true"

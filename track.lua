@@ -246,7 +246,8 @@ function generateTracks( field, width )
 
   local bottomToTop, leftToRight, pathFromHeadlandToCenter = 
     findStartOfParallelTracks( rotated, field.circleStart, field.circleEnd, field.circleStep )
-  local track = generateWaypointsForParallelTracks( parallelTracks, bottomToTop, leftToRight ) 
+  local nTracksToSkip = 0
+  local track = linkParallelTracks( parallelTracks, bottomToTop, leftToRight, nTracksToSkip ) 
   -- now rotate and translate everything back to the original coordinate system
   rotatedMarks = translatePoints( rotatePoints( rotatedMarks, -math.rad( field.bestAngle )), dx, dy )
   for i = 1, #rotatedMarks do
@@ -394,11 +395,17 @@ function findStartOfParallelTracks( field, from, to, step )
   return true, true, track
 end
 
---- generate waypoints for the parallel tracks in the center of the field.
+--- Link the parallel tracks in the center of the field to one 
+-- continuous track.
 -- if bottomToTop == true then start at the bottom and work our way up
 -- if leftToRight == true then start the first track on the left 
-function generateWaypointsForParallelTracks( parallelTracks, bottomToTop, leftToRight ) 
+-- nTracksToSkip - number of tracks to skip when doing alternative 
+-- tracks
+function linkParallelTracks( parallelTracks, bottomToTop, leftToRight, nTracksToSkip ) 
   local track = {}
+  if ( nTracksToSkip > 0 ) then
+    parallelTracks = reorderTracksForAlternateFieldwork( parallelTracks, nTracksToSkip )
+  end
   local startTrack, endTrack, trackStep
   if bottomToTop then
     startTrack = 1
@@ -486,3 +493,35 @@ function countTracks( tracks )
   return nTracks, nSplitTracks
 end
 
+--- Reorder parallel tracks for alternating track fieldwork.
+-- This allows for example for working on every odd track first 
+-- and then on the even ones so turns at track ends can be wider.
+--
+-- For example, if we have five tracks: 1, 2, 3, 4, 5, and we 
+-- want to skip every second track, we'd work in the following 
+-- order: 1, 3, 5, 4, 2
+--
+-- Works for nTracksToSkip == 2 for now.
+--
+function reorderTracksForAlternateFieldwork( parallelTracks, nTracksToSkip )
+  -- start with the first track and work up to the last,
+  -- skipping every nTrackToSkip tracks.
+  local reorderedTracks
+  local lastWorkedTrack = 1
+  for i = 1, #parallelTracks, nTracksToSkip do
+    print( i )
+    lastWorkedTrack = i
+    table.insert( reorderedTracks, parallelTracks[ i ])
+  end
+  -- now, start going back from the last one
+  local start
+  if lastWorkedTrack == #parallelTracks then
+    start = #parallelTracks - 1 
+  else
+    start = #parallelTracks
+  end
+  for i = start, 1, -nTracksToSkip do
+    print( i ) 
+    table.insert( reorderedTracks, parallelTracks[ i ])
+  end
+end

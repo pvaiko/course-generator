@@ -3,7 +3,6 @@
 --  2D functions in the x,y plane
 --
 
-loadfile( 'courseplay/generateCourse.lua')
 
 -- a point has the following attributes:
 -- x
