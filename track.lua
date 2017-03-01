@@ -28,7 +28,7 @@ local rotatedMarks = {}
 -- field.track
 --   parallel tracks in the middle of the field.
 --
-function generateCourseForField( field, implementWidth, nHeadlandPasses, useBoundaryAsFirstHeadlandPass, alternateTracks )
+function generateCourseForField( field, implementWidth, nHeadlandPasses, useBoundaryAsFirstHeadlandPass, nTracksToSkip )
   rotatedMarks = {}
   field.boundingBox = getBoundingBox( field.boundary )
   calculatePolygonData( field.boundary )
@@ -52,7 +52,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, useBoun
     previousTrack = field.headlandTracks[ j ]
   end
   linkHeadlandTracks( field, implementWidth )
-  field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth, alternateTracks )
+  field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth, nTracksToSkip )
   field.bestAngle = field.headlandTracks[ nHeadlandPasses ].bestAngle
   field.nTracks = field.headlandTracks[ nHeadlandPasses ].nTracks
   -- assemble complete course now
@@ -216,7 +216,7 @@ function findBestTrackAngle( field, width )
 end
 
 --- Generate up/down tracks covering a field at the optimum angle
-function generateTracks( field, width, alternateTracks )
+function generateTracks( field, width, nTracksToSkip )
   -- translate field so we can rotate it around its center. This way all points
   -- will be approximately the same distance from the origo and the rotation calculation
   -- will be more precise
@@ -248,12 +248,6 @@ function generateTracks( field, width, alternateTracks )
   local bottomToTop, leftToRight, pathFromHeadlandToCenter = 
     findStartOfParallelTracks( rotated, field.circleStart, field.circleEnd, field.circleStep )
 
-  local nTracksToSkip
-  if alternateTracks then
-    nTracksToSkip = 1
-  else
-    nTracksToSkip = 0
-  end
   local track = linkParallelTracks( parallelTracks, bottomToTop, leftToRight, nTracksToSkip ) 
   -- now rotate and translate everything back to the original coordinate system
   rotatedMarks = translatePoints( rotatePoints( rotatedMarks, -math.rad( field.bestAngle )), dx, dy )
@@ -514,26 +508,28 @@ end
 -- want to skip every second track, we'd work in the following 
 -- order: 1, 3, 5, 4, 2
 --
--- Works for nTracksToSkip == 1 for now.
---
 function reorderTracksForAlternateFieldwork( parallelTracks, nTracksToSkip )
   -- start with the first track and work up to the last,
   -- skipping every nTrackToSkip tracks.
   local reorderedTracks = {}
-  local lastWorkedTrack = 1
-  for i = 1, #parallelTracks, nTracksToSkip + 1 do
-    lastWorkedTrack = i
-    table.insert( reorderedTracks, parallelTracks[ i ])
-  end
-  -- now, start going back from the last one
-  local start
-  if lastWorkedTrack == #parallelTracks then
-    start = #parallelTracks - 1 
-  else
-    start = #parallelTracks
-  end
-  for i = start, 1, -( nTracksToSkip + 1 )do
-    table.insert( reorderedTracks, parallelTracks[ i ])
+  local workedTracks = {}
+  local lastWorkedTrack
+  -- need to work on this until all tracks are covered
+  while ( #reorderedTracks < #parallelTracks ) do
+    -- find first non-worked track
+    local start = 1
+    while workedTracks[ start ] do start = start + 1 end
+    for i = start, #parallelTracks, nTracksToSkip + 1 do
+      table.insert( reorderedTracks, parallelTracks[ i ])
+      workedTracks[ i ] = true
+      lastWorkedTrack = i
+    end
+    -- we reached the last track, now turn back and work on the 
+    -- rest, find the last unworked track first
+    for i = lastWorkedTrack + 1, 1, - ( nTracksToSkip + 1 ) do
+      table.insert( reorderedTracks, parallelTracks[ i ])
+      workedTracks[ i ] = true
+    end
   end
   return reorderedTracks
 end

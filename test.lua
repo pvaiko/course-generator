@@ -12,9 +12,29 @@ end
 pt = { 1, 2, 3, 4, 5 }
 pt = reorderTracksForAlternateFieldwork( pt, 1 )
 assert( pt[ 1 ] == 1 and pt[ 2 ] == 3 and pt[ 3 ] == 5 and pt[ 4 ] == 4 and pt[ 5 ] == 2 )
+
 pt = { 1, 2, 3, 4, 5, 6 }
 pt = reorderTracksForAlternateFieldwork( pt, 1 )
 assert( pt[ 1 ] == 1 and pt[ 2 ] == 3 and pt[ 3 ] == 5 and pt[ 4 ] == 6 and pt[ 5 ] == 4 and pt[ 6 ] == 2 )
+
+pt = { 1, 2, 3, 4, 5, 6 }
+pt = reorderTracksForAlternateFieldwork( pt, 2 )
+assert( pt[ 1 ] == 1 and pt[ 2 ] == 4 and pt[ 3 ] == 5 and pt[ 4 ] == 2 and pt[ 5 ] == 3 and pt[ 6 ] == 6 )
+
+pt = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }
+pt = reorderTracksForAlternateFieldwork( pt, 1 )
+assert( pt[ 1 ] == 1 and pt[ 2 ] == 3 and pt[ 3 ] == 5 and pt[ 4 ] == 7 and pt[ 5 ] == 9 and pt[ 6 ] == 11 )
+assert( pt[ 7 ] == 10 and pt[ 8 ] == 8 and pt[ 9 ] == 6 and pt[ 10 ] == 4 and pt[ 11 ] == 2 )
+
+pt = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }
+pt = reorderTracksForAlternateFieldwork( pt, 2 )
+assert( pt[ 1 ] == 1 and pt[ 2 ] == 4 and pt[ 3 ] == 7 and pt[ 4 ] == 10 and pt[ 5 ] == 11 and pt[ 6 ] == 8 )
+assert( pt[ 7 ] == 5 and pt[ 8 ] == 2 and pt[ 9 ] == 3 and pt[ 10 ] == 6 and pt[ 11 ] == 9 )
+
+pt = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11 }
+pt = reorderTracksForAlternateFieldwork( pt, 3 )
+assert( pt[ 1 ] == 1 and pt[ 2 ] == 5 and pt[ 3 ] == 9 and pt[ 4 ] == 10 and pt[ 5 ] == 6 and pt[ 6 ] == 2 )
+assert( pt[ 7 ] == 3 and pt[ 8 ] == 7 and pt[ 9 ] == 11 and pt[ 10 ] == 8 and pt[ 11 ] == 4 )
 
 --
 --------------------------------------------------------------
@@ -133,17 +153,14 @@ for i, fieldName in ipairs( { "pickles/8", "pickles/9", "pickles/23" }) do
   for width = 3, 2 do
     print( string.format( "\nGenerating course for field %s with width %d", fieldName, width ))
     local field = loadFieldFromPickle( fieldName )
-    generateCourseForField( field, width, 5, false )
+    generateCourseForField( field, width, 5, 0, true, 0 )
     field = loadFieldFromPickle( fieldName .. "_reversed" )
-    generateCourseForField( field, width, 5, false )
+    generateCourseForField( field, width, 5, 0, true, 0 )
   end
 end
 
 
 local fileName = "CoursePlay_Courses\\courseStorage0004.xml"
---local field = loadFieldFromSavedCourse( fileName )
---calculatePolygonData( field.boundary )
---field.vehicle = { location = field.boundary[ 1 ], heading = field.boundary[ 2 ].fromEdge.angle - math.pi / 2 }
 
   field = {}
   field = loadFieldFromPickle("pickles/23")
@@ -151,7 +168,7 @@ local fileName = "CoursePlay_Courses\\courseStorage0004.xml"
   field.width = 4.4
   field.isClockwise = "true"
 
-generateCourseForField( field, field.width, field.nHeadlandPasses, true )
+generateCourseForField( field, field.width, field.nHeadlandPasses, false, 0 )
 writeCourseToFile( field, fileName ) 
 os.execute( "del " .. fileName )
 

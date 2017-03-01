@@ -31,7 +31,7 @@ function love.load( arg )
   field.vehicle = { location = {x=335, y=145}, heading = 180 }
   field.boundingBox = getBoundingBox( field.boundary )
   field.vertices = getVertices( field.boundary )
-  field.alternateTracks = false
+  field.nTracksToSkip = 0
   
   -- translate and scale everything so they are visible
   fieldWidth = field.boundingBox.maxX - field.boundingBox.minX
@@ -105,7 +105,7 @@ function drawSettings()
   love.graphics.setColor( 200, 200, 200 )
   love.graphics.print( string.format( "file: %s", arg[ 3 ]), 10, 10, 0, 1 )
   love.graphics.setColor( 00, 200, 00 )
-  love.graphics.print( string.format( "width: %.1f m, passes: %d", field.width, field.nHeadlandPasses ), 10, 30, 0, 1 )
+  love.graphics.print( string.format( "width: %.1f m, passes: %d, skipping %d passes", field.width, field.nHeadlandPasses, field.nTracksToSkip ), 10, 30, 0, 1 )
   if field.bestAngle then
     love.graphics.setColor( 200, 200, 00 )
     love.graphics.print( string.format( "best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 50, 0, 1 )
@@ -115,18 +115,18 @@ function drawSettings()
   love.graphics.setColor( 240, 240, 240 )
   love.graphics.print( "Keys:", 10, y, 0, 1 )
   y = y + 20
+  love.graphics.setColor( 200, 200, 200 )
   love.graphics.print( "Right click - place vehicle", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "j/k - -/+ vehicle rotation", 10,y, 0, 1 )
   y = y + 20
-  love.graphics.setColor( 200, 200, 200 )
   love.graphics.print( "w/W - -/+ work width", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "p/P - -/+ headland passes", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "r - reverse course", 10, y, 0, 1 )
   y = y + 20
-  love.graphics.print( "a - toggle alternate tracks", 10, y, 0, 1 )
+  love.graphics.print( "a/A - tracks to skip between alternating tracks", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "g - generate course", 10, y, 0, 1 )
   y = y + 20
@@ -258,7 +258,7 @@ function love.draw()
 end
 
 function generate()
-  status, err = pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, useHeadland, field.alternateTracks )
+  status, err = pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, useHeadland, field.nTracksToSkip )
   if not status then
     print( err )
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
@@ -294,9 +294,17 @@ function love.textinput( t )
   if t == "r" then
     field.course = reverseCourse( field.course )
   end
+  if t == "A" then
+    if field.nTracksToSkip < 5 then
+      field.nTracksToSkip = field.nTracksToSkip + 1
+      generate()
+    end
+  end
   if t == "a" then
-    field.alternateTracks = not field.alternateTracks
-    generate()
+    if field.nTracksToSkip > 0 then
+      field.nTracksToSkip = field.nTracksToSkip - 1
+      generate()
+    end
   end
 end
 
