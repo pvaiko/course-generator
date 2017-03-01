@@ -96,13 +96,13 @@ assert( point.x == 2 and point.y == 1, string.format( "Got %d, %d", point.x, poi
 
 point = { x = 0, y = 0 }
 point = addPolarVectorToPoint( point, math.rad( 90 ), 1 )
-assert( math.abs(point.x) < epsilon and point.y == 1, string.format( "Got %d, %d", point.x, point.y ))
+assert( math.abs(point.x) < epsilon and point.y == 1, string.format( "Got %f, %f", point.x, point.y ))
 point = { x = 0, y = 0 }
 point = addPolarVectorToPoint( point, math.rad( 180 ), 1 )
-assert( point.x == -1 and math.abs(point.y) < epsilon, string.format( "Got %d, %d", point.x, point.y ))
+assert( point.x == -1 and math.abs(point.y) < epsilon, string.format( "Got %f, %f", point.x, point.y ))
 point = { x = 0, y = 0 }
 point = addPolarVectorToPoint( point, math.rad( -90 ), 1 )
-assert( math.abs(point.x) < epsilon and point.y == -1, string.format( "Got %d, %d", point.x, point.y ))
+assert( math.abs(point.x) < epsilon and point.y == -1, string.format( "Got %f, %f", point.x, point.y ))
 
 --------------------------------------------------------------
 -- getAverageAngle
