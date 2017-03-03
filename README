@@ -7,12 +7,13 @@ may at some point be integrated into Courseplay
 
 It is a standalone tool, that is, currently you won't be 
 able to use it from the game directly. Instead, it'll load
-a fieldwork course previously generated in Courseplay, then
-you make some adjustments and save the customized course.
+a saved field or a fieldwork course previously generated in
+Courseplay, then you make some adjustments and save the
+customized course.
 
-Note that you can only load fieldwork courses with a headland
-track as the tool uses the outermost headland track to find
-the field boundary.
+Note that if you load fieldwork courses the course must have
+a headland track as the tool uses the outermost headland track 
+to find the field boundary.
 
 You can then load this customized course in the game just
 as a Courseplay generated course.
@@ -70,55 +71,76 @@ Usage
 
 4. Now switch to the folder where you unzipped the course
    generator and type:
-   lua53.exe startCourseGenerator.lua <full path to course folder>
+   lua.exe startCourseGenerator.lua <full path to course folder>
    for example, on my computer this would be:
 
-   lua53.exe startCourseGenerator.lua "c:\Users\Peter\Documents\My Games\FramingSimulator2017\CoursePlay_Courses\FS17_coldboroughParkFarm.SampleModMap"
+   lua.exe startCourseGenerator.lua "c:\Users\Peter\Documents\My Games\FarmingSimulator2017\CoursePlay_Courses\FS17_coldboroughParkFarm.SampleModMap"
    
    for the Coldborough Farm map. Make sure there is _no_ \ at the very
    end of the folder name just before the ".
 
-5. You should now see a list of the saved courses of that map.
-   Only the top folder works, courses in subfolders won't show up.
-   I can add that feature if people really need it, but please 
-   try to live with this limitation for now. 
+5. Alternatively, you can load a previously saved field with:
 
-6. Select a fieldwork course by typing in the number of the course 
-   and pressing enter. You'll have to confirm the creation of a new
-   course. Remember, the course must have a headland track! 
+   lua.exe startCourseGenerator.lua <full path to a savegame>
+
+   (Courseplay saves the fields into the savegame folder)
+   for example, on Savegame 8 on my computer would be:
+
+   lua.exe startCourseGenerator.lua "c:\Users\Peter\Documents\My Games\FarmingSimulator2017\savegame8
+
+6. You should now see a list which contains either the 
+   the saved courses of the map (if you started it with a map folder)
+   or the saved fields of the savegame.
+   Only the top folder works, courses in subfolders won't show up.
+
+7. Select a fieldwork course or a field by typing in the number of the course 
+   and pressing enter. The course generator will use this course
+   or field to generate the course.
+   If you selected a course, the course generator will use the 
+   outermost headland pass of the course without alterations and 
+   build everything based on that.
+   Remember, the course must have a headland track! 
    Selecting non-fieldwork courses or fieldwork courses with no
    headland tracks will result in errors.
-   Also, note that if you just created that course in the game 
-   then the course-generator may not be able to open it. If nothing 
-   happens when you select a course, try saving and reloading 
-   the game.
 
-7. The course generator window appears showing the outline of the
+   If you selected a field, the course generator uses the field
+   boundary to generate the headland tracks.
+
+8. Next, you have to select the course where you want to save
+   the generated course. Or, you can create a new course and
+   type in the name.
+   
+9. After you confirm the creation/overwrite of the course, 
+   the course generator window appears showing the outline of the
    field. 
 
-8. Set the width and number of passes using the w/W and p/P keys.
+10. Set the width and number of passes using the w/W and p/P keys.
 
-9. Next, you'll have to define where to start the headland track.
-   Use the right mouse button to place a marker where your want to 
-   start it, just outside the field boundary. 
+11. Next, you'll have to define where to start the headland track.
+    Use the right mouse button to place a marker where your want to 
+    start it, just outside the field boundary. 
 
-10. Use the keys j and k to turn the marker. This will determine the
+11. Use the keys j and k to turn the marker. This will determine the
     direction of the headland pass (clockwise or counterclockwise).
 
-11. Press g to generate the course. Green is the headland, blueish   
+13. Press g to generate the course. Green is the headland, blueish   
     are the tracks in the center of the field and the red line is 
     the path between the two.
+    The green dot is where the course starts, the red is where it ends.
 
-12. If you want you can reverse the course so it starts in the middle
+14. If you want you can reverse the course so it starts in the middle
     and ends with the headland passes. This is great for sowing and 
     other, non harvesting fieldwork.
 
-13. If you like what you see, press s to save the course.
+15. You can experiment with the various settings and press g to 
+    regenerate the course.
 
-14. If you are in a game, you'll have to quit it and restart to be 
+16. If you like what you see, press s to save the course.
+
+17. If you are in a game, you'll have to quit it and restart to be 
     able to see the new course, otherwise it won't show up.
 
-15. Load the new course and test.
+18. Load the new course and test.
 
 Thanks for giving it a try. If you have any problems, report it on
 github https://github.com/pvajko/course-generator/issues or 

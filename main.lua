@@ -16,7 +16,16 @@ windowHeight = 800
 marks = {}
 
 function love.load( arg )
-  fileName = arg[ 2 ]
+  if arg[ 2 ] == "fromCourse" then
+    -- use the outermost headland path as the basis of the 
+    -- generation, that is, the field.boundary is actually
+    -- a headland pass of a course
+    useHeadland = true
+  else
+    -- the field boundary is the actual boundary
+    useHeadland = false
+  end
+  fileName = arg[ 3 ]
   field = loadFieldFromSavedCourse( fileName )
   calculatePolygonData( field.boundary )
   field.vehicle = { location = {x=335, y=145}, heading = 180 }
@@ -94,7 +103,7 @@ function drawSettings()
   love.graphics.translate( -xOffset, -yOffset )
   love.graphics.scale( 1 / scale , -1 / scale )
   love.graphics.setColor( 200, 200, 200 )
-  love.graphics.print( string.format( "file: %s", arg[ 2 ]), 10, 10, 0, 1 )
+  love.graphics.print( string.format( "file: %s", arg[ 3 ]), 10, 10, 0, 1 )
   love.graphics.setColor( 00, 200, 00 )
   love.graphics.print( string.format( "width: %.1f m, passes: %d", field.width, field.nHeadlandPasses ), 10, 30, 0, 1 )
   if field.bestAngle then
@@ -249,7 +258,7 @@ function love.draw()
 end
 
 function generate()
-  status, err = pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, true, field.alternateTracks )
+  status, err = pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, useHeadland, field.alternateTracks )
   if not status then
     print( err )
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )

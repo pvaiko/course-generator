@@ -1,5 +1,6 @@
 -- all functions dealing with reading/writing files
 --
+require( "geo" )
 inputFields = {}
 
 --- convert a field from the CP representation to a format we are 
@@ -107,9 +108,12 @@ end
 --
 function writeCourseToFile( field, fileName )
   local f = io.output( fileName )
+  local clockwise
+  if field.isClockwise then clockwise = "true" 
+  else clockwise = "false" end
   io.write( 
     string.format( '<course workWidth="%.6f" numHeadlandLanes="%d" headlandDirectionCW="%s">\n', 
-      field.width, field.nHeadlandPasses, field.isClockwise ))
+      field.width, field.nHeadlandPasses, clockwise ))
   local wp = 1
   for i, point in ipairs( field.course ) do
     local lane = ""
@@ -146,6 +150,55 @@ function parseCourseData( line )
   local sequence = string.match( line, 'courseStorage(%d+).xml' )
   return fileName, id, name, sequence
 end
+--
+--- Read the savegame carreer file to find out the map name
+-- because that's where courseplay stores the courses.
+-- saved in that directory
+function getMapId( f )
+  for line in f:lines() do
+    local mapId = string.match( line, '<mapId>(.+)</mapId>')
+    if mapId then
+      print( mapId )
+      return mapId
+    end
+  end
+end
+
+--- Read the CP saved fields 
+function loadSavedFields( fileName )
+  local savedFields = {}
+  local f = io.input( fileName )
+  local ix = 0
+  for line in io.lines( fileName ) do
+    local fieldNum = string.match( line, '<field fieldNum="([%d%.-]+)"' )
+    if fieldNum then
+      -- a new field started
+      ix = ix + 1
+      savedFields[ ix ] = { number=fieldNum, boundary={}}
+    end
+    local num, cx, cz = string.match( line, '<point(%d+).+pos="([%d%.-]+) [%d%.-]+ ([%d%.-]+)"' )
+    if num then 
+      table.insert( savedFields[ ix ].boundary, { x=tonumber( cx ), y=-tonumber( cz )})
+    end
+  end
+  return savedFields
+end
+
+--- Save a field loaded from a CP saved field into a CP course
+function writeSavedFieldToCourseFile( field, courseFilename )
+  calculatePolygonData( field.boundary )
+  -- fake a course from the field boundary
+  field.course = field.boundary
+  -- some reasonable defaults
+  field.width = 3
+  field.nHeadlandPasses = 1
+  field.isClockwise = field.boundary.isClockwise
+  for i, point in ipairs( field.course ) do
+    -- this will set lane = -1 so we'll interpret it as the outermost headland pass
+    point.passNumber = 1
+  end
+  writeCourseToFile( field, courseFilename )
+end
 
 --- Read the CP course manager files to find out which courses are 
 -- saved in that directory
@@ -167,7 +220,7 @@ function getSavedCourses( f )
 end
 
 --- Copy oldCourse to newCourse in dir, and also update the manager file
-function copyCourse( dir, oldCourse, newCourse, managerFileName )
+function copyCourse( dir, oldCourse, newCourse, managerFilename )
   -- first copy the course file
   print( string.format( "Copying %s to %s", oldCourse.fileName, newCourse.fileName ))
   local from = io.open( dir .. "/" .. oldCourse.fileName, "r" )
@@ -177,10 +230,12 @@ function copyCourse( dir, oldCourse, newCourse, managerFileName )
   end
   from:close()
   to:close()
+end
 
+function addCourseToManagerFile( dir, managerFilename, newCourse)
   -- now update the manager file
   local managerFileContents = ""
-  local man = io.open( dir .. "/" .. managerFileName, "r" )
+  local man = io.open( dir .. "/" .. managerFilename, "r" )
   for line in man:lines() do
     managerFileContents = managerFileContents .. line .. "\n"
     local fileName, id, name, sequence = parseCourseData( line )
@@ -193,7 +248,7 @@ function copyCourse( dir, oldCourse, newCourse, managerFileName )
   end
   man:close() 
 
-  local man = io.open( dir .. "/" .. managerFileName, "w" )
+  local man = io.open( dir .. "/" .. managerFilename, "w" )
   man:write( managerFileContents )
   man:close()
 end

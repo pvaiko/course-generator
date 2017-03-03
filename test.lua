@@ -140,7 +140,7 @@ for i, fieldName in ipairs( { "pickles/8", "pickles/9", "pickles/23" }) do
 end
 
 
-local fileName = "courses/courseStorage0004.xml"
+local fileName = "CoursePlay_Courses\\courseStorage0004.xml"
 --local field = loadFieldFromSavedCourse( fileName )
 --calculatePolygonData( field.boundary )
 --field.vehicle = { location = field.boundary[ 1 ], heading = field.boundary[ 2 ].fromEdge.angle - math.pi / 2 }
@@ -155,10 +155,10 @@ generateCourseForField( field, field.width, field.nHeadlandPasses, true )
 writeCourseToFile( field, fileName ) 
 os.execute( "del " .. fileName )
 
-testDir = "courses\\test\\"
+testDir = "CoursePlay_Courses\\test\\"
 managerFileName="courseManager.xml"
 
-
+-- course creation based on existing courses
 for selected = 1, 14 do 
   os.execute( "copy " .. testDir .. managerFileName .. " " .. testDir .. managerFileName .. ".orig" )
   managerFile = io.open( testDir .. managerFileName, "r" )
@@ -183,4 +183,3 @@ for selected = 1, 14 do
   os.execute( "move " .. testDir .. managerFileName .. ".orig " .. testDir .. managerFileName  )
 
 end
-
