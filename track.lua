@@ -28,7 +28,7 @@ local rotatedMarks = {}
 -- field.track
 --   parallel tracks in the middle of the field.
 --
-function generateCourseForField( field, implementWidth, nHeadlandPasses, useBoundaryAsFirstHeadlandPass, nTracksToSkip )
+function generateCourseForField( field, implementWidth, nHeadlandPasses, overlapPercent, useBoundaryAsFirstHeadlandPass, nTracksToSkip )
   rotatedMarks = {}
   field.boundingBox = getBoundingBox( field.boundary )
   calculatePolygonData( field.boundary )
@@ -48,7 +48,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, useBoun
     else 
       width = implementWidth
     end
-    field.headlandTracks[ j ] = calculateHeadlandTrack( previousTrack, width )
+    field.headlandTracks[ j ] = calculateHeadlandTrack( previousTrack, width - width * overlapPercent / 100 )
     previousTrack = field.headlandTracks[ j ]
   end
   linkHeadlandTracks( field, implementWidth )
@@ -514,7 +514,6 @@ function reorderTracksForAlternateFieldwork( parallelTracks, nTracksToSkip )
   local workedTracks = {}
   local lastWorkedTrack
   -- need to work on this until all tracks are covered
-  print( "Start" )
   while ( #reorderedTracks < #parallelTracks ) do
     -- find first non-worked track
     local start = 1

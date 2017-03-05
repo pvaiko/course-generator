@@ -31,6 +31,7 @@ function love.load( arg )
   field.vehicle = { location = {x=335, y=145}, heading = 180 }
   field.boundingBox = getBoundingBox( field.boundary )
   field.vertices = getVertices( field.boundary )
+  field.overlap = 0
   field.nTracksToSkip = 0
   
   -- translate and scale everything so they are visible
@@ -105,13 +106,13 @@ function drawSettings()
   love.graphics.setColor( 200, 200, 200 )
   love.graphics.print( string.format( "file: %s", arg[ 3 ]), 10, 10, 0, 1 )
   love.graphics.setColor( 00, 200, 00 )
-  love.graphics.print( string.format( "width: %.1f m, passes: %d, skipping %d passes", field.width, field.nHeadlandPasses, field.nTracksToSkip ), 10, 30, 0, 1 )
+  love.graphics.print( string.format( "width: %.1f m, overlap %d%% headland passes: %d, skipping %d tracks", field.width, field.overlap, field.nHeadlandPasses, field.nTracksToSkip ), 10, 30, 0, 1 )
   if field.bestAngle then
     love.graphics.setColor( 200, 200, 00 )
     love.graphics.print( string.format( "best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 50, 0, 1 )
   end
   -- help text
-  local y = windowHeight - 180
+  local y = windowHeight - 200
   love.graphics.setColor( 240, 240, 240 )
   love.graphics.print( "Keys:", 10, y, 0, 1 )
   y = y + 20
@@ -121,6 +122,8 @@ function drawSettings()
   love.graphics.print( "j/k - -/+ vehicle rotation", 10,y, 0, 1 )
   y = y + 20
   love.graphics.print( "w/W - -/+ work width", 10, y, 0, 1 )
+  y = y + 20
+  love.graphics.print( "o/O - -/+ work width overlap on headland", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "p/P - -/+ headland passes", 10, y, 0, 1 )
   y = y + 20
@@ -181,27 +184,35 @@ function drawField( field )
     if ( field.boundingBox ) then
       --drawBoundingBox( field.boundingBox )
     end
+    -- draw connected headland passes with width
+    if field.headlandPath and #field.headlandPath > 0 then
+      love.graphics.setLineWidth( field.width )
+      love.graphics.setColor( 100, 200, 100, 100 )
+      love.graphics.line( getVertices( field.headlandPath ))
+    end
+    -- draw entire course
     if field.course then
+      -- course line
       love.graphics.setColor( 50, 50, 50 )
-      love.graphics.setLineWidth( lineWidth * 10 )
+      love.graphics.setLineWidth( lineWidth )
       love.graphics.line( getVertices( field.course ))
       love.graphics.setLineWidth( lineWidth )
-      love.graphics.setColor( 0, 255, 0 )
+      -- start of course, green dot
+      love.graphics.setColor( 0, 255, 0, 80 )
       love.graphics.circle( "fill", field.course[ 1 ].x, field.course[ 1 ].y, 5 )
-      love.graphics.setColor( 255, 0, 0 )
+      love.graphics.setColor( 255, 0, 0, 80 )
+      -- end of course, red dot
       love.graphics.circle( "fill", field.course[ #field.course ].x, field.course[ #field.course ].y, 5 )
       love.graphics.setColor( 100, 100, 100 )
+      -- course points
       drawCoursePoints( field.course )
     end
+    -- draw field boundary
     love.graphics.setColor( 100, 100, 100 )
     love.graphics.polygon('line', field.vertices)
     if ( field.headlandTracks ) then
-      for i, track in ipairs( field.headlandTracks ) do
-        love.graphics.setColor( 0, 0, 255 )
-        drawPoints( track )
-      end
       if field.headlandTracks[ #field.headlandTracks ].pathFromHeadlandToCenter then
-        love.graphics.setColor( 160, 000, 000 )
+        love.graphics.setColor( 160, 000, 000, 50 )
         local points = field.headlandTracks[ #field.headlandTracks ].pathFromHeadlandToCenter
         if #points > 1 then
           love.graphics.setLineWidth( lineWidth * 20 )
@@ -212,11 +223,9 @@ function drawField( field )
         end
       end
     end
-    if field.headlandPath and #field.headlandPath > 0 then
-      love.graphics.setColor( 100, 200, 100 )
-      love.graphics.line( getVertices( field.headlandPath ))
-    end
+    -- draw tracks in field body
     if field.track then
+      love.graphics.setLineWidth( lineWidth )
       love.graphics.setColor( 100, 100, 200 )
       love.graphics.line( getVertices( field.track ))
     end
@@ -258,7 +267,8 @@ function love.draw()
 end
 
 function generate()
-  status, err = pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, useHeadland, field.nTracksToSkip )
+  marks = {}
+  status, err = pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, field.overlap, useHeadland, field.nTracksToSkip )
   if not status then
     print( err )
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
@@ -267,7 +277,6 @@ end
 
 function love.textinput( t )
   if t == "g" then
-    marks = {}
     generate()
   end
   if t == "j" then
@@ -281,15 +290,27 @@ function love.textinput( t )
   end
   if t == "W" then
     field.width = field.width + 0.1
+    generate()
   end
   if t == "w" then
     field.width = field.width - 0.1
+    generate()
+  end
+  if t == "o" then
+    field.overlap = field.overlap - 5 
+    generate()
+  end
+  if t == "O" then
+    field.overlap = field.overlap + 5 
+    generate()
   end
   if t == "P" then
     field.nHeadlandPasses = field.nHeadlandPasses + 1
+    generate()
   end
   if t == "p" then
     field.nHeadlandPasses = field.nHeadlandPasses - 1
+    generate()
   end
   if t == "r" then
     field.course = reverseCourse( field.course )
