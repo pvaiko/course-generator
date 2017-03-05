@@ -409,26 +409,26 @@ function linkParallelTracks( parallelTracks, bottomToTop, leftToRight, nTracksTo
     -- the last one is on the top
     parallelTracks = reverseTracks( parallelTracks )
   end
-  if ( nTracksToSkip > 0 ) then
-    parallelTracks = reorderTracksForAlternateFieldwork( parallelTracks, nTracksToSkip )
+  parallelTracks = reorderTracksForAlternateFieldwork( parallelTracks, nTracksToSkip )
+  print( "reordered: " .. #parallelTracks )
+  -- now make sure that the we work on the tracks in alternating directions
+  if leftToRight then
+    -- every odd track is in the normal direction
+    evenOrOdd = 1
+  else
+    evenOrOdd = 0
+  end
+  for i = 1, #parallelTracks do
+    -- every second track is in the other direction
+    if i % 2 == evenOrOdd then
+      parallelTracks[ i ].waypoints = reverse( parallelTracks[ i ].waypoints)
+    end
   end
   local startTrack = 1
   local endTrack = #parallelTracks
   local trackStep = 1
-  local evenOrOdd
-  if leftToRight then
-    -- every odd track is in the normal direction
-    evenOrOdd = 0
-  else
-    evenOrOdd = 1
-  end
-  local nTrack = 1
   for i = startTrack, endTrack, trackStep do
     if parallelTracks[ i ].waypoints then
-      -- every second track is in the other direction
-      if nTrack % 2 == evenOrOdd then
-        parallelTracks[ i ].waypoints = reverse( parallelTracks[ i ].waypoints)
-      end
       for j, point in ipairs( parallelTracks[ i ].waypoints) do
         -- the first point of a track is the end of the turn (except for the first track)
         if ( j == 1 and i ~= startTrack ) then 
@@ -440,7 +440,6 @@ function linkParallelTracks( parallelTracks, bottomToTop, leftToRight, nTracksTo
         end
         table.insert( track, point )
       end      
-      nTrack = nTrack + 1
     else
       print( string.format( "Track %d has no waypoints, skipping.", i ))
     end
@@ -515,6 +514,7 @@ function reorderTracksForAlternateFieldwork( parallelTracks, nTracksToSkip )
   local workedTracks = {}
   local lastWorkedTrack
   -- need to work on this until all tracks are covered
+  print( "Start" )
   while ( #reorderedTracks < #parallelTracks ) do
     -- find first non-worked track
     local start = 1
@@ -527,8 +527,10 @@ function reorderTracksForAlternateFieldwork( parallelTracks, nTracksToSkip )
     -- we reached the last track, now turn back and work on the 
     -- rest, find the last unworked track first
     for i = lastWorkedTrack + 1, 1, - ( nTracksToSkip + 1 ) do
-      table.insert( reorderedTracks, parallelTracks[ i ])
-      workedTracks[ i ] = true
+      if ( i <= #parallelTracks ) and not workedTracks[ i ] then
+        table.insert( reorderedTracks, parallelTracks[ i ])
+        workedTracks[ i ] = true
+      end
     end
   end
   return reorderedTracks
