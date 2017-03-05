@@ -74,7 +74,7 @@ Usage
    lua.exe startCourseGenerator.lua <full path to course folder>
    for example, on my computer this would be:
 
-   lua.exe startCourseGenerator.lua "c:\Users\Peter\Documents\My Games\FarmingSimulator2017\CoursePlay_Courses\FS17_coldboroughParkFarm.SampleModMap"
+   lua53.exe startCourseGenerator.lua "c:\Users\Peter\Documents\My Games\FarmingSimulator2017\CoursePlay_Courses\FS17_coldboroughParkFarm.SampleModMap"
    
    for the Coldborough Farm map. Make sure there is _no_ \ at the very
    end of the folder name just before the ".
@@ -86,7 +86,7 @@ Usage
    (Courseplay saves the fields into the savegame folder)
    for example, on Savegame 8 on my computer would be:
 
-   lua.exe startCourseGenerator.lua "c:\Users\Peter\Documents\My Games\FarmingSimulator2017\savegame8
+   lua53.exe startCourseGenerator.lua "c:\Users\Peter\Documents\My Games\FarmingSimulator2017\savegame8
 
 6. You should now see a list which contains either the 
    the saved courses of the map (if you started it with a map folder)
