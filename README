@@ -52,7 +52,13 @@ This is the Windows version, I don't have access to Mac
 computers. If you are willing to install lua and LOVE, 
 you can run the scripts on a Mac too. 
 
-Just unzip to any folder you like.
+Just unzip the latest release from https://github.com/pvajko/course-generator/releases
+to any folder you like. The release has all the required
+tools bundled.
+
+Alternatively, if you have lua and LOVE (love2d.org) installed
+and the executables in the PATH you can clone or unzip the
+source from git.
 
 Usage
 =====
