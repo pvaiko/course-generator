@@ -194,6 +194,7 @@ for selected = 1, 14 do
                 fileName=string.format( "courseStorage%04d.xml", nextFreeSequence ),
                 sequence=nextFreeSequence }
   copyCourse( testDir, oldCourse, newCourse, managerFileName ) 
+  addCourseToManagerFile( testDir, managerFileName, newCourse)
   -- reread managerfile
   managerFile = io.open( testDir .. managerFileName, "r" )
   savedCourses, nextFreeId, nextFreeSequence = getSavedCourses( managerFile )
