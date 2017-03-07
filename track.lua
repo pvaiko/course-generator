@@ -173,8 +173,8 @@ function linkHeadlandTracks( field, implementWidth )
         --v = { location = startLocation, heading=math.deg( heading ) }
         -- remember this, we'll need when generating the link from the last headland pass
         -- to the parallel tracks
-        table.insert( rotatedMarks, field.headlandTracks[ i ][ fromIndex ])
-        table.insert( rotatedMarks, field.headlandTracks[ i ][ toIndex ])
+        -- table.insert( rotatedMarks, field.headlandTracks[ i ][ fromIndex ])
+        -- table.insert( rotatedMarks, field.headlandTracks[ i ][ toIndex ])
         break
       else
         print( string.format( "Could not link headland track %d at heading %d", i, math.deg( h )))
@@ -393,7 +393,7 @@ function findStartOfParallelTracks( field, from, to, step )
     end
   end
   print( "Start not found, starting at bottom left" )
-  io.flush()
+  io.stdout:flush()
   return true, true, track
 end
 
@@ -411,8 +411,6 @@ function linkParallelTracks( parallelTracks, bottomToTop, leftToRight, nTracksTo
     parallelTracks = reverseTracks( parallelTracks )
   end
   parallelTracks = reorderTracksForAlternateFieldwork( parallelTracks, nTracksToSkip )
-  print( "reordered: " .. #parallelTracks )
-
   
   -- now make sure that the we work on the tracks in alternating directions
   -- we generate track from left to right, so the ones which we'll traverse
@@ -428,7 +426,6 @@ function linkParallelTracks( parallelTracks, bottomToTop, leftToRight, nTracksTo
   for i = start, #parallelTracks, 2 do
     parallelTracks[ i ].waypoints = reverse( parallelTracks[ i ].waypoints)
   end
-  io.flush()
   local startTrack = 1
   local endTrack = #parallelTracks
   local trackStep = 1
