@@ -5,32 +5,5 @@
         <slot fileName="courseStorage0003.xml" id="3" parent="0" isUsed="true" name="9 harvest"/>
         <slot fileName="courseStorage0004.xml" id="4" parent="0" isUsed="true" name="Silo to Wynn"/>
         <slot fileName="courseStorage0005.xml" id="5" parent="0" isUsed="true" name="Silo to biogas"/>
-        <slot fileName="courseStorage0006.xml" id="6" parent="0" isUsed="true" name="(Customized) 22 mowing"/>
-    <slot fileName="courseStorage0007.xml" id="7" parent="0" isUsed="true" name="new course"/>
-    <slot fileName="courseStorage0008.xml" id="8" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0008.xml" id="8" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0008.xml" id="8" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0008.xml" id="8" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0008.xml" id="8" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0008.xml" id="8" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0008.xml" id="8" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0008.xml" id="8" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0008.xml" id="8" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
-    <slot fileName="courseStorage0009.xml" id="9" parent="0" isUsed="true" name="(Customized)new course"/>
     </saveSlot>
 </courseManager>

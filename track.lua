@@ -393,6 +393,7 @@ function findStartOfParallelTracks( field, from, to, step )
     end
   end
   print( "Start not found, starting at bottom left" )
+  io.flush()
   return true, true, track
 end
 
@@ -411,19 +412,23 @@ function linkParallelTracks( parallelTracks, bottomToTop, leftToRight, nTracksTo
   end
   parallelTracks = reorderTracksForAlternateFieldwork( parallelTracks, nTracksToSkip )
   print( "reordered: " .. #parallelTracks )
+
+  
   -- now make sure that the we work on the tracks in alternating directions
+  -- we generate track from left to right, so the ones which we'll traverse
+  -- in the other direction must be reversed.
+  local start
   if leftToRight then
-    -- every odd track is in the normal direction
-    evenOrOdd = 1
+    -- starting on the left, the first track is not reversed
+    start = 2 
   else
-    evenOrOdd = 0
+    start = 1
   end
-  for i = 1, #parallelTracks do
-    -- every second track is in the other direction
-    if i % 2 == evenOrOdd then
-      parallelTracks[ i ].waypoints = reverse( parallelTracks[ i ].waypoints)
-    end
+  -- reverse every second track
+  for i = start, #parallelTracks, 2 do
+    parallelTracks[ i ].waypoints = reverse( parallelTracks[ i ].waypoints)
   end
+  io.flush()
   local startTrack = 1
   local endTrack = #parallelTracks
   local trackStep = 1

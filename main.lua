@@ -12,6 +12,7 @@ scale = 1.0
 xOffset, yOffset = 10000, 10000
 windowWidth = 1024
 windowHeight = 800
+showWidth = false
 
 marks = {}
 
@@ -112,7 +113,7 @@ function drawSettings()
     love.graphics.print( string.format( "best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 50, 0, 1 )
   end
   -- help text
-  local y = windowHeight - 200
+  local y = windowHeight - 220
   love.graphics.setColor( 240, 240, 240 )
   love.graphics.print( "Keys:", 10, y, 0, 1 )
   y = y + 20
@@ -120,6 +121,8 @@ function drawSettings()
   love.graphics.print( "Right click - place vehicle", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "j/k - -/+ vehicle rotation", 10,y, 0, 1 )
+  y = y + 20
+  love.graphics.print( "h - show headland pass width", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "w/W - -/+ work width", 10, y, 0, 1 )
   y = y + 20
@@ -186,8 +189,13 @@ function drawField( field )
     end
     -- draw connected headland passes with width
     if field.headlandPath and #field.headlandPath > 0 then
-      love.graphics.setLineWidth( field.width )
-      love.graphics.setColor( 100, 200, 100, 100 )
+      if showWidth then
+        love.graphics.setLineWidth( field.width )
+        love.graphics.setColor( 100, 200, 100, 100 )
+      else
+        love.graphics.setLineWidth( lineWidth )
+        love.graphics.setColor( 100, 200, 100 )
+      end
       love.graphics.line( getVertices( field.headlandPath ))
     end
     -- draw entire course
@@ -212,7 +220,7 @@ function drawField( field )
     love.graphics.polygon('line', field.vertices)
     if ( field.headlandTracks ) then
       if field.headlandTracks[ #field.headlandTracks ].pathFromHeadlandToCenter then
-        love.graphics.setColor( 160, 000, 000, 50 )
+        love.graphics.setColor( 160, 000, 000, 90 )
         local points = field.headlandTracks[ #field.headlandTracks ].pathFromHeadlandToCenter
         if #points > 1 then
           love.graphics.setLineWidth( lineWidth * 20 )
@@ -309,8 +317,13 @@ function love.textinput( t )
     generate()
   end
   if t == "p" then
-    field.nHeadlandPasses = field.nHeadlandPasses - 1
-    generate()
+    if field.nHeadlandPasses > 2 then
+      field.nHeadlandPasses = field.nHeadlandPasses - 1
+      generate()
+    end
+  end
+  if t == "h" then
+    showWidth = not showWidth
   end
   if t == "r" then
     field.course = reverseCourse( field.course )
