@@ -74,6 +74,8 @@ if useSavedFields then
   print( string.format( "\nEnter number ( %d - %d ) for the selected field or 0 (zero) to exit\n", 1, #savedFields ))
   io.flush()
   selectedFieldIndex = getSelection( savedFields )
+  -- save in the root folder (except when later an existing target course is selected) 
+  newParent=0
   if not selectedFieldIndex then return end
 else
   -- select an existing course. 
@@ -85,6 +87,8 @@ else
   print( string.format( "\nEnter number ( %d - %d ) for the selected course or 0 (zero) to exit\n", 1, #savedCourses ))
   io.flush()
   selectedOldCourseSequence = getSelection( savedCourses )
+  -- save in the same folder
+  newParent = savedCourses[ selectedOldCourseSequence ].parent
   if not selectedOldCourseSequence then return end
 end
 
@@ -107,7 +111,7 @@ if not selectedNewCourseSequence then
   newCourseName = io.stdin:read()
   newCourse = { id=nextFreeId, 
                 name= newCourseName,
-                parent=savedCourses[ selectedOldCourseSequence ].parent,
+                parent=newParent,
                 fileName=string.format( "courseStorage%04d.xml", nextFreeSequence ),
                 sequence=nextFreeSequence }
 else
