@@ -107,7 +107,7 @@ if not selectedNewCourseSequence then
   newCourseName = io.stdin:read()
   newCourse = { id=nextFreeId, 
                 name= newCourseName,
-                parent=savedCourses[ selectedOldCourseSequence ].parent,
+                parent=0,
                 fileName=string.format( "courseStorage%04d.xml", nextFreeSequence ),
                 sequence=nextFreeSequence }
 else
