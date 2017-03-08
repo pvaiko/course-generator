@@ -144,11 +144,12 @@ function writeCourseToFile( field, fileName )
 end
 
 function parseCourseData( line )
-  local fileName = string.match( line, 'fileName="([%w%.]+)"' )
-  local id = string.match( line, 'id="(%d+)"' )
-  local name = string.match( line, 'name="(.+)"' )
+  local fileName = string.match( line, 'slot.+fileName="([%w%.]+)"' )
+  local id = string.match( line, 'slot.+id="(%d+)"' )
+  local name = string.match( line, 'slot.+name="(.+)"' )
+  local parent = string.match( line, 'slot.+parent="(%d+)"' )
   local sequence = string.match( line, 'courseStorage(%d+).xml' )
-  return fileName, id, name, sequence
+  return fileName, id, name, sequence, parent
 end
 --
 --- Read the savegame carreer file to find out the map name
@@ -207,11 +208,11 @@ function getSavedCourses( f )
   local maxId = -1
   local maxSequence = -1
   for line in f:lines() do
-    local fileName, id, name, sequence = parseCourseData( line )
+    local fileName, id, name, sequence, parent = parseCourseData( line )
     if id then
       id = tonumber( id )
       sequence = tonumber( sequence )
-      savedCourses[ sequence ] = { fileName=fileName, id=id, name=name, sequence=sequence }
+      savedCourses[ sequence ] = { fileName=fileName, id=id, name=name, sequence=sequence, parent=parent }
       if ( id > maxId ) then maxId = id end
       if ( id > maxSequence ) then maxSequence = sequence end
     end
@@ -242,8 +243,8 @@ function addCourseToManagerFile( dir, managerFilename, newCourse)
     -- append new course data after the original courses
     if sequence and tonumber( sequence ) == ( newCourse.sequence - 1 ) then
       managerFileContents = managerFileContents .. string.format(
-        '    <slot fileName="%s" id="%d" parent="0" isUsed="true" name="%s"/>\n',
-        newCourse.fileName, newCourse.id, newCourse.name )
+        '        <slot fileName="%s" id="%d" parent="%d" isUsed="true" name="%s"/>\n',
+        newCourse.fileName, newCourse.id, newCourse.parent, newCourse.name )
     end
   end
   man:close() 

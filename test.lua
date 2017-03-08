@@ -134,9 +134,11 @@ local f = io.output( "test.pickle" )
 io.write( pickle( t )) 
 io.close( f )
 
-io.input( "test.pickle" )
+f = io.input( "test.pickle" )
 local r = unpickle( io.read( "*all" ))
 assert( r.loc[ 1 ].x == 1 and r.loc[ 1 ].y == 2 )
+io.close( f )
+os.execute( "del test.pickle" )
 
 
 --------------------------------------------------------------
@@ -191,6 +193,7 @@ for selected = 1, 14 do
   print( oldCourse.id, oldCourse.fileName )
   newCourse = { id=nextFreeId, 
                 name= "(test) " .. oldCourse.name,
+                parent=oldCourse.parent,
                 fileName=string.format( "courseStorage%04d.xml", nextFreeSequence ),
                 sequence=nextFreeSequence }
   copyCourse( testDir, oldCourse, newCourse, managerFileName ) 
@@ -201,7 +204,10 @@ for selected = 1, 14 do
   managerFile:close()
   assert( #savedCourses == 15 )
   createdCourse = savedCourses[ 15 ]
-  assert( createdCourse.id == newCourse.id and createdCourse.fileName == newCourse.fileName and createdCourse.sequence == newCourse.sequence )
+  assert( createdCourse.id == newCourse.id and 
+          createdCourse.fileName == newCourse.fileName and 
+          createdCourse.sequence == newCourse.sequence and 
+          createdCourse.parent == newCourse.parent )
   -- delete copied course file and restore the manager file
   os.execute( "del " .. testDir .. createdCourse.fileName )
   os.execute( "move " .. testDir .. managerFileName .. ".orig " .. testDir .. managerFileName  )
