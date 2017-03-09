@@ -97,7 +97,10 @@ Usage
 6. You should now see a list which contains either the 
    the saved courses of the map (if you started it with a map folder)
    or the saved fields of the savegame.
-   Only the top folder works, courses in subfolders won't show up.
+   
+   Has limite support for course folders: when a new course is created
+   from an existing one it'll be in the same folder as the original.
+   If created from a field, it'll be in the root folder.
 
 7. Select a fieldwork course or a field by typing in the number of the course 
    and pressing enter. The course generator will use this course
