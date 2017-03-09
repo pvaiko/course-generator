@@ -28,7 +28,25 @@ local rotatedMarks = {}
 -- field.track
 --   parallel tracks in the middle of the field.
 --
-function generateCourseForField( field, implementWidth, nHeadlandPasses, overlapPercent, useBoundaryAsFirstHeadlandPass, nTracksToSkip )
+-- field
+--
+-- implementWidth width of the implement
+-- 
+-- nHeadlandPasses number of headland passes to generate
+--
+-- overlapPercent headland pass overlap in percent, may reduce skipped fruit in corners
+--
+-- useBoundaryAsFirstHeadlandPass field.boundary above is the first headland pass. True 
+--   when generating based on an existing course. 
+--   
+-- nTracksToSkip center tracks to skip. When 0, normal alternating tracks are generated
+--   when > 0, intermediate tracks are skipped to allow for wider turns
+--
+-- extendTracks extend center tracks into the headland (meters) to prevent unworked
+--   triangles with long plows.
+--
+function generateCourseForField( field, implementWidth, nHeadlandPasses, overlapPercent, 
+                                 useBoundaryAsFirstHeadlandPass, nTracksToSkip, extendTracks )
   rotatedMarks = {}
   field.boundingBox = getBoundingBox( field.boundary )
   calculatePolygonData( field.boundary )
@@ -52,7 +70,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, overlap
     previousTrack = field.headlandTracks[ j ]
   end
   linkHeadlandTracks( field, implementWidth )
-  field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth, nTracksToSkip )
+  field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth, nTracksToSkip, extendTracks )
   field.bestAngle = field.headlandTracks[ nHeadlandPasses ].bestAngle
   field.nTracks = field.headlandTracks[ nHeadlandPasses ].nTracks
   -- assemble complete course now
@@ -216,7 +234,7 @@ function findBestTrackAngle( field, width )
 end
 
 --- Generate up/down tracks covering a field at the optimum angle
-function generateTracks( field, width, nTracksToSkip )
+function generateTracks( field, width, nTracksToSkip, extendTracks )
   -- translate field so we can rotate it around its center. This way all points
   -- will be approximately the same distance from the origo and the rotation calculation
   -- will be more precise
@@ -239,7 +257,7 @@ function generateTracks( field, width, nTracksToSkip )
   table.insert( rotatedMarks, rotated.topIntersections[ 1 ].point )
   table.insert( rotatedMarks, rotated.topIntersections[ 2 ].point )
   
-  addWaypointsToTracks( parallelTracks, width )
+  addWaypointsToTracks( parallelTracks, width, extendTracks )
   -- Now we have the waypoints for each track, going from left to right
   -- Next, find out where to start: bottom left, bottom rigth, top left or top right
   -- whichever is closer to the end of the headland track.
@@ -327,12 +345,12 @@ end
 --
 -- Also, we expect the tracks already have the intersection points with
 -- the field boundary and there are exactly two intersection points
-function addWaypointsToTracks( tracks, width )
+function addWaypointsToTracks( tracks, width, extendTracks )
   local track = {}
   for i = 1, #tracks do
     if #tracks[ i ].intersections > 1 then
-      local newFrom = math.min( tracks[ i ].intersections[ 1 ].x, tracks[ i ].intersections[ 2 ].x ) + width / 2
-      local newTo = math.max( tracks[ i ].intersections[ 1 ].x, tracks[ i ].intersections[ 2 ].x ) - width / 2
+      local newFrom = math.min( tracks[ i ].intersections[ 1 ].x, tracks[ i ].intersections[ 2 ].x ) + width / 2 - extendTracks
+      local newTo = math.max( tracks[ i ].intersections[ 1 ].x, tracks[ i ].intersections[ 2 ].x ) - width / 2 + extendTracks
       -- if a track is very short (shorter than width) we may end up with newTo being
       -- less than newFrom. Just skip that track
       if newTo > newFrom then

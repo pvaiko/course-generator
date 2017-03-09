@@ -34,6 +34,7 @@ function love.load( arg )
   field.vertices = getVertices( field.boundary )
   field.overlap = 0
   field.nTracksToSkip = 0
+  field.extendTracks = 0
   
   -- translate and scale everything so they are visible
   fieldWidth = field.boundingBox.maxX - field.boundingBox.minX
@@ -107,13 +108,14 @@ function drawSettings()
   love.graphics.setColor( 200, 200, 200 )
   love.graphics.print( string.format( "file: %s", arg[ 3 ]), 10, 10, 0, 1 )
   love.graphics.setColor( 00, 200, 00 )
-  love.graphics.print( string.format( "width: %.1f m, overlap %d%% headland passes: %d, skipping %d tracks", field.width, field.overlap, field.nHeadlandPasses, field.nTracksToSkip ), 10, 30, 0, 1 )
+  love.graphics.print( string.format( "width: %.1f m, overlap %d%% headland passes: %d, skipping %d tracks, extend %d m", 
+           field.width, field.overlap, field.nHeadlandPasses, field.nTracksToSkip, field.extendTracks ), 10, 30, 0, 1 )
   if field.bestAngle then
     love.graphics.setColor( 200, 200, 00 )
     love.graphics.print( string.format( "best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 50, 0, 1 )
   end
   -- help text
-  local y = windowHeight - 220
+  local y = windowHeight - 240
   love.graphics.setColor( 240, 240, 240 )
   love.graphics.print( "Keys:", 10, y, 0, 1 )
   y = y + 20
@@ -125,6 +127,8 @@ function drawSettings()
   love.graphics.print( "h - show headland pass width", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "w/W - -/+ work width", 10, y, 0, 1 )
+  y = y + 20
+  love.graphics.print( "x/X - -/+ extend center tracks into headland (m)", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "o/O - -/+ work width overlap on headland", 10, y, 0, 1 )
   y = y + 20
@@ -276,7 +280,9 @@ end
 
 function generate()
   marks = {}
-  status, err = pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, field.overlap, useHeadland, field.nTracksToSkip )
+  status, err = pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, 
+                                              field.overlap, useHeadland, field.nTracksToSkip,
+                                              field.extendTracks)
   if not status then
     print( err )
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
@@ -302,6 +308,14 @@ function love.textinput( t )
   end
   if t == "w" then
     field.width = field.width - 0.1
+    generate()
+  end
+  if t == "X" then
+    field.extendTracks = field.extendTracks + 1
+    generate()
+  end
+  if t == "x" then
+    field.extendTracks = field.extendTracks - 1
     generate()
   end
   if t == "o" then
