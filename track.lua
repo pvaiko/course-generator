@@ -46,7 +46,8 @@ local rotatedMarks = {}
 --   triangles with long plows.
 --
 function generateCourseForField( field, implementWidth, nHeadlandPasses, overlapPercent, 
-                                 useBoundaryAsFirstHeadlandPass, nTracksToSkip, extendTracks )
+                                 useBoundaryAsFirstHeadlandPass, nTracksToSkip, extendTracks,
+                                 minDistanceBetweenPoints, angleThreshold )
   rotatedMarks = {}
   field.boundingBox = getBoundingBox( field.boundary )
   calculatePolygonData( field.boundary )
@@ -66,7 +67,8 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, overlap
     else 
       width = implementWidth
     end
-    field.headlandTracks[ j ] = calculateHeadlandTrack( previousTrack, width - width * overlapPercent / 100 )
+    field.headlandTracks[ j ] = calculateHeadlandTrack( previousTrack, width - width * overlapPercent / 100, 
+                                                        minDistanceBetweenPoints, angleThreshold, 0 )
     previousTrack = field.headlandTracks[ j ]
   end
   linkHeadlandTracks( field, implementWidth )
@@ -88,7 +90,56 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, overlap
 end
 
 --- Calculate a headland track inside polygon in offset distance
-function calculateHeadlandTrack( polygon, offset )
+function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints, angleThreshold, currentOffset )
+  -- recursion limit
+  if currentOffset == 0 then 
+    n = 1
+  else
+    n = n + 1
+  end
+  if currentOffset >= targetOffset or n > 50 then return polygon end
+  -- we'll use the grassfire algorithm and approach the target offset by 
+  -- iteration, generating headland tracks close enough to the previous one
+  -- so the resulting offset polygon is always clean (its edges don't intersect
+  -- each other)
+  -- this can be ensured by choosing an offset small enough
+  local deltaOffset = polygon.shortestEdgeLength / 2
+  deltaOffset = math.min( deltaOffset, targetOffset - currentOffset )
+  local offsetEdges = {} 
+  for i, point in ipairs( polygon ) do
+    local newEdge = {} 
+    local newFrom = addPolarVectorToPoint( point.nextEdge.from, point.nextEdge.angle + getInwardDirection( polygon.isClockwise ), deltaOffset )
+    local newTo = addPolarVectorToPoint( point.nextEdge.to, point.nextEdge.angle + getInwardDirection( polygon.isClockwise ), deltaOffset )
+    table.insert( offsetEdges, { from=newFrom, to=newTo })
+  end
+ 
+  local vertices = {} 
+  for i, edge in ipairs( offsetEdges ) do
+    local ix = i - 1
+    if ix == 0 then ix = #offsetEdges end
+    local prevEdge = offsetEdges[ix ]
+    local vertex = getIntersection( edge.from.x, edge.from.y, edge.to.x, edge.to.y, 
+                                    prevEdge.from.x, prevEdge.from.y, prevEdge.to.x, prevEdge.to.y )
+    if vertex then
+      table.insert( vertices, vertex )
+    else
+      if getDistanceBetweenPoints( prevEdge.to, edge.from ) < minDistanceBetweenPoints then
+        local x, y = getPointInTheMiddle( prevEdge.to, edge.from )
+        table.insert( vertices, { x=x, y=y })
+      else
+        table.insert( vertices, prevEdge.to )
+        table.insert( vertices, edge.from )
+      end
+    end
+  end
+  calculatePolygonData( vertices )
+  -- only filter points too close, don't care about angle
+  vertices = smooth( vertices, 1 )
+  applyLowPassFilter( vertices, angleThreshold, minDistanceBetweenPoints )
+  return calculateHeadlandTrack( vertices, targetOffset, minDistanceBetweenPoints, angleThreshold, currentOffset + deltaOffset )
+end
+
+function calculateHeadlandTrack2( polygon, offset )
   local track = {}
   for i, point in ipairs( polygon ) do
     -- get a point perpendicular to the current point in offset distance
@@ -191,11 +242,12 @@ function linkHeadlandTracks( field, implementWidth )
         --v = { location = startLocation, heading=math.deg( heading ) }
         -- remember this, we'll need when generating the link from the last headland pass
         -- to the parallel tracks
-        -- table.insert( rotatedMarks, field.headlandTracks[ i ][ fromIndex ])
-        -- table.insert( rotatedMarks, field.headlandTracks[ i ][ toIndex ])
+        table.insert( rotatedMarks, field.headlandTracks[ i ][ fromIndex ])
+        table.insert( rotatedMarks, field.headlandTracks[ i ][ toIndex ])
         break
       else
         print( string.format( "Could not link headland track %d at heading %d", i, math.deg( h )))
+        io.stdout:flush()
       end
     end
   end

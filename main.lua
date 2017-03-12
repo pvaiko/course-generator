@@ -30,11 +30,14 @@ function love.load( arg )
   field = loadFieldFromSavedCourse( fileName )
   calculatePolygonData( field.boundary )
   field.vehicle = { location = {x=335, y=145}, heading = 180 }
+  field.vehicle = { location = {x=-33.6, y=-346.1}, heading = 180 }
   field.boundingBox = getBoundingBox( field.boundary )
   field.vertices = getVertices( field.boundary )
   field.overlap = 0
   field.nTracksToSkip = 0
   field.extendTracks = 0
+  field.minDistanceBetweenPoints = 0.5
+  field.angleThresholdDeg = 180
   
   -- translate and scale everything so they are visible
   fieldWidth = field.boundingBox.maxX - field.boundingBox.minX
@@ -110,9 +113,10 @@ function drawSettings()
   love.graphics.setColor( 00, 200, 00 )
   love.graphics.print( string.format( "width: %.1f m, overlap %d%% headland passes: %d, skipping %d tracks, extend %d m", 
            field.width, field.overlap, field.nHeadlandPasses, field.nTracksToSkip, field.extendTracks ), 10, 30, 0, 1 )
+  love.graphics.print( string.format( "min point distance: %f, angle threshold: %d", field.minDistanceBetweenPoints, field.angleThresholdDeg ), 10, 50, 0, 1 )
   if field.bestAngle then
     love.graphics.setColor( 200, 200, 00 )
-    love.graphics.print( string.format( "best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 50, 0, 1 )
+    love.graphics.print( string.format( "best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 70, 0, 1 )
   end
   -- help text
   local y = windowHeight - 240
@@ -133,6 +137,10 @@ function drawSettings()
   love.graphics.print( "o/O - -/+ work width overlap on headland", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "p/P - -/+ headland passes", 10, y, 0, 1 )
+  y = y + 20
+  love.graphics.print( ",/< - -/+ min. distance between points", 10, y, 0, 1 )
+  y = y + 20
+  love.graphics.print( "./> - -/+ smoothing angle threshold", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "r - reverse course", 10, y, 0, 1 )
   y = y + 20
@@ -172,6 +180,17 @@ function drawBoundingBox( bb )
   love.graphics.line( bb.minX, bb.minY, bb.maxX, bb.minY, bb.maxX, bb.maxY, bb.minX, bb.maxY, bb.minX, bb.minY )
 end
 
+function drawHeadlandTracks()
+  for i, t in ipairs( field.headlandTracks ) do
+    love.graphics.setColor( 255, 255, 0 )
+    love.graphics.points( getVertices( t ))
+    for j, p in ipairs( t ) do
+      love.graphics.setColor( 255, 0, 0 )
+      love.graphics.line( p.x, p.y, p.x + p.nextEdge.dx / 2, p.y + p.nextEdge.dy / 2 )
+    end
+  end
+end
+
 function drawCoursePoints( course )
   for i, point in ipairs( course ) do
     if point.turnStart then
@@ -191,6 +210,10 @@ function drawField( field )
     if ( field.boundingBox ) then
       --drawBoundingBox( field.boundingBox )
     end
+    if field.headlandTracks then
+      --drawHeadlandTracks()
+    end
+
     -- draw connected headland passes with width
     if field.headlandPath and #field.headlandPath > 0 then
       if showWidth then
@@ -280,12 +303,17 @@ end
 
 function generate()
   marks = {}
-  status, err = pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, 
+  --status, err = pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, 
+  --                                            field.overlap, useHeadland, field.nTracksToSkip,
+  --                                            field.extendTracks)
+  status, err = generateCourseForField( field, field.width, field.nHeadlandPasses, 
                                               field.overlap, useHeadland, field.nTracksToSkip,
-                                              field.extendTracks)
+                                              field.extendTracks, field.minDistanceBetweenPoints,
+                                              math.rad( field.angleThresholdDeg )
+                                              )
   if not status then
     print( err )
-    love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
+    --love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
   end
 end
 
@@ -353,6 +381,26 @@ function love.textinput( t )
       field.nTracksToSkip = field.nTracksToSkip - 1
       generate()
     end
+  end
+  if t == "," then
+    if field.minDistanceBetweenPoints > 0.25 then
+      field.minDistanceBetweenPoints = field.minDistanceBetweenPoints - 0.25
+      generate()
+    end
+  end
+  if t == "<" then
+    field.minDistanceBetweenPoints = field.minDistanceBetweenPoints + 0.25
+    generate()
+  end
+  if t == "." then
+    if field.angleThresholdDeg > 30 then
+      field.angleThresholdDeg = field.angleThresholdDeg - 15
+      generate()
+    end
+  end
+  if t == ">" then
+    field.angleThresholdDeg = field.angleThresholdDeg + 15
+    generate()
   end
 end
 

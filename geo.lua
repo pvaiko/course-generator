@@ -7,8 +7,8 @@
 -- a point has the following attributes:
 -- x
 -- y
--- fromEdge : vector from the previous to this point
--- toEdge : vector from this point to the next
+-- prevEdge : vector from the previous to this point
+-- nextEdge : vector from this point to the next
 -- tangent : the tangent vector of the curve at this point,
 --           calculated as the vector between the 
 --           the previous and next points
@@ -93,13 +93,14 @@ function applyLowPassFilter( polygon, angleThreshold, distanceThreshold )
     -- around here
     local angle, length = toPolar( np.x - cp.x, np.y - cp.y )
     local isTooClose = length < distanceThreshold
-    local isTooSharp = math.abs( getDeltaAngle( np.fromEdge.angle, cp.fromEdge.angle )) > angleThreshold 
-    if isTooClose then
+    local isTooSharp = math.abs( getDeltaAngle( np.prevEdge.angle, cp.prevEdge.angle )) > angleThreshold 
+    if isTooClose or isTooSharp then
       -- replace current and next point with something in the middle
       polygon[ ix( index + 1 )].x, polygon[ ix( index + 1 )].y = getPointInTheMiddle( cp, np )
     end
     if isTooSharp or isTooClose then
       table.remove( polygon, ix( index ))
+      calculatePolygonData( polygon )
       --table.insert( marks, cp )
     else
       index = index + 1
@@ -111,6 +112,7 @@ function calculatePolygonData( polygon )
   local ix = function( a ) return getPolygonIndex( polygon, a ) end
   local directionStats = {}
   local dAngle = 0
+  local shortestEdgeLength = 1000
   for i, point in ipairs( polygon ) do
     local pp, cp, np = polygon[ ix( i - 1 )], polygon[ ix( i )], polygon[ ix( i + 1 )]
     -- vector from the previous to the next point
@@ -122,15 +124,17 @@ function calculatePolygonData( polygon )
     dx = cp.x - pp.x
     dy = cp.y - pp.y
     angle, length = toPolar( dx, dy )
-    polygon[ i ].fromEdge = { angle=angle, length=length, dx=dx, dy=dy }
+    polygon[ i ].prevEdge = { from=pp, to=cp, angle=angle, length=length, dx=dx, dy=dy }
     -- vector from this to the next point 
     dx = np.x - cp.x
     dy = np.y - cp.y
     angle, length = toPolar( dx, dy )
-    polygon[ i ].toEdge = { angle=angle, length=length, dx=dx, dy=dy }
-    if pp.fromEdge and cp.fromEdge then
-      if pp.fromEdge.angle and cp.fromEdge.angle then
-        dAngle = dAngle + getDeltaAngle( cp.fromEdge.angle, pp.fromEdge.angle )
+    polygon[ i ].nextEdge = { from=cp, to=np, angle=angle, length=length, dx=dx, dy=dy }
+    if length < shortestEdgeLength then shortestEdgeLength = length end
+
+    if pp.prevEdge and cp.prevEdge then
+      if pp.prevEdge.angle and cp.prevEdge.angle then
+        dAngle = dAngle + getDeltaAngle( cp.prevEdge.angle, pp.prevEdge.angle )
       end
     end
     addToDirectionStats( directionStats, angle, length )
@@ -138,6 +142,7 @@ function calculatePolygonData( polygon )
   polygon.directionStats = directionStats
   polygon.bestDirection = getBestDirection( directionStats )
   polygon.isClockwise = dAngle > 0
+  polygon.shortestEdgeLength = shortestEdgeLength
 end
 
 function addToDirectionStats( directionStats, angle, length )
