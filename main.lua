@@ -37,7 +37,7 @@ function love.load( arg )
   field.nTracksToSkip = 0
   field.extendTracks = 0
   field.minDistanceBetweenPoints = 0.5
-  field.angleThresholdDeg = 180
+  field.angleThresholdDeg = 90
   field.doSmooth = false
   
   -- translate and scale everything so they are visible

@@ -154,7 +154,7 @@ function addTurnsToCorners( vertices, angleThreshold )
     if math.abs( getDeltaAngle( np.nextEdge.angle, cp.nextEdge.angle )) > angleThreshold then
       cp.turnStart = true
       np.turnEnd = true
-      i = i + 1
+      i = i + 2
     end
     i = i + 1
   end
