@@ -38,6 +38,7 @@ function love.load( arg )
   field.extendTracks = 0
   field.minDistanceBetweenPoints = 0.5
   field.angleThresholdDeg = 180
+  field.doSmooth = false
   
   -- translate and scale everything so they are visible
   fieldWidth = field.boundingBox.maxX - field.boundingBox.minX
@@ -119,7 +120,7 @@ function drawSettings()
     love.graphics.print( string.format( "best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 70, 0, 1 )
   end
   -- help text
-  local y = windowHeight - 240
+  local y = windowHeight - 260
   love.graphics.setColor( 240, 240, 240 )
   love.graphics.print( "Keys:", 10, y, 0, 1 )
   y = y + 20
@@ -141,6 +142,8 @@ function drawSettings()
   love.graphics.print( ",/< - -/+ min. distance between points", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "./> - -/+ smoothing angle threshold", 10, y, 0, 1 )
+  y = y + 20
+  love.graphics.print( "s - toggle corner smoothing", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "r - reverse course", 10, y, 0, 1 )
   y = y + 20
@@ -309,7 +312,7 @@ function generate()
   status, err = generateCourseForField( field, field.width, field.nHeadlandPasses, 
                                               field.overlap, useHeadland, field.nTracksToSkip,
                                               field.extendTracks, field.minDistanceBetweenPoints,
-                                              math.rad( field.angleThresholdDeg )
+                                              math.rad( field.angleThresholdDeg ), field.doSmooth
                                               )
   if not status then
     print( err )
@@ -400,6 +403,10 @@ function love.textinput( t )
   end
   if t == ">" then
     field.angleThresholdDeg = field.angleThresholdDeg + 15
+    generate()
+  end
+  if t == "m" then
+    field.doSmooth = not field.doSmooth
     generate()
   end
 end

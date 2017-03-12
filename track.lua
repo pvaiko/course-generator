@@ -47,7 +47,7 @@ local rotatedMarks = {}
 --
 function generateCourseForField( field, implementWidth, nHeadlandPasses, overlapPercent, 
                                  useBoundaryAsFirstHeadlandPass, nTracksToSkip, extendTracks,
-                                 minDistanceBetweenPoints, angleThreshold )
+                                 minDistanceBetweenPoints, angleThreshold, doSmooth )
   rotatedMarks = {}
   field.boundingBox = getBoundingBox( field.boundary )
   calculatePolygonData( field.boundary )
@@ -68,10 +68,13 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, overlap
       width = implementWidth
     end
     field.headlandTracks[ j ] = calculateHeadlandTrack( previousTrack, width - width * overlapPercent / 100, 
-                                                        minDistanceBetweenPoints, angleThreshold, 0 )
+                                                        minDistanceBetweenPoints, angleThreshold, 0, doSmooth )
     previousTrack = field.headlandTracks[ j ]
   end
   linkHeadlandTracks( field, implementWidth )
+  if not doSmooth then
+    addTurnsToCorners( field.headlandPath, angleThreshold )
+  end
   field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth, nTracksToSkip, extendTracks )
   field.bestAngle = field.headlandTracks[ nHeadlandPasses ].bestAngle
   field.nTracks = field.headlandTracks[ nHeadlandPasses ].nTracks
@@ -90,7 +93,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, overlap
 end
 
 --- Calculate a headland track inside polygon in offset distance
-function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints, angleThreshold, currentOffset )
+function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints, angleThreshold, currentOffset, doSmooth )
   -- recursion limit
   if currentOffset == 0 then 
     n = 1
@@ -133,30 +136,29 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
     end
   end
   calculatePolygonData( vertices )
-  -- only filter points too close, don't care about angle
-  vertices = smooth( vertices, 1 )
-  applyLowPassFilter( vertices, angleThreshold, minDistanceBetweenPoints )
-  return calculateHeadlandTrack( vertices, targetOffset, minDistanceBetweenPoints, angleThreshold, currentOffset + deltaOffset )
-end
-
-function calculateHeadlandTrack2( polygon, offset )
-  local track = {}
-  for i, point in ipairs( polygon ) do
-    -- get a point perpendicular to the current point in offset distance
-    local newPoint = addPolarVectorToPoint( point, point.tangent.angle + getInwardDirection( polygon.isClockwise ), offset )
-    table.insert( track, { x = newPoint.x, y = newPoint.y })
+  if doSmooth then
+    vertices = smooth( vertices, 1 )
   end
-  calculatePolygonData( track )
-  removeLoops( track, 20 )
-  removeLoops( track, 20 )
-  applyLowPassFilter( track, math.deg( 120 ), 4.1 )
-  track = smooth( track, 1 )
-  -- don't filter for angle, only distance
-  applyLowPassFilter( track, 2 * math.pi, 3 )
-  track.boundingBox = getBoundingBox( track )
-  return track
+  -- only filter points too close, don't care about angle
+  applyLowPassFilter( vertices, math.pi, minDistanceBetweenPoints )
+  return calculateHeadlandTrack( vertices, targetOffset, minDistanceBetweenPoints, angleThreshold, 
+                                 currentOffset + deltaOffset, doSmooth )
 end
 
+function addTurnsToCorners( vertices, angleThreshold )
+  local ix = function( a ) return getPolygonIndex( vertices, a ) end
+  i = 1
+  while i < #vertices do
+    local cp = vertices[ i ]
+    local np = vertices[ ix( i + 1 )]
+    if math.abs( getDeltaAngle( np.nextEdge.angle, cp.nextEdge.angle )) > angleThreshold then
+      cp.turnStart = true
+      np.turnEnd = true
+      i = i + 1
+    end
+    i = i + 1
+  end
+end
 
 --- Reverse a course. This is to build a sowing/cultivating etc. course
 -- from a harvester course.
