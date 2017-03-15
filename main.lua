@@ -118,7 +118,7 @@ function drawSettings()
   local smoothingStatus 
   if field.doSmooth then smoothingStatus = "on" else smoothingStatus = "off" end
   
-  love.graphics.print( string.format( "min point distance: %f, corner smoothing: %s, angle threshold: %d", 
+  love.graphics.print( string.format( "min point distance: %.2f m, corner smoothing: %s, angle threshold: %d", 
     field.minDistanceBetweenPoints, smoothingStatus, field.angleThresholdDeg ), 10, 50, 0, 1 )
   if field.bestAngle then
     love.graphics.setColor( 200, 200, 00 )
@@ -311,19 +311,13 @@ end
 
 function generate()
   marks = {}
-   generateCourseForField( field, field.width, field.nHeadlandPasses, 
+  status, err = pcall( generateCourseForField, field, field.width, field.nHeadlandPasses, 
                                               field.overlap, useHeadland, field.nTracksToSkip,
                                               field.extendTracks, field.minDistanceBetweenPoints,
-                                              math.rad( field.angleThresholdDeg ), field.doSmooth
-                                              )
-  ---status, err = pcall( generateCourseForField, field, field.width, field.nHeadlandPasses, 
-   --                                           field.overlap, useHeadland, field.nTracksToSkip,
-    --                                          field.extendTracks, field.minDistanceBetweenPoints,
-     --                                         math.rad( field.angleThresholdDeg ), field.doSmooth
-      --                                        )
+                                              math.rad( field.angleThresholdDeg ), field.doSmooth)
   if not status then
     print( err )
-    --love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
+    love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
   end
 end
 
