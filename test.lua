@@ -158,12 +158,14 @@ assert( r[ 1 ] == 4, r[ 2 ] == 3, r[ 3 ] == 2, r[ 4 ] == 1 )
 
 marks = {}
 for i, fieldName in ipairs( { "pickles/8", "pickles/9", "pickles/23" }) do
-  for width = 3, 2 do
+  for width = 3, 6 do
     print( string.format( "\nGenerating course for field %s with width %d", fieldName, width ))
     local field = loadFieldFromPickle( fieldName )
-    generateCourseForField( field, width, 5, 0, 0, true, 0 )
+    generateCourseForField( field, width, 5, 0, true, 0, 0, 0.5, 30, false )
+    generateCourseForField( field, width, 2, 20, true, 1, 3, 0.5, 30, true )
     field = loadFieldFromPickle( fieldName .. "_reversed" )
-    generateCourseForField( field, width, 5, 10, 0, true, 0 )
+    generateCourseForField( field, width, 5, 0, true, 0, 0, 0.5, 30, false )
+    generateCourseForField( field, width, 2, 20, true, 1, 3, 0.5, 30, true )
   end
 end
 
@@ -176,7 +178,7 @@ local fileName = "CoursePlay_Courses\\courseStorage0004.xml"
   field.width = 4.4
   field.isClockwise = "true"
 
-generateCourseForField( field, field.width, field.nHeadlandPasses, 0, false, 0 )
+generateCourseForField( field, field.width, field.nHeadlandPasses, 0, true, 0, 0, 0.5, 30, false )
 writeCourseToFile( field, fileName ) 
 os.execute( "del " .. fileName )
 

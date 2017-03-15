@@ -37,7 +37,7 @@ function love.load( arg )
   field.nTracksToSkip = 0
   field.extendTracks = 0
   field.minDistanceBetweenPoints = 0.5
-  field.angleThresholdDeg = 90
+  field.angleThresholdDeg = 30
   field.doSmooth = false
   
   -- translate and scale everything so they are visible
@@ -114,7 +114,12 @@ function drawSettings()
   love.graphics.setColor( 00, 200, 00 )
   love.graphics.print( string.format( "width: %.1f m, overlap %d%% headland passes: %d, skipping %d tracks, extend %d m", 
            field.width, field.overlap, field.nHeadlandPasses, field.nTracksToSkip, field.extendTracks ), 10, 30, 0, 1 )
-  love.graphics.print( string.format( "min point distance: %f, angle threshold: %d", field.minDistanceBetweenPoints, field.angleThresholdDeg ), 10, 50, 0, 1 )
+           
+  local smoothingStatus 
+  if field.doSmooth then smoothingStatus = "on" else smoothingStatus = "off" end
+  
+  love.graphics.print( string.format( "min point distance: %f, corner smoothing: %s, angle threshold: %d", 
+    field.minDistanceBetweenPoints, smoothingStatus, field.angleThresholdDeg ), 10, 50, 0, 1 )
   if field.bestAngle then
     love.graphics.setColor( 200, 200, 00 )
     love.graphics.print( string.format( "best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 70, 0, 1 )
@@ -143,7 +148,7 @@ function drawSettings()
   y = y + 20
   love.graphics.print( "./> - -/+ smoothing angle threshold", 10, y, 0, 1 )
   y = y + 20
-  love.graphics.print( "s - toggle corner smoothing", 10, y, 0, 1 )
+  love.graphics.print( "m - toggle corner smoothing", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "r - reverse course", 10, y, 0, 1 )
   y = y + 20
@@ -306,14 +311,16 @@ end
 
 function generate()
   marks = {}
-  --status, err = pcall(generateCourseForField, field, field.width, field.nHeadlandPasses, 
-  --                                            field.overlap, useHeadland, field.nTracksToSkip,
-  --                                            field.extendTracks)
-  status, err = generateCourseForField( field, field.width, field.nHeadlandPasses, 
+   generateCourseForField( field, field.width, field.nHeadlandPasses, 
                                               field.overlap, useHeadland, field.nTracksToSkip,
                                               field.extendTracks, field.minDistanceBetweenPoints,
                                               math.rad( field.angleThresholdDeg ), field.doSmooth
                                               )
+  ---status, err = pcall( generateCourseForField, field, field.width, field.nHeadlandPasses, 
+   --                                           field.overlap, useHeadland, field.nTracksToSkip,
+    --                                          field.extendTracks, field.minDistanceBetweenPoints,
+     --                                         math.rad( field.angleThresholdDeg ), field.doSmooth
+      --                                        )
   if not status then
     print( err )
     --love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
@@ -396,13 +403,13 @@ function love.textinput( t )
     generate()
   end
   if t == "." then
-    if field.angleThresholdDeg > 30 then
-      field.angleThresholdDeg = field.angleThresholdDeg - 15
+    if field.angleThresholdDeg > 5 then
+      field.angleThresholdDeg = field.angleThresholdDeg - 5
       generate()
     end
   end
   if t == ">" then
-    field.angleThresholdDeg = field.angleThresholdDeg + 15
+    field.angleThresholdDeg = field.angleThresholdDeg + 5
     generate()
   end
   if t == "m" then

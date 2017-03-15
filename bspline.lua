@@ -1,9 +1,8 @@
 -- http://stackoverflow.com/questions/29612584/creating-cubic-and-or-quadratic-bezier-curves-to-fit-a-path
 --
 require( "geo" )
-angleThreshold = math.pi / 10
 -- insert a point in the middle of each edge.
-function _refine( points ) 
+function _refine( points, angleThreshold ) 
   local ix = function( a ) return getPolygonIndex( points, a ) end
   -- points = [points[0]].concat(points).concat(points[points.length-1]);
   local refined = {}
@@ -12,7 +11,7 @@ function _refine( points )
     local point = points[ i ];
     refined[ rIx ] = point
     if points[ ix( i + 1 )] then 
-      if( isSharpTurn( points[ i ].prevEdge, points[ ix( i + 1 )].prevEdge )) then 
+      if( isSharpTurn( points[ i ].prevEdge, points[ ix( i + 1 )].prevEdge, angleThreshold )) then 
         -- insert points only when there is really a curve here
         -- table.insert( marks, points[ i ])
         local x, y =  getPointInTheMiddle( point, points[ ix( i + 1 )]);
@@ -42,14 +41,14 @@ function _dual( points )
 end
 
 -- move the current point a bit towards the previous and next. 
-function _tuck( points, s )
+function _tuck( points, s, angleThreshold )
   local tucked = {}
   local index = 1
   local ix = function( a ) return getPolygonIndex( points, a ) end
   for i, point in ipairs( points ) do
     local pp, cp, np = points[ ix( i - 1 )], points[ ix( i )], points[ ix( i + 1 )]
     -- tuck points only when there is really a curve here
-    if ( isSharpTurn( points[ i ].prevEdge, points[ ix( i + 1 )].prevEdge )) then
+    if ( isSharpTurn( points[ i ].prevEdge, points[ ix( i + 1 )].prevEdge, angleThreshold )) then
       -- mid point between the previous and next
       local midPNx, midPNy = getPointInTheMiddle( pp, np )
       -- vector from current point to mid point
@@ -69,21 +68,21 @@ function getPointInTheMiddle( a, b )
          a.y + (( b.y - a.y ) / 2 )
 end
 
-function isSharpTurn( a, b )
+function isSharpTurn( a, b, angleThreshold )
     local da = getDeltaAngle( a.angle, b.angle )
     return math.abs( da ) > angleThreshold
 end
 
-function smooth(points, order) 
+function smooth(points, angleThreshold, order) 
   if ( order <= 0  ) then
     return points
   else
-    local refined = _refine( points )
+    local refined = _refine( points, angleThreshold )
     calculatePolygonData( refined )
-    refined = _tuck( refined, 0.5 )
+    refined = _tuck( refined, 0.5, angleThreshold )
     calculatePolygonData( refined )
-    refined = _tuck( refined, -0.15 )
+    refined = _tuck( refined, -0.15, angleThreshold )
     calculatePolygonData( refined )
-    return smooth( refined, order - 1 );
+    return smooth( refined, angleThreshold, order - 1 );
   end
 end

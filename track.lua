@@ -72,9 +72,6 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, overlap
     previousTrack = field.headlandTracks[ j ]
   end
   linkHeadlandTracks( field, implementWidth )
-  if not doSmooth then
-    addTurnsToCorners( field.headlandPath, angleThreshold )
-  end
   field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth, nTracksToSkip, extendTracks )
   field.bestAngle = field.headlandTracks[ nHeadlandPasses ].bestAngle
   field.nTracks = field.headlandTracks[ nHeadlandPasses ].nTracks
@@ -137,7 +134,7 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
   end
   calculatePolygonData( vertices )
   if doSmooth then
-    vertices = smooth( vertices, 1 )
+    vertices = smooth( vertices, angleThreshold, 1 )
   end
   -- only filter points too close, don't care about angle
   applyLowPassFilter( vertices, math.pi, minDistanceBetweenPoints )
@@ -248,7 +245,7 @@ function linkHeadlandTracks( field, implementWidth )
         table.insert( rotatedMarks, field.headlandTracks[ i ][ toIndex ])
         break
       else
-        print( string.format( "Could not link headland track %d at heading %d", i, math.deg( h )))
+        print( string.format( "Could not link headland track %d at heading %.2f", i, math.deg( h )))
         io.stdout:flush()
       end
     end
@@ -311,7 +308,7 @@ function generateTracks( field, width, nTracksToSkip, extendTracks )
   table.insert( rotatedMarks, rotated.topIntersections[ 1 ].point )
   table.insert( rotatedMarks, rotated.topIntersections[ 2 ].point )
   
-  addWaypointsToTracks( parallelTracks, width, extendTracks )
+  parallelTracks = addWaypointsToTracks( parallelTracks, width, extendTracks )
   -- Now we have the waypoints for each track, going from left to right
   -- Next, find out where to start: bottom left, bottom rigth, top left or top right
   -- whichever is closer to the end of the headland track.
@@ -400,7 +397,7 @@ end
 -- Also, we expect the tracks already have the intersection points with
 -- the field boundary and there are exactly two intersection points
 function addWaypointsToTracks( tracks, width, extendTracks )
-  local track = {}
+  local result = {}
   for i = 1, #tracks do
     if #tracks[ i ].intersections > 1 then
       local newFrom = math.min( tracks[ i ].intersections[ 1 ].x, tracks[ i ].intersections[ 2 ].x ) + width / 2 - extendTracks
@@ -411,18 +408,20 @@ function addWaypointsToTracks( tracks, width, extendTracks )
         tracks[ i ].waypoints = {}
         for x = newFrom, newTo, waypointDistance do
           table.insert( tracks[ i ].waypoints, { x=x, y=tracks[ i ].from.y, track=i })
-          table.insert( track, tracks[ i ].waypoints[ #tracks[ i ].waypoints ])
         end
         -- make sure we actually reached newTo, if waypointDistance is too big we may end up 
         -- well before the innermost headland track or field boundary
         if newTo - tracks[ i ].waypoints[ #tracks[ i ].waypoints ].x > waypointDistance * 0.25 then
           table.insert( tracks[ i ].waypoints, { x=newTo, y=tracks[ i ].from.y, track=i })
-          table.insert( track, tracks[ i ].waypoints[ #tracks[ i ].waypoints ])
         end
       end
     end
+    -- return only tracks with waypoints
+    if tracks[ i ].waypoints then
+      table.insert( result, tracks[ i ])
+    end
   end
-  return track
+  return result
 end 
 
 --- Find the 'corner' closest to the end of the last headland pass.
