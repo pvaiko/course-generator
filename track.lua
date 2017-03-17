@@ -12,7 +12,7 @@ waypointDistance = 5
 
 -- Enable generating parallel tracks which intersect a field boundary
 -- more than twice: that is, try to fit the tracks into a concave field
-enableSplitTracks = false
+enableSplitTracks = true
   
 require( 'geo' )
 require( 'bspline' )
@@ -142,6 +142,8 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
                                  currentOffset + deltaOffset, doSmooth )
 end
 
+--- This makes sense only when these turns are implemented in Coursplay.
+-- as of now, it'll generate nice turns only for 180 degree 
 function addTurnsToCorners( vertices, angleThreshold )
   local ix = function( a ) return getPolygonIndex( vertices, a ) end
   i = 1
@@ -270,7 +272,6 @@ function findBestTrackAngle( field, width )
   local bestAngle = nil
   for angle = 0, 180, 1 do
     local rotated = rotatePoints( field, math.rad( angle ))
-    --local nTracks = ( rotated.boundingBox.maxY - rotated.boundingBox.minY ) / width
     local tracks = generateParallelTracks( rotated, width )
     local nTracks, nSplitTracks = countTracks( tracks )
     if nTracks < minTracks and ( enableSplitTracks or nSplitTracks == 0 ) then
@@ -288,7 +289,7 @@ end
 function generateTracks( field, width, nTracksToSkip, extendTracks )
   -- translate field so we can rotate it around its center. This way all points
   -- will be approximately the same distance from the origo and the rotation calculation
-  -- will be more precise
+  -- will be more accurate
   local bb = getBoundingBox( field )
   local dx, dy = ( bb.maxX + bb.minX ) / 2, ( bb.maxY + bb.minY ) / 2 
   local translated = translatePoints( field, -dx , -dy )
@@ -337,12 +338,12 @@ end
 --- Generate a list of parallel tracks within the field's boundary
 -- At this point, tracks are defined only by they endpoints and 
 -- are not connected
-function generateParallelTracks( field, width )
+function generateParallelTracks( polygon, width )
   local tracks = {}
   local trackIndex = 1
-  for y = field.boundingBox.minY + width / 2, field.boundingBox.maxY, width do
-    local from = { x = field.boundingBox.minX, y = y, track=trackIndex }
-    local to = { x = field.boundingBox.maxX, y = y, track=trackIndex }
+  for y = polygon.boundingBox.minY + width / 2, polygon.boundingBox.maxY, width do
+    local from = { x = polygon.boundingBox.minX, y = y, track=trackIndex }
+    local to = { x = polygon.boundingBox.maxX, y = y, track=trackIndex }
     -- for now, all tracks go from min to max, we'll take care of
     -- alternating directions later.
     table.insert( tracks, { from=from, to=to, intersections={}} )
@@ -350,7 +351,7 @@ function generateParallelTracks( field, width )
   end
   -- tracks has now a list of segments covering the bounding box of the 
   -- field. 
-  findTrackEnds( field, tracks )
+  findTrackEnds( polygon, tracks )
   return tracks
 end
 
@@ -358,14 +359,14 @@ end
 --  a list of segments. The segments represent the parallel tracks. 
 --  This function finds the intersections with the the field
 --  boundary.
-function findTrackEnds( field, tracks )
-  local ix = function( a ) return getPolygonIndex( field, a ) end
-  field.bottomIntersections = {}
-  field.topIntersections = {}
+function findTrackEnds( polygon, tracks )
+  local ix = function( a ) return getPolygonIndex( polygon, a ) end
+  polygon.bottomIntersections = {}
+  polygon.topIntersections = {}
   -- loop through the polygon and check each vector from 
   -- the current point to the next
-  for i, cp in ipairs( field ) do
-    local np = field[ ix( i + 1 )] 
+  for i, cp in ipairs( polygon ) do
+    local np = polygon[ ix( i + 1 )] 
     for j, t in ipairs( tracks ) do
       local is = getIntersection( cp.x, cp.y, np.x, np.y, t.from.x, t.from.y, t.to.x, t.to.y ) 
       if is then
@@ -376,11 +377,11 @@ function findTrackEnds( field, tracks )
         -- parallel tracks
         if j == 1 then
           -- bottommost track
-          table.insert( field.bottomIntersections, { index=i, point=is })
+          table.insert( polygon.bottomIntersections, { index=i, point=is })
         end
         if j == #tracks then
           -- topmost track
-          table.insert( field.topIntersections, { index=i, point=is })
+          table.insert( polygon.topIntersections, { index=i, point=is })
         end
       end
     end
@@ -520,7 +521,7 @@ function linkParallelTracks( parallelTracks, bottomToTop, leftToRight, nTracksTo
   return track
 end
 
---- Check parallel tracks to see if teh turn start and turn end waypoints
+--- Check parallel tracks to see if the turn start and turn end waypoints
 -- are too far away. If this is the case, add waypoints
 -- Assume this is called at the first waypoint of a new track (turnEnd == true)
 --
@@ -607,3 +608,41 @@ function reorderTracksForAlternateFieldwork( parallelTracks, nTracksToSkip )
   end
   return reorderedTracks
 end
+
+--- Find blocks of center tracks which have to be worked separately
+-- in case of non-convex fields or islands
+--
+-- These blocks consist of tracks and each of these tracks will have
+-- exactly two intersection points with the headland
+--
+function splitCenterIntoBlocks( tracks, blocks )
+  local block = {}
+  for i, t in ipairs( tracks ) do
+    -- start at the bottommost track
+    -- as long as there are only 2 intersections with the field boundary, we
+    -- are ok as this is a convex area
+      print( string.format( "Track %d has %d intersections!", i, #t.intersections ))
+    if #t.intersections >= 2 then
+      -- add this track to the new block
+      local newTrack = t
+      -- but move the first two intersections of the original track to this block
+      newTrack.intersections = { t.intersections[ 1 ], t.intersections[ 2 ]}
+      table.insert( block, newTrack )
+      table.remove( t.intersections, 1 )
+      table.remove( t.intersections, 1 )
+      -- always add the first two intersections, the rest is part of the next block
+    end
+    if ( #t.intersections % 2  ) == 1 then
+      --print( string.format( "Track %d has %d intersections!", i, #t.intersections ))
+    end
+  end
+  if #block == 0 then
+    -- no tracks could be added to the block, we are done
+    return blocks
+  else
+    -- block has new tracks, add it to the list and continue splitting
+    table.insert( blocks, block )
+    return splitCenterIntoBlocks( tracks, blocks )
+  end
+end
+

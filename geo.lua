@@ -143,6 +143,7 @@ function calculatePolygonData( polygon )
   polygon.bestDirection = getBestDirection( directionStats )
   polygon.isClockwise = dAngle > 0
   polygon.shortestEdgeLength = shortestEdgeLength
+  polygon.boundingBox = getBoundingBox( polygon )
 end
 
 function addToDirectionStats( directionStats, angle, length )
@@ -299,23 +300,19 @@ function getIntersection(A1x, A1y, A2x, A2y, B1x, B1y, B2x, B2y)
 	return nil;
 end;
 
-function createRectangularPolynom( x, y, dx, dy, step )
+function createRectangularPolygon( x, y, dx, dy, step )
   local rect = {}
   for ix = x, x + dx, step do
     table.insert( rect, { x = ix, y = y })
-    print( rect[ #rect ].x, rect[ #rect].y )
   end
   for iy = y + step, y + dy, step do
     table.insert( rect, { x = x + dx, y = iy })
-    print( rect[ #rect ].x, rect[ #rect].y )
   end
   for ix = x + dx - step, x, -step do
     table.insert( rect, { x = ix, y = y + dy })
-    print( rect[ #rect ].x, rect[ #rect].y )
   end
   for iy = y + dy - step, y, -step do
     table.insert( rect, { x = x, y = iy })
-    print( rect[ #rect ].x, rect[ #rect].y )
   end
   return rect
 end

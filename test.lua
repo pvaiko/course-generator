@@ -151,6 +151,18 @@ assert( #r == #t )
 assert( r[ 1 ] == 4, r[ 2 ] == 3, r[ 3 ] == 2, r[ 4 ] == 1 )
 
 
+nonConvexField = createRectangularPolygon( 0, 0, 200, 100, 5 )
+-- so far it is convex, now make it non-convex
+for i, point in ipairs( nonConvexField ) do
+  if point.y == 100 and point.x >= 50 and point.x <= 150 then
+    point.y = 50
+  end
+end
+calculatePolygonData( nonConvexField )
+tracks = generateParallelTracks( nonConvexField, 5 )
+blocks = {}
+blocks = splitCenterIntoBlocks( tracks, blocks )
+print( #blocks )
 
 --------------------------------------------------------------
 -- Smoke test
@@ -158,7 +170,7 @@ assert( r[ 1 ] == 4, r[ 2 ] == 3, r[ 3 ] == 2, r[ 4 ] == 1 )
 
 marks = {}
 for i, fieldName in ipairs( { "pickles/8", "pickles/9", "pickles/23" }) do
-  for width = 3, 6 do
+  for width = 3, 2 do
     print( string.format( "\nGenerating course for field %s with width %d", fieldName, width ))
     local field = loadFieldFromPickle( fieldName )
     generateCourseForField( field, width, 5, 0, true, 0, 0, 0.5, 30, false )
@@ -172,11 +184,11 @@ end
 
 local fileName = "CoursePlay_Courses\\courseStorage0004.xml"
 
-  field = {}
-  field = loadFieldFromPickle("pickles/23")
-  field.nHeadlandPasses = 5
-  field.width = 4.4
-  field.isClockwise = "true"
+field = {}
+field = loadFieldFromPickle("pickles/23")
+field.nHeadlandPasses = 5
+field.width = 4.4
+field.isClockwise = "true"
 
 generateCourseForField( field, field.width, field.nHeadlandPasses, 0, true, 0, 0, 0.5, 30, false )
 writeCourseToFile( field, fileName ) 
