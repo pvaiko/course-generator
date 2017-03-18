@@ -150,20 +150,59 @@ r = reverse( t )
 assert( #r == #t )
 assert( r[ 1 ] == 4, r[ 2 ] == 3, r[ 3 ] == 2, r[ 4 ] == 1 )
 
+--------------------------------------------------------------
+-- add point to ordered list
+--------------------------------------------------------------
+is = {}
+p = {x=1}
+addPointToListOrderedByX( is, p )
+assert( #is == 1 )
+assert( is[ 1 ].x == 1 )
+p = {x=2}
+addPointToListOrderedByX( is, p )
+assert( #is == 2 )
+assert( is[ 1 ].x == 1 and is[ 2 ].x == 2 )
+p = {x=-2}
+addPointToListOrderedByX( is, p )
+assert( #is == 3 )
+assert( is[ 1 ].x == -2 and is[ 2 ].x == 1 and is[ 3 ].x == 2 )
+p = {x=1.5}
+addPointToListOrderedByX( is, p )
+assert( #is == 4 )
+assert( is[ 1 ].x == -2 and is[ 2 ].x == 1 and is[ 3 ].x == 1.5 and is[ 4 ].x == 2 )
+
+--------------------------------------------------------------
+-- overlaps
+--------------------------------------------------------------
+t1 = { intersections={{ x=1 }, { x=4 }}}
+t2 = { intersections={{ x=5 }, { x=6 }}}
+assert( not overlaps( t1, t2 ))
+assert( not overlaps( t2, t1 ))
+t1 = { intersections={{ x=1 }, { x=4 }}}
+t2 = { intersections={{ x=3 }, { x=6 }}}
+assert( overlaps( t1, t2 ))
+assert( overlaps( t2, t1 ))
+t1 = { intersections={{ x=1 }, { x=4 }}}
+t2 = { intersections={{ x=2 }, { x=3 }}}
+assert( overlaps( t1, t2 ))
+assert( overlaps( t2, t1 ))
 
 nonConvexField = createRectangularPolygon( 0, 0, 200, 100, 5 )
 -- so far it is convex, now make it non-convex
 for i, point in ipairs( nonConvexField ) do
-  if point.y == 100 and point.x >= 50 and point.x <= 150 then
+  if point.y == 0 and point.x >= 50 and point.x <= 150 then
     point.y = 50
   end
 end
-calculatePolygonData( nonConvexField )
-tracks = generateParallelTracks( nonConvexField, 5 )
-blocks = {}
-blocks = splitCenterIntoBlocks( tracks, blocks )
-print( #blocks )
-
+marks = {}
+field = {}
+field.boundary = nonConvexField
+calculatePolygonData( field.boundary )
+field.vehicle = { location = {x=-5, y=5}, heading = 0 }
+field.nHeadlandPasses = 2
+field.width = 3
+generateCourseForField( field, 2, 3, 0, true, 0, 0, 0.5, 30, false )
+writeCourseToFile( field, "CoursePlay_Courses\\test\\course0101.xml" )
 --------------------------------------------------------------
 -- Smoke test
 --------------------------------------------------------------

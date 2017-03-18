@@ -17,6 +17,7 @@ showWidth = false
 marks = {}
 
 function love.load( arg )
+  if arg[#arg] == "-debug" then require("mobdebug").start() end
   if arg[ 2 ] == "fromCourse" then
     -- use the outermost headland path as the basis of the 
     -- generation, that is, the field.boundary is actually
@@ -164,6 +165,12 @@ function drawMarks( points )
   love.graphics.setColor( 200, 200, 0 )
   for i, point in pairs( points ) do
     love.graphics.circle( "line", point.x, point.y, 1 )
+    if point.label then
+      love.graphics.push()
+      love.graphics.scale( 1, -1 )
+      love.graphics.print( point.label, point.x, -point.y, 0, 0.3 )
+      love.graphics.pop()
+    end
   end
 end 
 

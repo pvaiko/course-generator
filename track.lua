@@ -264,6 +264,7 @@ function addTrackToHeadlandPath( headlandPath, track, passNumber, from, to, step
     headlandPath[ #headlandPath ].passNumber = passNumber
   end
 end
+
 --- Find the best angle to use for the tracks in a field.
 --  The best angle results in the minimum number of tracks
 --  (and thus, turns) needed to cover the field.
@@ -302,30 +303,55 @@ function generateTracks( field, width, nTracksToSkip, extendTracks )
   -- now, generate the tracks according to the implement width within the rotated field's bounding box
   -- using the best angle
   local rotated = rotatePoints( translated, math.rad( field.bestAngle ))
+
   local parallelTracks = generateParallelTracks( rotated, width )
 
-  table.insert( rotatedMarks, rotated.bottomIntersections[ 1 ].point )
-  table.insert( rotatedMarks, rotated.bottomIntersections[ 2 ].point )
-  table.insert( rotatedMarks, rotated.topIntersections[ 1 ].point )
-  table.insert( rotatedMarks, rotated.topIntersections[ 2 ].point )
+  local blocks = {}
+  blocks = splitCenterIntoBlocks( parallelTracks, blocks )
+
+  for i, block in ipairs( blocks ) do
+    for _, j in ipairs({ 1, #block }) do
+      table.insert( rotatedMarks, block[ j ].intersections[ 1 ])
+      rotatedMarks[ #rotatedMarks ].label = string.format( "%d-%d/1", i, j )
+      table.insert( rotatedMarks, block[ j ].intersections[ 2 ])
+      rotatedMarks[ #rotatedMarks ].label = string.format( "%d-%d/2", i, j )
+    end
+    print( string.format( "Block %d has %d tracks", i, #block ))
+    block.tracksWithWaypoints = addWaypointsToTracks( block, width, extendTracks )
+    block.covered = false
+    io.stdout:flush()
+  end
   
-  parallelTracks = addWaypointsToTracks( parallelTracks, width, extendTracks )
-  -- Now we have the waypoints for each track, going from left to right
-  -- Next, find out where to start: bottom left, bottom rigth, top left or top right
-  -- whichever is closer to the end of the headland track.
-  -- So start walking on the headland track until we bump on to one of those corners.
+  -- We now have split the area within the headland into blocks. If this is 
+  -- a convex field, there is only one block, non-convex ones may have multiple
+  -- blocks. 
+  -- Now we have to connect the first block with the end of the headland track
+  -- and then connect each block so we cover the entire field.
 
-  local bottomToTop, leftToRight, pathFromHeadlandToCenter = 
-    findStartOfParallelTracks( rotated, field.circleStart, field.circleEnd, field.circleStep )
+  local startIx, endIx, step = field.circleStart, field.circleEnd, field.circleStep
+  local workedBlocks = {} 
+  while startIx do
+    startIx, endIx, block = findTrackToNextBlock( blocks, rotated, startIx, endIx, step )
+    table.insert( workedBlocks, block )
+  end
 
-  local track = linkParallelTracks( parallelTracks, bottomToTop, leftToRight, nTracksToSkip ) 
+  -- workedBlocks has now a the list of blocks we need to work on, including the track
+  -- leading to the block from the previous block or the headland.
+  local track = {}
+  for i, block in ipairs( workedBlocks ) do
+    for j = 1, #block.trackToThisBlock do
+      table.insert( track, block.trackToThisBlock[ i ])
+    end
+    linkParallelTracks( track, block.tracksWithWaypoints, bottomToTop, leftToRight, nTracksToSkip ) 
+  end
+  
   -- now rotate and translate everything back to the original coordinate system
   rotatedMarks = translatePoints( rotatePoints( rotatedMarks, -math.rad( field.bestAngle )), dx, dy )
   for i = 1, #rotatedMarks do
     table.insert( marks, rotatedMarks[ i ])
   end
   field.pathFromHeadlandToCenter = 
-    translatePoints( rotatePoints( pathFromHeadlandToCenter, -math.rad( field.bestAngle )), dx, dy )
+    translatePoints( rotatePoints( workedBlocks[ 1 ].trackToThisBlock, -math.rad( field.bestAngle )), dx, dy )
   return translatePoints( rotatePoints( track, -math.rad( field.bestAngle )), dx, dy )
 end
 
@@ -333,7 +359,6 @@ end
 -- Functions below work on a field rotated so that all parallel tracks are 
 -- horizontal ( y = constant ). This makes track calculation really easy.
 ----------------------------------------------------------------------------------
-
 
 --- Generate a list of parallel tracks within the field's boundary
 -- At this point, tracks are defined only by they endpoints and 
@@ -351,7 +376,7 @@ function generateParallelTracks( polygon, width )
   end
   -- tracks has now a list of segments covering the bounding box of the 
   -- field. 
-  findTrackEnds( polygon, tracks )
+  findIntersections( polygon, tracks )
   return tracks
 end
 
@@ -359,7 +384,7 @@ end
 --  a list of segments. The segments represent the parallel tracks. 
 --  This function finds the intersections with the the field
 --  boundary.
-function findTrackEnds( polygon, tracks )
+function findIntersections( polygon, tracks )
   local ix = function( a ) return getPolygonIndex( polygon, a ) end
   polygon.bottomIntersections = {}
   polygon.topIntersections = {}
@@ -371,7 +396,9 @@ function findTrackEnds( polygon, tracks )
       local is = getIntersection( cp.x, cp.y, np.x, np.y, t.from.x, t.from.y, t.to.x, t.to.y ) 
       if is then
         -- the line between from and to (the track) intersects the vector from cp to np
-        table.insert( t.intersections, is )
+        -- remember the polygon vertex where we are intersecting
+        is.index = i
+        addPointToListOrderedByX( t.intersections, is )
         -- Remember the intersections with the first and the last track. 
         -- This is were we will want to transition from the headland to the center
         -- parallel tracks
@@ -425,6 +452,51 @@ function addWaypointsToTracks( tracks, width, extendTracks )
   return result
 end 
 
+--- Start walking on the headland at the given point until
+-- we bump onto a corner of an unworked block. 
+-- returns the to/from index in headland where the work for this 
+-- block ends, that is, where we should start looking for the next block 
+function findTrackToNextBlock( blocks, headland, from, to, step )
+  local track = {}
+  for i in polygonIterator( headland, from, to, step ) do
+    table.insert( track, headland[ i ])
+    for j, b in ipairs( blocks ) do
+      if not b.covered then
+        if i == b.bottomLeftIntersection.index then
+          print( string.format( "Starting block %d at bottom left", j ))
+          b.bottomToTop, b.leftToRight = true, true
+          b.covered = true
+          b.trackToThisBlock = track
+          return b.topRightIntersection.index, 
+            getPolygonIndex( headland, b.topRightIntersection.index - step ), b
+        elseif i == b.bottomRightIntersection.index then
+          print( string.format( "Starting block %d at bottom right", j ))
+          b.bottomToTop, b.leftToRight = true, false
+          b.covered = true
+          b.trackToThisBlock = track
+          return b.topLeftIntersection.index, 
+            getPolygonIndex( headland, b.topLeftIntersection.index - step ), b
+        elseif i == b.topLeftIntersection.index then 
+          print( string.format( "Starting block %d at top left", j ))
+          b.bottomToTop, b.leftToRight = false, true
+          b.covered = true
+          b.trackToThisBlock = track
+          return b.bottomRightIntersection.index, 
+            getPolygonIndex( headland, b.bottomRightIntersection.index - step ), b
+        elseif i == b.topRightIntersection.index then
+          print( string.format( "Starting block %d at top right", j ))
+          b.bottomToTop, b.leftToRight = false, false
+          b.covered = true
+          b.trackToThisBlock = track
+          return b.bottomLeftIntersection.index, 
+            getPolygonIndex( headland, b.bottomLeftIntersection.index - step ), b
+        end
+      end
+    end
+  end
+  return nil, nil, nil
+end
+
 --- Find the 'corner' closest to the end of the last headland pass.
 -- The vehicle then will move on the last headland track until it
 -- reaches this corner and starts working on the parallel tracks in 
@@ -475,8 +547,7 @@ end
 -- if leftToRight == true then start the first track on the left 
 -- nTracksToSkip - number of tracks to skip when doing alternative 
 -- tracks
-function linkParallelTracks( parallelTracks, bottomToTop, leftToRight, nTracksToSkip ) 
-  local track = {}
+function linkParallelTracks( result, parallelTracks, bottomToTop, leftToRight, nTracksToSkip ) 
   if not bottomToTop then
     -- we start at the top, so reverse order of tracks as after the generation, 
     -- the last one is on the top
@@ -512,13 +583,12 @@ function linkParallelTracks( parallelTracks, bottomToTop, leftToRight, nTracksTo
         if ( j == #parallelTracks[ i ].waypoints and i ~= endTrack ) then
           point.turnStart = true
         end
-        table.insert( track, point )
+        table.insert( result, point )
       end      
     else
       print( string.format( "Track %d has no waypoints, skipping.", i ))
     end
   end
-  return track
 end
 
 --- Check parallel tracks to see if the turn start and turn end waypoints
@@ -617,32 +687,68 @@ end
 --
 function splitCenterIntoBlocks( tracks, blocks )
   local block = {}
+  local previousTrack = nil
   for i, t in ipairs( tracks ) do
     -- start at the bottommost track
     -- as long as there are only 2 intersections with the field boundary, we
     -- are ok as this is a convex area
-      print( string.format( "Track %d has %d intersections!", i, #t.intersections ))
     if #t.intersections >= 2 then
       -- add this track to the new block
-      local newTrack = t
-      -- but move the first two intersections of the original track to this block
-      newTrack.intersections = { t.intersections[ 1 ], t.intersections[ 2 ]}
+      -- but move the leftmost two intersections of the original track to this block
+      -- first find the two leftmost intersections (min x), which are ix 1 and 2 as 
+      -- the list of intersections is ordered by x
+      local newTrack = { from=t.from, to=t.to, intersections={ copyPoint( t.intersections[ 1 ]), copyPoint( t.intersections[ 2 ])}}
+      -- continue with this block only if the tracks overlap, otherwise we are done with this
+      -- block. Don't check first track obviously
+      if previousTrack and not overlaps( newTrack, previousTrack ) then
+        break
+      end
+      previousTrack = newTrack
       table.insert( block, newTrack )
       table.remove( t.intersections, 1 )
       table.remove( t.intersections, 1 )
-      -- always add the first two intersections, the rest is part of the next block
     end
-    if ( #t.intersections % 2  ) == 1 then
-      --print( string.format( "Track %d has %d intersections!", i, #t.intersections ))
+    if #t.intersections > 0 and ( #t.intersections % 2  ) == 1 then
+      print( string.format( "**** Track %d has %d intersections!", i, #t.intersections ))
     end
+    io.stdout:flush()
   end
   if #block == 0 then
     -- no tracks could be added to the block, we are done
     return blocks
   else
     -- block has new tracks, add it to the list and continue splitting
+    -- for our convenience, remember the corners
+    block.bottomLeftIntersection = block[ 1 ].intersections[ 1 ]
+    block.bottomRightIntersection = block[ 1 ].intersections[ 2 ]
+    block.topLeftIntersection = block[ #block ].intersections[ 1 ]
+    block.topRightIntersection = block[ #block ].intersections[ 2 ]
     table.insert( blocks, block )
     return splitCenterIntoBlocks( tracks, blocks )
   end
 end
 
+--- add a point to a list of intersections but make sure the 
+-- list is ordered from left to right, that is, the first element has 
+-- the smallest x, the last the greatest x
+function addPointToListOrderedByX( is, point )
+  local i = #is
+  while i > 0 and point.x < is[ i ].x do 
+    i = i - 1
+  end
+  table.insert( is, i + 1, point )
+end
+
+--- check if two tracks overlap. We assume tracks are horizontal
+-- and therefore check only the x coordinate
+-- also, we assume that both track's endpoints are defined in the
+-- intersections list and there are only two intersections.
+function overlaps( t1, t2 )
+  local t1x1, t1x2 = t1.intersections[ 1 ].x, t1.intersections[ 2 ].x
+  local t2x1, t2x2 = t2.intersections[ 1 ].x, t2.intersections[ 2 ].x
+  if t1x2 < t2x1 or t2x2 < t1x1 then 
+    return false
+  else
+    return true
+  end
+end
