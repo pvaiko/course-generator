@@ -31,6 +31,8 @@ What this preview does:
 - generate course starting in the center and finishing with
   the headland for sowing and any fieldwork other than 
   harvesting
+- interleaved parallel tracks (sorry, don't know the exact term) 
+  where you work every second (or 3rd, 4th...) track to prevent Y turns.
 
 Upcoming features:
 
@@ -87,7 +89,7 @@ Usage
 
 5. Alternatively, you can load a previously saved field with:
 
-   lua.exe startCourseGenerator.lua <full path to a savegame>
+   lua53.exe startCourseGenerator.lua <full path to a savegame>
 
    (Courseplay saves the fields into the savegame folder)
    for example, on Savegame 8 on my computer would be:
@@ -98,7 +100,7 @@ Usage
    the saved courses of the map (if you started it with a map folder)
    or the saved fields of the savegame.
    
-   Has limite support for course folders: when a new course is created
+   Has limited support for course folders: when a new course is created
    from an existing one it'll be in the same folder as the original.
    If created from a field, it'll be in the root folder.
 
