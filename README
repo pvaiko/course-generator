@@ -38,8 +38,7 @@ Upcoming features:
 
 - integration with Courseplay so courses can be generated 
   in game 
-- interleaved parallel tracks (sorry, don't know the exact term) 
-  where you work every second track to prevent Y turns.
+- non-convex fields
 - optimized headland track generation to prevent skipping
   fruit at corners.
 
