@@ -14,6 +14,11 @@ windowWidth = 1024
 windowHeight = 800
 showWidth = false
 
+drawConnectingTracks = true
+drawCourse = true
+drawHeadlandPath = true 
+drawPathFromHeadlandToCenter = true
+
 marks = {}
 
 function love.load( arg )
@@ -213,7 +218,7 @@ function drawCoursePoints( course )
     elseif point.turnEnd then
       love.graphics.setColor( 0, 255, 0 )
     else
-      love.graphics.setColor( 255, 255, 0 )
+      love.graphics.setColor( 100, 100, 0 )
     end
     love.graphics.points( point.x, point.y )
   end
@@ -230,53 +235,71 @@ function drawField( field )
     end
 
     -- draw connected headland passes with width
-    if field.headlandPath and #field.headlandPath > 0 then
-      if showWidth then
-        love.graphics.setLineWidth( field.width )
-        love.graphics.setColor( 100, 200, 100, 100 )
-      else
-        love.graphics.setLineWidth( lineWidth )
-        love.graphics.setColor( 100, 200, 100 )
+    if drawHeadlandPath then
+      if field.headlandPath and #field.headlandPath > 0 then
+        if showWidth then
+          love.graphics.setLineWidth( field.width )
+          love.graphics.setColor( 100, 200, 100, 100 )
+        else
+          love.graphics.setLineWidth( lineWidth )
+          love.graphics.setColor( 100, 200, 100 )
+        end
+        love.graphics.line( getVertices( field.headlandPath ))
       end
-      love.graphics.line( getVertices( field.headlandPath ))
     end
     -- draw entire course
-    if field.course then
-      -- course line
-      love.graphics.setColor( 50, 50, 50 )
-      love.graphics.setLineWidth( lineWidth )
-      love.graphics.line( getVertices( field.course ))
-      love.graphics.setLineWidth( lineWidth )
-      -- start of course, green dot
-      love.graphics.setColor( 0, 255, 0, 80 )
-      love.graphics.circle( "fill", field.course[ 1 ].x, field.course[ 1 ].y, 5 )
-      love.graphics.setColor( 255, 0, 0, 80 )
-      -- end of course, red dot
-      love.graphics.circle( "fill", field.course[ #field.course ].x, field.course[ #field.course ].y, 5 )
-      love.graphics.setColor( 100, 100, 100 )
-      -- course points
-      drawCoursePoints( field.course )
+    if drawCourse then
+      if field.course then
+        -- course line
+        love.graphics.setColor( 50, 100, 50, 80 )
+        love.graphics.setLineWidth( field.width / 2 )
+        love.graphics.line( getVertices( field.course ))
+        love.graphics.setLineWidth( lineWidth )
+        -- start of course, green dot
+        love.graphics.setColor( 0, 255, 0, 80 )
+        love.graphics.circle( "fill", field.course[ 1 ].x, field.course[ 1 ].y, 5 )
+        -- end of course, red dot
+        love.graphics.setColor( 255, 0, 0, 80 )
+        love.graphics.circle( "fill", field.course[ #field.course ].x, field.course[ #field.course ].y, 5 )
+        -- course points
+        love.graphics.setColor( 100, 100, 100 )
+        drawCoursePoints( field.course )
+      end
     end
     -- draw field boundary
     love.graphics.setColor( 100, 100, 100 )
     love.graphics.polygon('line', field.vertices)
     if ( field.headlandTracks ) then
-      if field.headlandTracks[ #field.headlandTracks ].pathFromHeadlandToCenter then
-        love.graphics.setColor( 160, 000, 000, 90 )
-        local points = field.headlandTracks[ #field.headlandTracks ].pathFromHeadlandToCenter
-        if #points > 1 then
-          love.graphics.setLineWidth( lineWidth * 20 )
-          love.graphics.line( getVertices( points ))
-          love.graphics.setLineWidth( lineWidth )
-        else
-          love.graphics.circle( "line", points[ 1 ].x, points[ 1 ].y, 1 )
+      if drawConnectingTracks then
+        if field.headlandTracks[ #field.headlandTracks ].connectingTracks then
+          -- track connecting blocks
+          for i, t in ipairs( field.headlandTracks[ #field.headlandTracks ].connectingTracks ) do
+            love.graphics.setColor( 150, 150, 000, 90 )
+            love.graphics.setLineWidth( lineWidth * 10 )
+            if #t > 1 then love.graphics.line( getVertices( t )) end
+            love.graphics.setLineWidth( lineWidth )
+          end
+        end
+      end
+      if drawPathFromHeadlandToCenter then
+        if field.headlandTracks[ #field.headlandTracks ].pathFromHeadlandToCenter then
+          -- path from headland to first block
+          love.graphics.setColor( 160, 000, 000, 90 )
+          local points = field.headlandTracks[ #field.headlandTracks ].pathFromHeadlandToCenter
+          if #points > 1 then
+            love.graphics.setLineWidth( lineWidth * 20 )
+            love.graphics.line( getVertices( points ))
+            love.graphics.setLineWidth( lineWidth )
+          else
+            love.graphics.circle( "line", points[ 1 ].x, points[ 1 ].y, 1 )
+          end
         end
       end
     end
     -- draw tracks in field body
     if field.track then
       love.graphics.setLineWidth( lineWidth )
-      love.graphics.setColor( 100, 100, 200 )
+      love.graphics.setColor( 50, 50, 100 )
       love.graphics.line( getVertices( field.track ))
     end
     drawMarks( marks )
@@ -416,6 +439,18 @@ function love.textinput( t )
   if t == "m" then
     field.doSmooth = not field.doSmooth
     generate()
+  end
+  if t == "1" then
+    drawCourse = not drawCourse
+  end
+  if t == "2" then
+    drawHeadlandPath = not drawHeadlandPath
+  end
+  if t == "3" then
+    drawPathFromHeadlandToCenter = not drawPathFromHeadlandToCenter
+  end
+  if t == "4" then
+    drawConnectingTracks = not drawConnectingTracks
   end
 end
 
