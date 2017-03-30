@@ -17,7 +17,7 @@ showWidth = false
 drawConnectingTracks = true
 drawCourse = true
 drawHeadlandPath = true 
-drawPathFromHeadlandToCenter = true
+drawTrack = true
 
 marks = {}
 
@@ -44,7 +44,7 @@ function love.load( arg )
   field.extendTracks = 0
   field.minDistanceBetweenPoints = 0.5
   field.angleThresholdDeg = 30
-  field.doSmooth = false
+  field.doSmooth = true
   
   -- translate and scale everything so they are visible
   fieldWidth = field.boundingBox.maxX - field.boundingBox.minX
@@ -88,7 +88,6 @@ end
 
 function saveFile()
   local buttonPressed = love.window.showMessageBox( "Saving", "Saving " .. fileName .. ", will overwrite if exist.\nDo you want to save?\n", { "Cancel", "Save" })
-  print( buttonPressed )
   if buttonPressed == 2 then
     -- Save
     writeCourseToFile( field, fileName )
@@ -221,6 +220,10 @@ function drawCoursePoints( course )
       love.graphics.setColor( 100, 100, 0 )
     end
     love.graphics.points( point.x, point.y )
+      love.graphics.push()
+      love.graphics.scale( 1, -1 )
+      love.graphics.print( i, point.x, -point.y, 0, 0.1 )
+      love.graphics.pop()
   end
 end
 
@@ -251,8 +254,9 @@ function drawField( field )
     if drawCourse then
       if field.course then
         -- course line
-        love.graphics.setColor( 50, 100, 50, 80 )
-        love.graphics.setLineWidth( field.width / 2 )
+        --love.graphics.setColor( 50, 100, 50, 80 )
+        --love.graphics.setLineWidth( field.width / 2 )
+        love.graphics.setColor( 150, 150, 50, 80 )
         love.graphics.line( getVertices( field.course ))
         love.graphics.setLineWidth( lineWidth )
         -- start of course, green dot
@@ -274,33 +278,21 @@ function drawField( field )
         if field.headlandTracks[ #field.headlandTracks ].connectingTracks then
           -- track connecting blocks
           for i, t in ipairs( field.headlandTracks[ #field.headlandTracks ].connectingTracks ) do
-            love.graphics.setColor( 150, 150, 000, 90 )
+            love.graphics.setColor( 180, 100, 000, 190 )
             love.graphics.setLineWidth( lineWidth * 10 )
             if #t > 1 then love.graphics.line( getVertices( t )) end
             love.graphics.setLineWidth( lineWidth )
           end
         end
       end
-      if drawPathFromHeadlandToCenter then
-        if field.headlandTracks[ #field.headlandTracks ].pathFromHeadlandToCenter then
-          -- path from headland to first block
-          love.graphics.setColor( 160, 000, 000, 90 )
-          local points = field.headlandTracks[ #field.headlandTracks ].pathFromHeadlandToCenter
-          if #points > 1 then
-            love.graphics.setLineWidth( lineWidth * 20 )
-            love.graphics.line( getVertices( points ))
-            love.graphics.setLineWidth( lineWidth )
-          else
-            love.graphics.circle( "line", points[ 1 ].x, points[ 1 ].y, 1 )
-          end
-        end
-      end
     end
     -- draw tracks in field body
-    if field.track then
-      love.graphics.setLineWidth( lineWidth )
-      love.graphics.setColor( 50, 50, 100 )
-      love.graphics.line( getVertices( field.track ))
+    if drawTrack then
+      if field.track then
+        love.graphics.setLineWidth( lineWidth )
+        love.graphics.setColor( 00, 00, 200 )
+        love.graphics.line( getVertices( field.track ))
+      end
     end
     drawMarks( marks )
     if ( field.vehicle ) then 
@@ -341,10 +333,16 @@ end
 
 function generate()
   marks = {}
+  -- generateCourseForField( field, field.width, field.nHeadlandPasses, 
+  --                                            field.overlap, useHeadland, field.nTracksToSkip,
+   --                                           field.extendTracks, field.minDistanceBetweenPoints,
+    --                                          math.rad( field.angleThresholdDeg ), field.doSmooth
+     --                                         )
   status, err = pcall( generateCourseForField, field, field.width, field.nHeadlandPasses, 
                                               field.overlap, useHeadland, field.nTracksToSkip,
                                               field.extendTracks, field.minDistanceBetweenPoints,
-                                              math.rad( field.angleThresholdDeg ), field.doSmooth)
+                                              math.rad( field.angleThresholdDeg ), field.doSmooth
+                                              )
   if not status then
     print( err )
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
@@ -447,10 +445,10 @@ function love.textinput( t )
     drawHeadlandPath = not drawHeadlandPath
   end
   if t == "3" then
-    drawPathFromHeadlandToCenter = not drawPathFromHeadlandToCenter
+    drawConnectingTracks = not drawConnectingTracks
   end
   if t == "4" then
-    drawConnectingTracks = not drawConnectingTracks
+    drawTrack = not drawTrack
   end
 end
 
@@ -466,7 +464,6 @@ function love.mousepressed(x, y, button, istouch)
    end
    if button == 2 then
      cix, ciy = love2real( x, y )
-     print( cix, ciy )
      field.vehicle.location.x = cix
      field.vehicle.location.y = ciy
    end

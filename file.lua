@@ -135,8 +135,8 @@ function writeCourseToFile( field, fileName )
       crossing = 'crossing="1" wait="1"'
     end
     io.write( 
-      string.format( '  <waypoint%d angle="%.2f" origangle="%.2f" generated="true" speed="0" pos="%.2f %.2f" %s %s %s/>\n',
-                     wp, toCpAngle( point.nextEdge.angle ), math.deg( point.nextEdge.angle ), point.x, -point.y, turn, lane, crossing ))
+      string.format( '  <waypoint%d angle="%.2f" generated="true" speed="0" pos="%.2f %.2f" %s %s %s/>\n',
+                     wp, toCpAngle( point.nextEdge.angle ), point.x, -point.y, turn, lane, crossing ))
     wp = wp + 1
   end
   io.write( " </course>" )

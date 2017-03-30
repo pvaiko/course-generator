@@ -80,9 +80,6 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, overlap
   for i, point in ipairs( field.headlandPath ) do
     table.insert( field.course, point )
   end
-  for i, point in ipairs( field.headlandTracks[ #field.headlandTracks ].pathFromHeadlandToCenter ) do
-    table.insert( field.course, point )
-  end
   for i, point in ipairs( field.track ) do
     table.insert( field.course, point )
   end
@@ -269,51 +266,39 @@ end
 --  The best angle results in the minimum number of tracks
 --  (and thus, turns) needed to cover the field.
 function findBestTrackAngle( field, width )
-  local minConvexTracks = 10000
-  local minNonConvexTracks = 10000
-  local bestConvexAngle = nil
-  local bestNonConvexAngle = nil
-  for angle = 0, 180, 1 do
+  local bestAngleStats = {}
+  local bestAngleIndex 
+  local minScore = 10000
+  for angle = 0, 180, 2 do
     local rotated = rotatePoints( field, math.rad( angle ))
     local tracks = generateParallelTracks( rotated, width )
-    local nFullTracks, nSplitTracks = countTracks( tracks )
-    local nTotalTracks = nFullTracks + nSplitTracks
-    if nFullTracks < minConvexTracks and nSplitTracks == 0 then
-      minConvexTracks = nTotalTracks
-      bestConvexAngle = angle
-    elseif nTotalTracks < minNonConvexTracks and nSplitTracks ~= 0 then
-      minNonConvexTracks = nTotalTracks
-      bestNonConvexAngle = angle
+    local nFullTracks, nSplitTracks, nBlocks = countTracks( tracks )
+    local blocks = {}
+    blocks = splitCenterIntoBlocks( tracks, blocks )
+    local nSmallBlocks = countSmallBlocks( blocks )
+    score = 50 * nSmallBlocks + 20 * #blocks + 5 * nSplitTracks + nFullTracks 
+    table.insert( bestAngleStats, { angle=angle, nBlocks=#blocks, nFullTracks=nFullTracks, nSplitTracks=nSplitTracks, score=score })
+    if score < minScore then
+      minScore = score
+      bestAngleIndex = #bestAngleStats
     end
   end
-  local bestAngle, minTracks
-  if bestConvexAngle then 
-    print( "Best convex angle: " .. bestConvexAngle .. " tracks: " .. minConvexTracks )
-    bestAngle = bestConvexAngle
-    minTracks = minConvexTracks
-  end
-  if bestNonConvexAngle then 
-    print( "Best non-convex angle: " .. bestNonConvexAngle .. " total tracks: " .. minNonConvexTracks )
-    if bestConvexAngle then
-      -- there is a convex solution to this field, use that unless the non-convex is 
-      -- significantly better
-      if ( minConvexTracks - minNonConvexTracks ) > minConvexTracks * 0.2 then
-        bestAngle = bestNonConvexAngle
-        minTracks = minNonConvexTracks
-        print( "Non-convex seems better." )
-      else
-        bestAngle = bestConvexAngle
-        minTracks = minConvexTracks
-        print( "Convex seems better" )
-      end
-    else
-      -- only non-convex solution
-      bestAngle = bestNonConvexAngle
-      minTracks = minNonConvexTracks
-      print( "Has no convex solution, going with non-convex" )
+  local b = bestAngleStats[ bestAngleIndex ]
+  print( string.format( "Best angle=%d, nBlocks=%d, nFullTracks=%d, nSplitTracks=%d, score=%d",
+                         b.angle, b.nBlocks, b.nFullTracks, b.nSplitTracks, b.score))
+  return b.angle, b.nFullTracks + b.nSplitTracks, b.nBlocks 
+end
+
+--- Count the blocks with just a few tracks 
+function countSmallBlocks( blocks )
+  local nResult = 0
+  for _, b in ipairs( blocks ) do
+    -- TODO: consider implement width
+    if #b < 5 then
+      nResult = nResult + 1
     end
-  end
-  return bestAngle, minTracks
+  end 
+  return nResult
 end
 
 --- Generate up/down tracks covering a field at the optimum angle
@@ -372,12 +357,17 @@ function generateTracks( field, width, nTracksToSkip, extendTracks )
   local connectingTracks = {}
   for i, block in ipairs( workedBlocks ) do
     connectingTracks[ i ] = {}
+    print( string.format( "Track to block %d has %d points", i, #block.trackToThisBlock ))
     for j = 1, #block.trackToThisBlock do
       table.insert( track, block.trackToThisBlock[ j ])
       table.insert( connectingTracks[ i ], block.trackToThisBlock[ j ])
+      --table.insert( rotatedMarks,block.trackToThisBlock[ j ])
+      --rotatedMarks[ #rotatedMarks ].label = string.format( "%d/%d", i, j )
     end
     linkParallelTracks( track, block.tracksWithWaypoints, block.bottomToTop, block.leftToRight, nTracksToSkip ) 
   end
+
+  io.stdout:flush()
   
   -- now rotate and translate everything back to the original coordinate system
   rotatedMarks = translatePoints( rotatePoints( rotatedMarks, -math.rad( field.bestAngle )), dx, dy )
@@ -388,8 +378,6 @@ function generateTracks( field, width, nTracksToSkip, extendTracks )
     connectingTracks[ i ] = translatePoints( rotatePoints( connectingTracks[ i ], -math.rad( field.bestAngle )), dx, dy )
   end
   field.connectingTracks = connectingTracks
-  field.pathFromHeadlandToCenter = 
-    translatePoints( rotatePoints( workedBlocks[ 1 ].trackToThisBlock, -math.rad( field.bestAngle )), dx, dy )
   return translatePoints( rotatePoints( track, -math.rad( field.bestAngle )), dx, dy )
 end
 
@@ -422,10 +410,10 @@ end
 --  a list of segments. The segments represent the parallel tracks. 
 --  This function finds the intersections with the the field
 --  boundary.
+--  As result, tracks will have an intersections member with all 
+--  intersection points with polygon, ordered from left to right
 function findIntersections( polygon, tracks )
   local ix = function( a ) return getPolygonIndex( polygon, a ) end
-  polygon.bottomIntersections = {}
-  polygon.topIntersections = {}
   -- loop through the polygon and check each vector from 
   -- the current point to the next
   for i, cp in ipairs( polygon ) do
@@ -437,17 +425,6 @@ function findIntersections( polygon, tracks )
         -- remember the polygon vertex where we are intersecting
         is.index = i
         addPointToListOrderedByX( t.intersections, is )
-        -- Remember the intersections with the first and the last track. 
-        -- This is were we will want to transition from the headland to the center
-        -- parallel tracks
-        if j == 1 then
-          -- bottommost track
-          table.insert( polygon.bottomIntersections, { index=i, point=is })
-        end
-        if j == #tracks then
-          -- topmost track
-          table.insert( polygon.topIntersections, { index=i, point=is })
-        end
       end
     end
   end
@@ -498,105 +475,70 @@ function findTrackToNextBlock( blocks, headland, from, to, step )
   local track = {}
   local ix
   for i in polygonIterator( headland, from, to, step ) do
-    table.insert( track, headland[ i ])
     for j, b in ipairs( blocks ) do
       if not b.covered then
+        -- TODO: we are repeating ourselves here a lot, should be refactored
         if i == b.bottomLeftIntersection.index then
           print( string.format( "Starting block %d at bottom left", j ))
           b.bottomToTop, b.leftToRight = true, true
           b.covered = true
-          b.trackToThisBlock = track
           -- where we end working the block depends on the number of track
           -- TODO: works only for alternating tracks as long as no track
           -- skipped.
           if #b % 2 == 0 then 
             ix = b.topLeftIntersection.index
+            table.insert( track, b.topLeftIntersection.point )
           else
             ix = b.topRightIntersection.index 
+            table.insert( track, b.topRightIntersection.point )
           end
+          b.trackToThisBlock = track
           return ix, getPolygonIndex( headland, ix - step ), b
         elseif i == b.bottomRightIntersection.index then
           print( string.format( "Starting block %d at bottom right", j ))
           b.bottomToTop, b.leftToRight = true, false
           b.covered = true
-          b.trackToThisBlock = track
           if #b % 2 == 0 then 
             ix = b.topRightIntersection.index
+            table.insert( track, b.topRightIntersection.point )
           else
             ix = b.topLeftIntersection.index 
+            table.insert( track, b.topLeftIntersection.point )
           end
+          b.trackToThisBlock = track
           return ix, getPolygonIndex( headland, ix - step ), b
         elseif i == b.topLeftIntersection.index then 
           print( string.format( "Starting block %d at top left", j ))
           b.bottomToTop, b.leftToRight = false, true
           b.covered = true
-          b.trackToThisBlock = track
           if #b % 2 == 0 then 
             ix = b.bottomLeftIntersection.index
+            table.insert( track, b.bottomLeftIntersection.point )
           else
             ix = b.bottomRightIntersection.index 
+            table.insert( track, b.bottomRightIntersection.point )
           end
+          b.trackToThisBlock = track
           return ix, getPolygonIndex( headland, ix - step ), b
         elseif i == b.topRightIntersection.index then
           print( string.format( "Starting block %d at top right", j ))
           b.bottomToTop, b.leftToRight = false, false
           b.covered = true
-          b.trackToThisBlock = track
           if #b % 2 == 0 then 
             ix = b.bottomRightIntersection.index
+            table.insert( track, b.bottomRightIntersection.point )
           else
             ix = b.bottomLeftIntersection.index 
+            table.insert( track, b.bottomLeftIntersection.point )
           end
+          b.trackToThisBlock = track
           return ix, getPolygonIndex( headland, ix - step ), b
         end
       end
-    end
-  end
+    end -- for all blocks
+    table.insert( track, headland[ i ])
+  end -- for all points of the headland
   return nil, nil, nil
-end
-
---- Find the 'corner' closest to the end of the last headland pass.
--- The vehicle then will move on the last headland track until it
--- reaches this corner and starts working on the parallel tracks in 
--- the middle of the field.
-function findStartOfParallelTracks( field, from, to, step )
-  -- field.toIndex is the last point of the headland path
-  -- the point with the smallest x is on the left
-  local bottomLeftIx, bottomRightIx, topLeftIx, topRightIx
-  if field.bottomIntersections[ 2 ].point.x >= field.bottomIntersections[ 1 ].point.x then
-    bottomLeftIx = field.bottomIntersections[ 1 ].index
-    bottomRightIx = field.bottomIntersections[ 2 ].index
-  else
-    bottomLeftIx = field.bottomIntersections[ 2 ].index
-    bottomRightIx = field.bottomIntersections[ 1 ].index
-  end
-  if field.topIntersections[ 2 ].point.x >= field.topIntersections[ 1 ].point.x then
-    topLeftIx = field.topIntersections[ 1 ].index
-    topRightIx = field.topIntersections[ 2 ].index
-  else
-    topLeftIx = field.topIntersections[ 2 ].index
-    topRightIx = field.topIntersections[ 1 ].index
-  end
-  local track = {}
-  for i in polygonIterator( field, from, to, step ) do
-    table.insert( track, field[ i ])
-    if i == bottomLeftIx then
-      print( "Starting at bottom left" )
-      return true, true, track
-    elseif i == bottomRightIx then
-      print( "Starting at bottom right" )
-      return true, false, track
-    elseif i == topLeftIx then 
-      print( "Starting at top left" )
-      return false, true, track
-    elseif i == topRightIx then
-      print( "Starting at top right" )
-      return false, false, track
-    end
-  end
-  print( "Start not found, starting at bottom left" )
-  io.stdout:flush()
-  return true, true, track
 end
 
 --- Link the parallel tracks in the center of the field to one 
@@ -684,14 +626,26 @@ function countTracks( tracks )
   local nFullTracks = 0
   -- tracks intersecting a concave field boundary
   local nSplitTracks = 0 
+  -- try to estimate the number of blocks (in case of a non-convex field there'll be at least two)
+  local nBlocks = 0
+  local nPrevIntersections = 0
   for j, t in ipairs( tracks ) do
     if #t.intersections > 2 then 
       nSplitTracks = nSplitTracks + ( #t.intersections - 2 ) / 2
     else
       nFullTracks = nFullTracks + 1
     end
+    -- whenever there's more intersections then it was before then
+    -- most likely a new block must be created
+    if #t.intersections > nPrevIntersections then
+      nBlocks = nBlocks + ( #t.intersections - nPrevIntersections ) / 2
+      nPrevIntersections = #t.intersections
+    end
+    if #t.intersections < nPrevIntersections then
+      nPrevIntersections = #t.intersections
+    end
   end
-  return nFullTracks, nSplitTracks
+  return nFullTracks, nSplitTracks, nBlocks
 end
 
 function reverseTracks( tracks )
