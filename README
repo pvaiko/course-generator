@@ -33,12 +33,24 @@ What this preview does:
   harvesting
 - interleaved parallel tracks (sorry, don't know the exact term) 
   where you work every second (or 3rd, 4th...) track to prevent Y turns.
+- non-convex fields: can generate path for non-convex fields. 
+  This is an experimental feature.
+  If there is no convex solution for a field or the non-convex
+  solution results in significantly less tracks it'll choose the
+  non-convex solution.
+  A non-convex solution will always have the middle of the field
+  divided in two or more blocks which will be worked one by one.
+  Once a block is finished, the course will lead to the next block
+  on the innermost headland path. This is not optimal but will 
+  cover the entire field and the course will always remain within
+  the field.
+  In general, the algorithm will try to create the minimum amount
+  of blocks and avoids creating blocks with just a few tracks.
 
 Upcoming features:
 
 - integration with Courseplay so courses can be generated 
   in game 
-- non-convex fields
 - optimized headland track generation to prevent skipping
   fruit at corners.
 
