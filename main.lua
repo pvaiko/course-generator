@@ -230,13 +230,6 @@ end
 
 function drawField( field )
   if field.vertices then
-    if ( field.boundingBox ) then
-      --drawBoundingBox( field.boundingBox )
-    end
-    if field.headlandTracks then
-      --drawHeadlandTracks()
-    end
-
     -- draw connected headland passes with width
     if drawHeadlandPath then
       if field.headlandPath and #field.headlandPath > 0 then
@@ -250,6 +243,7 @@ function drawField( field )
         love.graphics.line( getVertices( field.headlandPath ))
       end
     end
+
     -- draw entire course
     if drawCourse then
       if field.course then
@@ -270,9 +264,12 @@ function drawField( field )
         drawCoursePoints( field.course )
       end
     end
+
     -- draw field boundary
+    love.graphics.setLineWidth( lineWidth )
     love.graphics.setColor( 100, 100, 100 )
     love.graphics.polygon('line', field.vertices)
+
     if ( field.headlandTracks ) then
       if drawConnectingTracks then
         if field.headlandTracks[ #field.headlandTracks ].connectingTracks then
@@ -286,6 +283,7 @@ function drawField( field )
         end
       end
     end
+
     -- draw tracks in field body
     if drawTrack then
       if field.track then

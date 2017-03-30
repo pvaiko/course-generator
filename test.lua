@@ -209,7 +209,7 @@ writeCourseToFile( field, "CoursePlay_Courses\\test\\course0101.xml" )
 
 marks = {}
 for i, fieldName in ipairs( { "pickles/8", "pickles/9", "pickles/23" }) do
-  for width = 3, 2 do
+  for width = 3, 6 do
     print( string.format( "\nGenerating course for field %s with width %d", fieldName, width ))
     local field = loadFieldFromPickle( fieldName )
     generateCourseForField( field, width, 5, 0, true, 0, 0, 0.5, 30, false )
