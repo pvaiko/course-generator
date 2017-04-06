@@ -10,8 +10,8 @@ pointSize = 1
 lineWidth = 0.1
 scale = 1.0
 xOffset, yOffset = 10000, 10000
-windowWidth = 1024
-windowHeight = 800
+windowWidth = 1200
+windowHeight = 900
 showWidth = false
 
 drawConnectingTracks = true
@@ -45,6 +45,7 @@ function love.load( arg )
   field.minDistanceBetweenPoints = 0.5
   field.angleThresholdDeg = 30
   field.doSmooth = true
+  field.headlandClockwise = false
   
   -- translate and scale everything so they are visible
   fieldWidth = field.boundingBox.maxX - field.boundingBox.minX
@@ -117,17 +118,25 @@ function drawSettings()
   love.graphics.setColor( 200, 200, 200 )
   love.graphics.print( string.format( "file: %s", arg[ 3 ]), 10, 10, 0, 1 )
   love.graphics.setColor( 00, 200, 00 )
-  love.graphics.print( string.format( "width: %.1f m, overlap %d%% headland passes: %d, skipping %d tracks, extend %d m", 
-           field.width, field.overlap, field.nHeadlandPasses, field.nTracksToSkip, field.extendTracks ), 10, 30, 0, 1 )
+  local headlandDirection
+  if field.headlandClockwise then
+    headlandDirection = "clockwise"
+  else
+    headlandDirection = "counterclockwise"
+  end
+  love.graphics.print( string.format( "Headland: width: %.1f m, overlap %d%% number of passes: %d, direction %s",
+           field.width, field.overlap, field.nHeadlandPasses, headlandDirection ), 10, 30, 0, 1 )
+  love.graphics.print( string.format( "Center: skipping %d tracks, extend %d m", 
+           field.nTracksToSkip, field.extendTracks ), 10, 50, 0, 1 )
            
   local smoothingStatus 
   if field.doSmooth then smoothingStatus = "on" else smoothingStatus = "off" end
   
   love.graphics.print( string.format( "min point distance: %.2f m, corner smoothing: %s, angle threshold: %d", 
-    field.minDistanceBetweenPoints, smoothingStatus, field.angleThresholdDeg ), 10, 50, 0, 1 )
+    field.minDistanceBetweenPoints, smoothingStatus, field.angleThresholdDeg ), 10, 70, 0, 1 )
   if field.bestAngle then
     love.graphics.setColor( 200, 200, 00 )
-    love.graphics.print( string.format( "best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 70, 0, 1 )
+    love.graphics.print( string.format( "Options: best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 90, 0, 1 )
   end
   -- help text
   local y = windowHeight - 260
@@ -135,9 +144,9 @@ function drawSettings()
   love.graphics.print( "Keys:", 10, y, 0, 1 )
   y = y + 20
   love.graphics.setColor( 200, 200, 200 )
-  love.graphics.print( "Right click - place vehicle", 10, y, 0, 1 )
+  love.graphics.print( "Right click - mark start location", 10, y, 0, 1 )
   y = y + 20
-  love.graphics.print( "j/k - -/+ vehicle rotation", 10,y, 0, 1 )
+  love.graphics.print( "c - toggle headland direction (cw/ccw)", 10,y, 0, 1 )
   y = y + 20
   love.graphics.print( "h - show headland pass width", 10, y, 0, 1 )
   y = y + 20
@@ -294,7 +303,7 @@ function drawField( field )
     end
     drawMarks( marks )
     if ( field.vehicle ) then 
-      drawVehicle( field.vehicle )
+      --drawVehicle( field.vehicle )
     end
     if vectors then
       for i, vec in ipairs( vectors ) do
@@ -331,19 +340,21 @@ end
 
 function generate()
   marks = {}
-  -- generateCourseForField( field, field.width, field.nHeadlandPasses, 
-  --                                            field.overlap, useHeadland, field.nTracksToSkip,
-   --                                           field.extendTracks, field.minDistanceBetweenPoints,
-    --                                          math.rad( field.angleThresholdDeg ), field.doSmooth
-     --                                         )
-  status, err = pcall( generateCourseForField, field, field.width, field.nHeadlandPasses, 
+  generateCourseForField( field, field.width, field.nHeadlandPasses, 
+                                              field.headlandClockwise, field.vehicle.location,
                                               field.overlap, useHeadland, field.nTracksToSkip,
                                               field.extendTracks, field.minDistanceBetweenPoints,
                                               math.rad( field.angleThresholdDeg ), field.doSmooth
                                               )
+---  status, err = pcall( generateCourseForField, field, field.width, field.nHeadlandPasses, 
+ --                                             field.headlandClockwise, field.vehicle.location,
+  --                                            field.overlap, useHeadland, field.nTracksToSkip,
+   --                                           field.extendTracks, field.minDistanceBetweenPoints,
+    --                                          math.rad( field.angleThresholdDeg ), field.doSmooth
+     --                                         )
   if not status then
     print( err )
-    love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
+   -- love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
   end
 end
 
@@ -393,6 +404,10 @@ function love.textinput( t )
       field.nHeadlandPasses = field.nHeadlandPasses - 1
       generate()
     end
+  end
+  if t == "c" then
+    field.headlandClockwise = not field.headlandClockwise
+    generate()
   end
   if t == "h" then
     showWidth = not showWidth
@@ -451,8 +466,8 @@ function love.textinput( t )
 end
 
 function love.wheelmoved( dx, dy )
-  scale = scale + dy * 0.1
-  pointSize = pointSize + dy * 0.1
+  scale = scale + scale * dy * 0.05
+  pointSize = pointSize + pointSize * dy * 0.05
 end
 
 function love.mousepressed(x, y, button, istouch)
@@ -464,6 +479,7 @@ function love.mousepressed(x, y, button, istouch)
      cix, ciy = love2real( x, y )
      field.vehicle.location.x = cix
      field.vehicle.location.y = ciy
+     generate()
    end
 end
 

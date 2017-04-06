@@ -4,7 +4,6 @@ require( "geo" )
 -- insert a point in the middle of each edge.
 function _refine( points, angleThreshold ) 
   local ix = function( a ) return getPolygonIndex( points, a ) end
-  -- points = [points[0]].concat(points).concat(points[points.length-1]);
   local refined = {}
   local rIx = 1;
   for i = 1, #points do 

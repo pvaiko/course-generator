@@ -10,42 +10,70 @@ maxDistanceFromField = 30
 -- Distance of waypoints on the generated track in meters
 waypointDistance = 5
 
--- Enable generating parallel tracks which intersect a field boundary
--- more than twice: that is, try to fit the tracks into a concave field
-enableSplitTracks = true
-  
 require( 'geo' )
 require( 'bspline' )
 
 local rotatedMarks = {}
 --- Generate course for a field.
 -- The result will be:
+--
 -- field.headlandPath 
 --   array of points containing all headland passes
--- field.headlandTracks[ nHeadlandPasses ].pathFromHeadlandToCenter 
+--   
+-- field.connectingTracks
 --   this is the path from the end of the innermost headland track to the start
---   of the parallel tracks in the middle of the field.
+--   of the parallel tracks in the middle of the field and the connecting tracks
+--   between the blocks in the center if the field is non-convex and has been split
+--   into blocks
+--
 -- field.track
 --   parallel tracks in the middle of the field.
 --
--- field
+-- field.course
+--   all waypoints of the resulting course 
 --
--- implementWidth width of the implement
+-- Input paramters:
+--
+-- implementWidth 
+--   width of the implement
 -- 
--- nHeadlandPasses number of headland passes to generate
+-- nHeadlandPasses 
+--   number of headland passes to generate
 --
--- overlapPercent headland pass overlap in percent, may reduce skipped fruit in corners
+-- headlandClockwise
+--   headland track is clockwise when going inward if true, counterclockwise otherwise
 --
--- useBoundaryAsFirstHeadlandPass field.boundary above is the first headland pass. True 
---   when generating based on an existing course. 
+-- headlandStartLocation
+--   location anywhere near the field boundary where the headland should start.
+--
+-- overlapPercent 
+--   headland pass overlap in percent, may reduce skipped fruit in corners
+--
+-- useBoundaryAsFirstHeadlandPass 
+--   use field.boundary above as the first headland pass. True 
+--   when generating from an existing course. 
 --   
--- nTracksToSkip center tracks to skip. When 0, normal alternating tracks are generated
+-- nTracksToSkip 
+--   center tracks to skip. When 0, normal alternating tracks are generated
 --   when > 0, intermediate tracks are skipped to allow for wider turns
 --
--- extendTracks extend center tracks into the headland (meters) to prevent unworked
+-- extendTracks
+--   extend center tracks into the headland (meters) to prevent unworked
 --   triangles with long plows.
 --
-function generateCourseForField( field, implementWidth, nHeadlandPasses, overlapPercent, 
+-- minDistanceBetweenPoints 
+--   minimum distance allowed between vertices. Keeps the number of generated
+--   vertices for headland passes low. For fine tuning only
+--
+-- angleThreshold
+--   angle between two subsequent edges above which the smoothing kicks in.
+--   This is to smooth corners in the headland
+--
+-- doSmooth
+--   enable smoothing 
+--
+function generateCourseForField( field, implementWidth, nHeadlandPasses, headlandClockwise, 
+                                 headlandStartLocation, overlapPercent, 
                                  useBoundaryAsFirstHeadlandPass, nTracksToSkip, extendTracks,
                                  minDistanceBetweenPoints, angleThreshold, doSmooth )
   rotatedMarks = {}
@@ -71,7 +99,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, overlap
                                                         minDistanceBetweenPoints, angleThreshold, 0, doSmooth )
     previousTrack = field.headlandTracks[ j ]
   end
-  linkHeadlandTracks( field, implementWidth )
+  linkHeadlandTracks( field, implementWidth, headlandClockwise, headlandStartLocation, doSmooth, angleThreshold )
   field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth, nTracksToSkip, extendTracks )
   field.bestAngle = field.headlandTracks[ nHeadlandPasses ].bestAngle
   field.nTracks = field.headlandTracks[ nHeadlandPasses ].nTracks
@@ -190,66 +218,73 @@ end
 --    to the first point of the first pass and then continue from there
 --    inwards
 --
-function linkHeadlandTracks( field, implementWidth )
+function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, doSmooth, angleThreshold )
   -- first, find the intersection of the outermost headland track and the 
   -- vehicles heading vector. 
-  local startLocation = field.vehicle.location
-  local heading = math.rad( field.vehicle.heading )
-  local distance = maxDistanceFromField 
   local headlandPath = {}
+  -- find closest point to starting position on outermost headland track 
+  local fromIndex = getClosestPointIndex( field.headlandTracks[ 1 ], startLocation )
+  local toIndex = getPolygonIndex( field.headlandTracks[ 1 ], fromIndex + 1 ) 
   vectors = {}
   for i = 1, #field.headlandTracks do
-    --table.insert( vectors, { startLocation, addPolarVectorToPoint( startLocation, heading, distance )})
+    -- now find out which direction we have to drive on the headland pass.
+    if field.headlandTracks[ i ].isClockwise == isClockwise then
+      -- increasing index is clockwise, so 
+      -- driving direction is in increasing index, start at toIndex and go a full circle
+      -- back to fromIndex
+      addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], i, toIndex, fromIndex, 1 )
+      startLocation = field.headlandTracks[ i ][ toIndex ]
+      field.headlandTracks[ i ].circleStart = toIndex
+      field.headlandTracks[ i ].circleEnd = fromIndex 
+      field.headlandTracks[ i ].circleStep = 1
+    else
+      -- must reverse direction
+      -- driving direction is in decreasing index, so we start at fromIndex and go a full circle
+      -- to toIndex 
+      addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], i, fromIndex, toIndex, -1 )
+      startLocation = field.headlandTracks[ i ][ fromIndex ]
+      field.headlandTracks[ i ].circleStart = fromIndex
+      field.headlandTracks[ i ].circleEnd = toIndex 
+      field.headlandTracks[ i ].circleStep = -1
+    end
+    -- remember this, we'll need when generating the link from the last headland pass
+    -- to the parallel tracks
+    table.insert( marks, field.headlandTracks[ i ][ fromIndex ])
+    table.insert( marks, field.headlandTracks[ i ][ toIndex ])
 
+    -- switch to the next headland track
+    local tangent = field.headlandTracks[ i ][ fromIndex ].tangent.angle
+    local heading = field.headlandTracks[ i ][ fromIndex ].tangent.angle + getInwardDirection( field.headlandTracks[ i ].isClockwise )
     -- we may have an issue finding the next track around corners, so try a couple of other headings
-    local headings = { heading, heading + math.pi / 3, heading - math.pi / 3 }
-    local fromIndex, toIndex
-    local found = false
+    local headings = { heading, heading + math.pi / 3,  heading - math.pi / 3 }
     for _, h in pairs( headings ) do
-      fromIndex, toIndex = getIntersectionOfLineAndPolygon( field.headlandTracks[ i ], startLocation, 
-                           addPolarVectorToPoint( startLocation, h, distance ))
-      if fromIndex then
-        -- now find out which direction we have to drive on the headland pass.
-        -- This depends on the order of the points in the polygon: clockwise or 
-        -- counterclockwise. Basically we have to know if we follow the points
-        -- of the polygon in increasing or decreasing index order. So, if 
-        -- fromIndex (the smaller one) is closer to us, we need to follow
-        -- the points as they defined in the polygon. Otherwise it is the 
-        -- reverse order.
-        local distanceFromFromIndex = getDistanceBetweenPoints( field.headlandTracks[ i ][ fromIndex ], field.vehicle.location )
-        local distanceFromToIndex = getDistanceBetweenPoints( field.headlandTracks[ i ][ toIndex ], field.vehicle.location )
-        if distanceFromToIndex < distanceFromFromIndex then
-          -- must reverse direction
-          -- driving direction is in decreasing index, so we start at fromIndex and go a full circle
-          -- to toIndex 
-          addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], i, fromIndex, toIndex, -1 )
-          startLocation = field.headlandTracks[ i ][ fromIndex ]
-          field.headlandTracks[ i ].circleStart = fromIndex
-          field.headlandTracks[ i ].circleEnd = toIndex 
-          field.headlandTracks[ i ].circleStep = -1
+      if field.headlandTracks[ i + 1 ] then
+        print( string.format( "Trying to link headland track %d to next track at angle %d (tangent is %d)", i, math.deg( h ),
+               math.deg(tangent)))
+        fromIndex, toIndex = getIntersectionOfLineAndPolygon( field.headlandTracks[ i + 1 ], startLocation, 
+                             addPolarVectorToPoint( startLocation, h, maxDistanceFromField ))
+        if fromIndex then
+          break
         else
-          -- driving direction is in increasing index, so we start at toIndex and go a full circle
-          -- back to fromIndex
-          addTrackToHeadlandPath( headlandPath, field.headlandTracks[ i ], i, toIndex, fromIndex, 1 )
-          startLocation = field.headlandTracks[ i ][ toIndex ]
-          field.headlandTracks[ i ].circleStart = toIndex
-          field.headlandTracks[ i ].circleEnd = fromIndex 
-          field.headlandTracks[ i ].circleStep = 1
+          print( string.format( "Could not link headland track %d to next track at angle %d", i, math.deg( h )))
         end
-        heading = field.headlandTracks[ i ][ fromIndex ].tangent.angle + getInwardDirection( field.headlandTracks[ i ].isClockwise )
-        --v = { location = startLocation, heading=math.deg( heading ) }
-        -- remember this, we'll need when generating the link from the last headland pass
-        -- to the parallel tracks
-        table.insert( rotatedMarks, field.headlandTracks[ i ][ fromIndex ])
-        table.insert( rotatedMarks, field.headlandTracks[ i ][ toIndex ])
-        break
-      else
-        print( string.format( "Could not link headland track %d at heading %.2f", i, math.deg( h )))
-        io.stdout:flush()
       end
     end
+    io.stdout:flush()
   end
-  field.headlandPath = headlandPath
+  if doSmooth then
+    -- smoothing works for closed polygons but here we have a line so
+    -- we cheat a bit, duplicate the first and the last point so the smoothing 
+    -- routines won't try to go around
+    table.insert( headlandPath, headlandPath[ #headlandPath ])
+    table.insert( headlandPath, 1, headlandPath[ 1 ])
+    field.headlandPath = smooth( headlandPath, angleThreshold, 1 )
+    -- undo the cheat
+    table.remove( field.headlandPath, 1 )
+    table.remove( field.headlandPath, #field.headlandPath )
+  else
+    field.headlandPath = headlandPath
+  end
 end
 
 --- add a series of points (track) to the headland path. This is to 

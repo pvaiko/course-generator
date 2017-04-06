@@ -201,7 +201,7 @@ calculatePolygonData( field.boundary )
 field.vehicle = { location = {x=-5, y=5}, heading = 0 }
 field.nHeadlandPasses = 2
 field.width = 3
-generateCourseForField( field, 2, 3, 0, true, 0, 0, 0.5, 30, false )
+generateCourseForField( field, 2, 3, true, field.vehicle.location, 0, true, 0, 0, 0.5, 30, false )
 writeCourseToFile( field, "CoursePlay_Courses\\test\\course0101.xml" )
 --------------------------------------------------------------
 -- Smoke test
@@ -212,11 +212,11 @@ for i, fieldName in ipairs( { "pickles/8", "pickles/9", "pickles/23" }) do
   for width = 3, 6 do
     print( string.format( "\nGenerating course for field %s with width %d", fieldName, width ))
     local field = loadFieldFromPickle( fieldName )
-    generateCourseForField( field, width, 5, 0, true, 0, 0, 0.5, 30, false )
-    generateCourseForField( field, width, 2, 20, true, 1, 3, 0.5, 30, true )
+    generateCourseForField( field, width, 5, false, field.vehicle.location, 0, true, 0, 0, 0.5, 30, false )
+    generateCourseForField( field, width, 2, false, field.vehicle.location, 20, true, 1, 3, 0.5, 30, true )
     field = loadFieldFromPickle( fieldName .. "_reversed" )
-    generateCourseForField( field, width, 5, 0, true, 0, 0, 0.5, 30, false )
-    generateCourseForField( field, width, 2, 20, true, 1, 3, 0.5, 30, true )
+    generateCourseForField( field, width, 5, true, field.vehicle.location, 0, true, 0, 0, 0.5, 30, false )
+    generateCourseForField( field, width, 2, true, field.vehicle.location, 20, true, 1, 3, 0.5, 30, true )
   end
 end
 
@@ -229,7 +229,7 @@ field.nHeadlandPasses = 5
 field.width = 4.4
 field.isClockwise = "true"
 
-generateCourseForField( field, field.width, field.nHeadlandPasses, 0, true, 0, 0, 0.5, 30, false )
+generateCourseForField( field, field.width, field.nHeadlandPasses, false, field.vehicle.location, 0, true, 0, 0, 0.5, 30, false )
 writeCourseToFile( field, fileName ) 
 os.execute( "del " .. fileName )
 

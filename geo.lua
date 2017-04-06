@@ -42,6 +42,19 @@ function getDistanceBetweenPoints( p1, p2 )
   return math.sqrt( dx * dx + dy * dy )
 end
 
+function getClosestPointIndex( polygon, p )
+  local minDistance = 10000
+  local ix
+  for i, vertex in ipairs( polygon ) do
+    local d = getDistanceBetweenPoints( vertex, p )
+    if d < minDistance then
+      minDistance = d
+      ix = i
+    end
+  end
+  return ix, minDistance
+end
+
 --- Add a vector defined by polar coordinates to a point
 -- @param point x and y coordinates of point
 -- @param angle angle of polar vector
@@ -131,7 +144,7 @@ function calculatePolygonData( polygon )
     angle, length = toPolar( dx, dy )
     polygon[ i ].nextEdge = { from=cp, to=np, angle=angle, length=length, dx=dx, dy=dy }
     if length < shortestEdgeLength then shortestEdgeLength = length end
-
+    -- detect clockwise/counterclockwise direction 
     if pp.prevEdge and cp.prevEdge then
       if pp.prevEdge.angle and cp.prevEdge.angle then
         dAngle = dAngle + getDeltaAngle( cp.prevEdge.angle, pp.prevEdge.angle )
