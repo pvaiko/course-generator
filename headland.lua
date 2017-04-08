@@ -51,7 +51,7 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
   end
   calculatePolygonData( vertices )
   if doSmooth then
-    vertices = smooth( vertices, angleThreshold, 1 )
+    vertices = smooth( vertices, angleThreshold, 1, false )
   end
   -- only filter points too close, don't care about angle
   applyLowPassFilter( vertices, math.pi, minDistanceBetweenPoints )
@@ -118,39 +118,45 @@ function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, 
     end
     -- remember this, we'll need when generating the link from the last headland pass
     -- to the parallel tracks
-    table.insert( marks, field.headlandTracks[ i ][ fromIndex ])
-    table.insert( marks, field.headlandTracks[ i ][ toIndex ])
+    -- table.insert( marks, field.headlandTracks[ i ][ fromIndex ])
+    -- table.insert( marks, field.headlandTracks[ i ][ toIndex ])
 
     -- switch to the next headland track
     local tangent = field.headlandTracks[ i ][ fromIndex ].tangent.angle
     local heading = field.headlandTracks[ i ][ fromIndex ].tangent.angle + getInwardDirection( field.headlandTracks[ i ].isClockwise )
-    -- we may have an issue finding the next track around corners, so try a couple of other headings
-    local headings = { heading, heading + math.pi / 3,  heading - math.pi / 3 }
-    for _, h in pairs( headings ) do
-      if field.headlandTracks[ i + 1 ] then
-        print( string.format( "Trying to link headland track %d to next track at angle %d (tangent is %d)", i, math.deg( h ),
-               math.deg(tangent)))
-        fromIndex, toIndex = getIntersectionOfLineAndPolygon( field.headlandTracks[ i + 1 ], startLocation, 
-                             addPolarVectorToPoint( startLocation, h, maxDistanceFromField ))
-        if fromIndex then
-          break
-        else
-          print( string.format( "Could not link headland track %d to next track at angle %d", i, math.deg( h )))
+    -- We should be able to find the next headland track within a reasonable distance but this 
+    -- may not work around corners so we try further
+    local distances = { implementWidth * 1.5, implementWidth * 2, implementWidth * 5 }
+    for _, distance in ipairs( distances ) do
+      -- we may have an issue finding the next track around corners, so try a couple of other headings
+      local headings = { heading, heading + math.pi / 6,  heading - math.pi / 6, 
+                                  heading + math.pi / 3,  heading - math.pi / 3 }
+      for _, h in ipairs( headings ) do
+        table.insert( lines, { startLocation, addPolarVectorToPoint( startLocation, h, distance )})
+        if field.headlandTracks[ i + 1 ] then
+          print( string.format( "Trying to link headland track %d to next track at angle %.2f (tangent is %.2f)", i, math.deg( h ),
+                 math.deg(tangent)))
+          fromIndex, toIndex = getIntersectionOfLineAndPolygon( field.headlandTracks[ i + 1 ], startLocation, 
+                               addPolarVectorToPoint( startLocation, h, distance ))
+          if fromIndex then
+            break
+          else
+            print( string.format( "Could not link headland track %d to next track at angle %.2f", i, math.deg( h )))
+          end
         end
+      end
+      if fromIndex then
+        break
+      else
+        print( string.format( "Could not link headland track %d to next track at distance %.2f", i, distance ))
       end
     end
     io.stdout:flush()
   end
   if doSmooth then
-    -- smoothing works for closed polygons but here we have a line so
-    -- we cheat a bit, duplicate the first and the last point so the smoothing 
-    -- routines won't try to go around
-    table.insert( headlandPath, headlandPath[ #headlandPath ])
-    table.insert( headlandPath, 1, headlandPath[ 1 ])
-    field.headlandPath = smooth( headlandPath, angleThreshold, 1 )
-    -- undo the cheat
-    table.remove( field.headlandPath, 1 )
-    table.remove( field.headlandPath, #field.headlandPath )
+    -- skip the first and last point when smoothing, this makes sure smooth() won't try
+    -- to wrap around the ends like in case of a closed polygon, this is just a line here.
+    field.headlandPath = smooth( headlandPath, angleThreshold, 2, true )
   else
     field.headlandPath = headlandPath
   end

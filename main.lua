@@ -18,8 +18,10 @@ drawConnectingTracks = true
 drawCourse = true
 drawHeadlandPath = true 
 drawTrack = true
+drawHelpers = false
 
 marks = {}
+lines = {}
 
 function love.load( arg )
   if arg[#arg] == "-debug" then require("mobdebug").start() end
@@ -187,6 +189,13 @@ function drawMarks( points )
   end
 end 
 
+function drawLines( lines )
+  love.graphics.setColor( 200, 100, 0, 200 )
+  for i, line in pairs( lines ) do
+    love.graphics.line( getVertices( line ))
+  end
+end 
+
 function drawFieldData( field )
   love.graphics.setColor( 200, 200, 0 )
   love.graphics.print( string.format( "Field " .. field.name .. " dir = " 
@@ -301,7 +310,10 @@ function drawField( field )
         love.graphics.line( getVertices( field.track ))
       end
     end
-    drawMarks( marks )
+    if drawHelpers then
+      drawMarks( marks )
+      drawLines( lines )
+    end
     if ( field.vehicle ) then 
       --drawVehicle( field.vehicle )
     end
@@ -340,6 +352,7 @@ end
 
 function generate()
   marks = {}
+  lines = {}
   generateCourseForField( field, field.width, field.nHeadlandPasses, 
                                               field.headlandClockwise, field.vehicle.location,
                                               field.overlap, useHeadland, field.nTracksToSkip,
@@ -462,6 +475,9 @@ function love.textinput( t )
   end
   if t == "4" then
     drawTrack = not drawTrack
+  end
+  if t == "5" then
+    drawHelpers = not drawHelpers
   end
 end
 

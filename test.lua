@@ -195,6 +195,7 @@ for i, point in ipairs( nonConvexField ) do
   end
 end
 marks = {}
+lines = {}
 field = {}
 field.boundary = nonConvexField
 calculatePolygonData( field.boundary )

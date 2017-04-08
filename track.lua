@@ -69,7 +69,6 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
                                  headlandStartLocation, overlapPercent, 
                                  useBoundaryAsFirstHeadlandPass, nTracksToSkip, extendTracks,
                                  minDistanceBetweenPoints, angleThreshold, doSmooth )
-  rotatedMarks = {}
   field.boundingBox = getBoundingBox( field.boundary )
   calculatePolygonData( field.boundary )
   field.headlandTracks = {}

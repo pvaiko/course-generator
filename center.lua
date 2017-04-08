@@ -61,6 +61,7 @@ function generateTracks( field, width, nTracksToSkip, extendTracks )
     field.bestAngle = field.bestDirection.dir
     print( "No best angle found, use the longest edge direction " .. field.bestAngle )
   end
+  rotatedMarks = {}
   -- now, generate the tracks according to the implement width within the rotated field's bounding box
   -- using the best angle
   local rotated = rotatePoints( translated, math.rad( field.bestAngle ))
