@@ -405,7 +405,7 @@ function love.textinput( t )
     generate()
   end
   if t == "p" then
-    if field.nHeadlandPasses > 2 then
+    if field.nHeadlandPasses > 1 then
       field.nHeadlandPasses = field.nHeadlandPasses - 1
       generate()
     end

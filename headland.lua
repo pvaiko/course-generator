@@ -14,8 +14,13 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
   -- recursion limit
   if currentOffset == 0 then 
     n = 1
+    print( string.format( "Generating headland track with offset %.2f", targetOffset ))
   else
     n = n + 1
+  end
+  if n > 200 then 
+    print( string.format( "Recursion limit reached for headland generation"))
+    return polygon
   end
   -- we'll use the grassfire algorithm and approach the target offset by 
   -- iteration, generating headland tracks close enough to the previous one
@@ -24,10 +29,10 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
   -- this can be ensured by choosing an offset small enough
   local deltaOffset = polygon.shortestEdgeLength / 2
   if inward then
-    if currentOffset >= targetOffset or n > 50 then return polygon end
+    if currentOffset >= targetOffset then return polygon end
     deltaOffset = math.min( deltaOffset, targetOffset - currentOffset )
   else 
-    if currentOffset <= targetOffset or n > 50 then return polygon end
+    if currentOffset <= targetOffset then return polygon end
     deltaOffset = -math.min( deltaOffset, targetOffset + currentOffset )
   end
   local offsetEdges = {} 
