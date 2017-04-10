@@ -25,15 +25,6 @@ lines = {}
 
 function love.load( arg )
   if arg[#arg] == "-debug" then require("mobdebug").start() end
-  if arg[ 2 ] == "fromCourse" then
-    -- use the outermost headland path as the basis of the 
-    -- generation, that is, the field.boundary is actually
-    -- a headland pass of a course
-    useHeadland = true
-  else
-    -- the field boundary is the actual boundary
-    useHeadland = false
-  end
   fileName = arg[ 3 ]
   field = loadFieldFromSavedCourse( fileName )
   calculatePolygonData( field.boundary )
@@ -48,7 +39,14 @@ function love.load( arg )
   field.angleThresholdDeg = 30
   field.doSmooth = true
   field.headlandClockwise = false
-  
+  if arg[ 2 ] == "fromCourse" then
+    -- use the outermost headland path as the basis of the 
+    -- generation, that is, the field.boundary is actually
+    -- a headland pass of a course
+    -- calculate the boundary from the headland track
+    field.boundary = calculateHeadlandTrack( field.boundary, field.width,
+                                             field.minDistanceBetweenPoints, math.rad( field.angleThresholdDeg), 0, field.doSmooth, false ) 
+  end
   -- translate and scale everything so they are visible
   fieldWidth = field.boundingBox.maxX - field.boundingBox.minX
   fieldHeight = field.boundingBox.maxY - field.boundingBox.minY
@@ -353,21 +351,15 @@ end
 function generate()
   marks = {}
   lines = {}
-  generateCourseForField( field, field.width, field.nHeadlandPasses, 
+  status, err = pcall( generateCourseForField, field, field.width, field.nHeadlandPasses, 
                                               field.headlandClockwise, field.vehicle.location,
-                                              field.overlap, useHeadland, field.nTracksToSkip,
+                                              field.overlap, field.nTracksToSkip,
                                               field.extendTracks, field.minDistanceBetweenPoints,
                                               math.rad( field.angleThresholdDeg ), field.doSmooth
                                               )
----  status, err = pcall( generateCourseForField, field, field.width, field.nHeadlandPasses, 
- --                                             field.headlandClockwise, field.vehicle.location,
-  --                                            field.overlap, useHeadland, field.nTracksToSkip,
-   --                                           field.extendTracks, field.minDistanceBetweenPoints,
-    --                                          math.rad( field.angleThresholdDeg ), field.doSmooth
-     --                                         )
   if not status then
     print( err )
-   -- love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
+    love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
   end
 end
 

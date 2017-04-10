@@ -42,10 +42,6 @@ require( 'center' )
 -- overlapPercent 
 --   headland pass overlap in percent, may reduce skipped fruit in corners
 --
--- useBoundaryAsFirstHeadlandPass 
---   use field.boundary above as the first headland pass. True 
---   when generating from an existing course. 
---   
 -- nTracksToSkip 
 --   center tracks to skip. When 0, normal alternating tracks are generated
 --   when > 0, intermediate tracks are skipped to allow for wider turns
@@ -67,20 +63,14 @@ require( 'center' )
 --
 function generateCourseForField( field, implementWidth, nHeadlandPasses, headlandClockwise, 
                                  headlandStartLocation, overlapPercent, 
-                                 useBoundaryAsFirstHeadlandPass, nTracksToSkip, extendTracks,
+                                 nTracksToSkip, extendTracks,
                                  minDistanceBetweenPoints, angleThreshold, doSmooth )
   field.boundingBox = getBoundingBox( field.boundary )
   calculatePolygonData( field.boundary )
   field.headlandTracks = {}
   local startHeadlandPass
-  if useBoundaryAsFirstHeadlandPass then
-    field.headlandTracks[ 1 ] = field.boundary 
-    startHeadlandPass = 2
-  else
-    startHeadlandPass = 1
-  end
   local previousTrack = field.boundary
-  for j = startHeadlandPass, nHeadlandPasses do
+  for j = 1, nHeadlandPasses do
     local width
     if j == 1 then 
       width = implementWidth / 2
@@ -88,7 +78,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
       width = implementWidth
     end
     field.headlandTracks[ j ] = calculateHeadlandTrack( previousTrack, width - width * overlapPercent / 100, 
-                                                        minDistanceBetweenPoints, angleThreshold, 0, doSmooth )
+                                                        minDistanceBetweenPoints, angleThreshold, 0, doSmooth, true ) 
     previousTrack = field.headlandTracks[ j ]
   end
   linkHeadlandTracks( field, implementWidth, headlandClockwise, headlandStartLocation, doSmooth, angleThreshold )

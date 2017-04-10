@@ -391,6 +391,10 @@ function getInwardDirection( isClockwise )
   end
 end
 
+function getOutwardDirection( isClockwise )
+  return - getInwardDirection( isClockwise )
+end
+
 -- shallow copy for preserving point attributes through 
 -- transformations
 function copyPoint( point )

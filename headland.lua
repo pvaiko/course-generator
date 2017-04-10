@@ -3,25 +3,33 @@
 -- how close the vehicle must be to the field to automatically 
 -- calculate a track starting near the vehicle's location
 -- This is in meters
-maxDistanceFromField = 30
+local maxDistanceFromField = 30
+local n
 
 require( 'bspline' )
+
 --- Calculate a headland track inside polygon in offset distance
-function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints, angleThreshold, currentOffset, doSmooth )
+function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints, angleThreshold,
+                                 currentOffset, doSmooth, inward )
   -- recursion limit
   if currentOffset == 0 then 
     n = 1
   else
     n = n + 1
   end
-  if currentOffset >= targetOffset or n > 50 then return polygon end
   -- we'll use the grassfire algorithm and approach the target offset by 
   -- iteration, generating headland tracks close enough to the previous one
   -- so the resulting offset polygon is always clean (its edges don't intersect
   -- each other)
   -- this can be ensured by choosing an offset small enough
   local deltaOffset = polygon.shortestEdgeLength / 2
-  deltaOffset = math.min( deltaOffset, targetOffset - currentOffset )
+  if inward then
+    if currentOffset >= targetOffset or n > 50 then return polygon end
+    deltaOffset = math.min( deltaOffset, targetOffset - currentOffset )
+  else 
+    if currentOffset <= targetOffset or n > 50 then return polygon end
+    deltaOffset = -math.min( deltaOffset, targetOffset + currentOffset )
+  end
   local offsetEdges = {} 
   for i, point in ipairs( polygon ) do
     local newEdge = {} 
@@ -56,7 +64,7 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
   -- only filter points too close, don't care about angle
   applyLowPassFilter( vertices, math.pi, minDistanceBetweenPoints )
   return calculateHeadlandTrack( vertices, targetOffset, minDistanceBetweenPoints, angleThreshold, 
-                                 currentOffset + deltaOffset, doSmooth )
+                                 currentOffset + deltaOffset, doSmooth, inward )
 end
 
 --- This makes sense only when these turns are implemented in Coursplay.
