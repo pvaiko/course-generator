@@ -302,7 +302,7 @@ function drawField( field )
 
     -- draw tracks in field body
     if drawTrack then
-      if field.track then
+      if field.track and #field.track > 1 then
         love.graphics.setLineWidth( lineWidth )
         love.graphics.setColor( 00, 00, 200 )
         love.graphics.line( getVertices( field.track ))
@@ -348,17 +348,22 @@ function love.draw()
   drawSettings()
 end
 
+function errorHandler( err )
+  print( err )
+  print( debug.traceback())
+end
+
 function generate()
   marks = {}
   lines = {}
-  status, err = pcall( generateCourseForField, field, field.width, field.nHeadlandPasses, 
-                                              field.headlandClockwise, field.vehicle.location,
-                                              field.overlap, field.nTracksToSkip,
-                                              field.extendTracks, field.minDistanceBetweenPoints,
-                                              math.rad( field.angleThresholdDeg ), field.doSmooth
-                                              )
+  status = xpcall( generateCourseForField, errorHandler, 
+                                           field, field.width, field.nHeadlandPasses, 
+                                           field.headlandClockwise, field.vehicle.location,
+                                           field.overlap, field.nTracksToSkip,
+                                           field.extendTracks, field.minDistanceBetweenPoints,
+                                           math.rad( field.angleThresholdDeg ), field.doSmooth
+                                           )
   if not status then
-    print( err )
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
   end
 end
