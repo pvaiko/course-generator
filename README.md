@@ -147,19 +147,22 @@ Usage
     the path between the two.
     The green dot is where the course starts, the red is where it ends.
 
-13. If you want you can reverse the course so it starts in the middle
+13. By pressing 'c' you can toggle between clockwise or counterclockwise
+    headland tracks.
+
+14. If you want you can reverse the course so it starts in the middle
     and ends with the headland passes. This is great for sowing and 
     other, non harvesting fieldwork.
 
-14. You can experiment with the various settings (you may need to 
+15. You can experiment with the various settings (you may need to 
     press g to regenerate the course).
 
-15. If you like what you see, press s to save the course.
+16. If you like what you see, press s to save the course.
 
-16. If you are in a game, you'll have to quit it and restart to be 
+17. If you are in a game, you'll have to quit it and restart to be 
     able to see the new course, otherwise it won't show up.
 
-17. Load the new course and test.
+18. Load the new course and test.
 
 Thanks for giving it a try. If you have any problems, report it on
 github https://github.com/pvajko/course-generator/issues or 
