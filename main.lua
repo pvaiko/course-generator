@@ -262,7 +262,7 @@ function drawField( field )
 
     -- draw entire course
     if drawCourse then
-      if field.course then
+      if field.course and #field.course > 1 then
         -- course line
         --love.graphics.setColor( 50, 100, 50, 80 )
         --love.graphics.setLineWidth( field.width / 2 )

@@ -69,31 +69,40 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
   calculatePolygonData( field.boundary )
   field.headlandTracks = {}
   local startHeadlandPass
-  local previousTrack = field.boundary
-  for j = 1, nHeadlandPasses do
+  print( "Generating innermost headland track" )
+  local previousTrack = calculateHeadlandTrack( field.boundary, ( implementWidth - implementWidth * overlapPercent / 100 ) * nHeadlandPasses + implementWidth / 2, 
+                                                        minDistanceBetweenPoints, angleThreshold, 0, doSmooth, false ) 
+  for j = nHeadlandPasses, 1, -1 do
     local width
     if j == 1 then 
       width = implementWidth / 2
     else 
       width = implementWidth
     end
+    print( string.format( "Generating headland track #%d", j ))
     field.headlandTracks[ j ] = calculateHeadlandTrack( previousTrack, width - width * overlapPercent / 100, 
                                                         minDistanceBetweenPoints, angleThreshold, 0, doSmooth, true ) 
     previousTrack = field.headlandTracks[ j ]
   end
-  linkHeadlandTracks( field, implementWidth, headlandClockwise, headlandStartLocation, doSmooth, angleThreshold )
+  --linkHeadlandTracks( field, implementWidth, headlandClockwise, headlandStartLocation, doSmooth, angleThreshold )
   field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth, nTracksToSkip, extendTracks )
   field.bestAngle = field.headlandTracks[ nHeadlandPasses ].bestAngle
   field.nTracks = field.headlandTracks[ nHeadlandPasses ].nTracks
   -- assemble complete course now
   field.course = {}
-  for i, point in ipairs( field.headlandPath ) do
-    table.insert( field.course, point )
+  if field.headlandPath then
+    for i, point in ipairs( field.headlandPath ) do
+      table.insert( field.course, point )
+    end
   end
-  for i, point in ipairs( field.track ) do
-    table.insert( field.course, point )
+  if field.track then
+    for i, point in ipairs( field.track ) do
+      table.insert( field.course, point )
+    end
   end
-  calculatePolygonData( field.course )
+  if #field.course > 0 then
+    calculatePolygonData( field.course )
+  end
 end
 
 

@@ -28,13 +28,17 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
   -- each other)
   -- this can be ensured by choosing an offset small enough
   local deltaOffset = polygon.shortestEdgeLength / 2
+  print( string.format( "** Before target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
   if inward then
     if currentOffset >= targetOffset then return polygon end
     deltaOffset = math.min( deltaOffset, targetOffset - currentOffset )
+    currentOffset = currentOffset + deltaOffset
   else 
-    if currentOffset <= targetOffset then return polygon end
+    if currentOffset >= targetOffset then return polygon end
     deltaOffset = -math.min( deltaOffset, targetOffset + currentOffset )
+    currentOffset = currentOffset - deltaOffset
   end
+  print( string.format( "** After target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
   local offsetEdges = {} 
   for i, point in ipairs( polygon ) do
     local newEdge = {} 
@@ -69,7 +73,7 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
   -- only filter points too close, don't care about angle
   applyLowPassFilter( vertices, math.pi, minDistanceBetweenPoints )
   return calculateHeadlandTrack( vertices, targetOffset, minDistanceBetweenPoints, angleThreshold, 
-                                 currentOffset + deltaOffset, doSmooth, inward )
+                                 currentOffset, doSmooth, inward )
 end
 
 --- This makes sense only when these turns are implemented in Coursplay.
