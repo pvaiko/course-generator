@@ -28,17 +28,17 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
   -- each other)
   -- this can be ensured by choosing an offset small enough
   local deltaOffset = polygon.shortestEdgeLength / 2
-  print( string.format( "** Before target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
-  if inward then
-    if currentOffset >= targetOffset then return polygon end
-    deltaOffset = math.min( deltaOffset, targetOffset - currentOffset )
-    currentOffset = currentOffset + deltaOffset
-  else 
-    if currentOffset >= targetOffset then return polygon end
-    deltaOffset = -math.min( deltaOffset, targetOffset + currentOffset )
-    currentOffset = currentOffset - deltaOffset
+
+  --print( string.format( "** Before target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
+  if currentOffset >= targetOffset then return polygon end
+  deltaOffset = math.min( deltaOffset, targetOffset - currentOffset )
+  currentOffset = currentOffset + deltaOffset
+
+  if not inward then
+    deltaOffset = -deltaOffset
   end
-  print( string.format( "** After target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
+
+  --print( string.format( "** After target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
   local offsetEdges = {} 
   for i, point in ipairs( polygon ) do
     local newEdge = {} 
@@ -147,7 +147,8 @@ function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, 
     for _, distance in ipairs( distances ) do
       -- we may have an issue finding the next track around corners, so try a couple of other headings
       local headings = { heading, heading + math.pi / 6,  heading - math.pi / 6, 
-                                  heading + math.pi / 3,  heading - math.pi / 3 }
+                                  heading + math.pi / 3,  heading - math.pi / 3,
+                                  heading + 2 * math.pi / 3,  heading - 2 *  math.pi / 3 }
       for _, h in ipairs( headings ) do
         table.insert( lines, { startLocation, addPolarVectorToPoint( startLocation, h, distance )})
         if field.headlandTracks[ i + 1 ] then

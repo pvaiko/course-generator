@@ -61,30 +61,50 @@ require( 'center' )
 -- doSmooth
 --   enable smoothing 
 --
+-- fromInside
+--   calculate the headland tracks starting with the innermost one. This will first
+--   generate the innermost headland track and then work outwards. If done this way,
+--   there'll be no sharp corners in the headland tracks but the field corners will
+--   be rounded.
+--
 function generateCourseForField( field, implementWidth, nHeadlandPasses, headlandClockwise, 
                                  headlandStartLocation, overlapPercent, 
                                  nTracksToSkip, extendTracks,
-                                 minDistanceBetweenPoints, angleThreshold, doSmooth )
+                                 minDistanceBetweenPoints, angleThreshold, doSmooth, fromInside )
   field.boundingBox = getBoundingBox( field.boundary )
   calculatePolygonData( field.boundary )
   field.headlandTracks = {}
-  local startHeadlandPass
-  print( "Generating innermost headland track" )
-  local previousTrack = calculateHeadlandTrack( field.boundary, ( implementWidth - implementWidth * overlapPercent / 100 ) * nHeadlandPasses + implementWidth / 2, 
-                                                        minDistanceBetweenPoints, angleThreshold, 0, doSmooth, false ) 
-  for j = nHeadlandPasses, 1, -1 do
+  local previousTrack, startHeadlandPass, endHeadlandPass, step
+  if fromInside then 
+    print( "Generating innermost headland track" )
+    local distanceOfInnermostHeadlandFromBoundary = ( implementWidth - implementWidth * overlapPercent / 100 ) * ( nHeadlandPasses - 1 ) + implementWidth / 2
+    field.headlandTracks[ nHeadlandPasses ] = calculateHeadlandTrack( field.boundary, distanceOfInnermostHeadlandFromBoundary, 
+                                                          minDistanceBetweenPoints, angleThreshold, 0, doSmooth, true ) 
+    previousTrack = field.headlandTracks[ nHeadlandPasses ]
+    startHeadlandPass = nHeadlandPasses - 1
+    endHeadlandPass = 1
+    step = -1
+  else
+    previousTrack = field.boundary
+    startHeadlandPass = 1
+    endHeadlandPass = nHeadlandPasses
+    step = 1
+  end
+  for j = startHeadlandPass, endHeadlandPass, step do
     local width
-    if j == 1 then 
+    if j == 1 and not fromInside then 
+      -- when working from inside, the half width is already factored in when
+      -- the innermost pass is generated
       width = implementWidth / 2
     else 
       width = implementWidth
     end
     print( string.format( "Generating headland track #%d", j ))
     field.headlandTracks[ j ] = calculateHeadlandTrack( previousTrack, width - width * overlapPercent / 100, 
-                                                        minDistanceBetweenPoints, angleThreshold, 0, doSmooth, true ) 
+                                                        minDistanceBetweenPoints, angleThreshold, 0, doSmooth, not fromInside ) 
     previousTrack = field.headlandTracks[ j ]
   end
-  --linkHeadlandTracks( field, implementWidth, headlandClockwise, headlandStartLocation, doSmooth, angleThreshold )
+  linkHeadlandTracks( field, implementWidth, headlandClockwise, headlandStartLocation, doSmooth, angleThreshold )
   field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth, nTracksToSkip, extendTracks )
   field.bestAngle = field.headlandTracks[ nHeadlandPasses ].bestAngle
   field.nTracks = field.headlandTracks[ nHeadlandPasses ].nTracks
