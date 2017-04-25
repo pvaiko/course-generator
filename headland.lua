@@ -31,6 +31,7 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
 
   --print( string.format( "** Before target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
   if currentOffset >= targetOffset then return polygon end
+
   deltaOffset = math.min( deltaOffset, targetOffset - currentOffset )
   currentOffset = currentOffset + deltaOffset
 
