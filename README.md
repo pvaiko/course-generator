@@ -5,7 +5,7 @@ This tool is a preview of an extended course generator and
 may at some point be integrated into Courseplay 
 (https://github.com/Courseplay/courseplay).
 
-https://cloud.githubusercontent.com/assets/2379521/25396617/c6729b6e-29aa-11e7-92e2-6e26fe4af286.png
+![Generated course](https://cloud.githubusercontent.com/assets/2379521/25396617/c6729b6e-29aa-11e7-92e2-6e26fe4af286.png)
 
 It is a standalone tool, that is, currently you won't be 
 able to use it from the game directly. Instead, it'll load
