@@ -1,8 +1,6 @@
 --- Functions to generate the tracks in the center
 --  of the field (non-headland tracks)
 
-require( 'bspline' )
-
 local rotatedMarks = {}
 
 -- Distance of waypoints on the generated track in meters

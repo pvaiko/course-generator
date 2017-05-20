@@ -1,6 +1,5 @@
 -- http://stackoverflow.com/questions/29612584/creating-cubic-and-or-quadratic-bezier-curves-to-fit-a-path
 --
-require( "geo" )
 -- insert a point in the middle of each edge.
 function _refine( points, angleThreshold, isLine ) 
   local ix = function( a ) return getPolygonIndex( points, a ) end

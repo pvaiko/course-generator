@@ -6,8 +6,6 @@
 local maxDistanceFromField = 30
 local n
 
-require( 'bspline' )
-
 --- Calculate a headland track inside polygon in offset distance
 function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints, angleThreshold,
                                  currentOffset, doSmooth, inward )

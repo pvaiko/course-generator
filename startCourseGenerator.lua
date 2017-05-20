@@ -9,7 +9,7 @@
 --  The new course should be available in the game, with the name
 --  (Customized) original name
 --
-require( 'file' )
+dofile( 'file.lua' )
 
 -- generated courses will be prefixed with this string
 prefix="(Customized)"
