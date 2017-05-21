@@ -79,7 +79,6 @@ function generateTracks( field, width, nTracksToSkip, extendTracks )
     print( string.format( "Block %d has %d tracks", i, #block ))
     block.tracksWithWaypoints = addWaypointsToTracks( block, width, extendTracks )
     block.covered = false
-    io.stdout:flush()
   end
   
   -- We now have split the area within the headland into blocks. If this is 
@@ -92,7 +91,6 @@ function generateTracks( field, width, nTracksToSkip, extendTracks )
   local workedBlocks = {} 
   while startIx do
     startIx, endIx, block = findTrackToNextBlock( blocks, rotated, startIx, endIx, step )
-    io.stdout:flush()
     table.insert( workedBlocks, block )
   end
 
@@ -112,12 +110,12 @@ function generateTracks( field, width, nTracksToSkip, extendTracks )
     linkParallelTracks( track, block.tracksWithWaypoints, block.bottomToTop, block.leftToRight, nTracksToSkip ) 
   end
 
-  io.stdout:flush()
-  
   -- now rotate and translate everything back to the original coordinate system
-  rotatedMarks = translatePoints( rotatePoints( rotatedMarks, -math.rad( field.bestAngle )), dx, dy )
-  for i = 1, #rotatedMarks do
-    table.insert( marks, rotatedMarks[ i ])
+  if marks then 
+    rotatedMarks = translatePoints( rotatePoints( rotatedMarks, -math.rad( field.bestAngle )), dx, dy )
+    for i = 1, #rotatedMarks do
+      table.insert( marks, rotatedMarks[ i ])
+    end
   end
   for i = 1, #connectingTracks do
     connectingTracks[ i ] = translatePoints( rotatePoints( connectingTracks[ i ], -math.rad( field.bestAngle )), dx, dy )
@@ -469,7 +467,6 @@ function splitCenterIntoBlocks( tracks, blocks )
     if #t.intersections > 0 and ( #t.intersections % 2  ) == 1 then
       print( string.format( "**** Track %d has %d intersections!", i, #t.intersections ))
     end
-    io.stdout:flush()
   end
   if #block == 0 then
     -- no tracks could be added to the block, we are done

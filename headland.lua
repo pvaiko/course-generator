@@ -134,9 +134,6 @@ function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, 
     end
     -- remember this, we'll need when generating the link from the last headland pass
     -- to the parallel tracks
-    -- table.insert( marks, field.headlandTracks[ i ][ fromIndex ])
-    -- table.insert( marks, field.headlandTracks[ i ][ toIndex ])
-
     -- switch to the next headland track
     local tangent = field.headlandTracks[ i ][ fromIndex ].tangent.angle
     local heading = field.headlandTracks[ i ][ fromIndex ].tangent.angle + getInwardDirection( field.headlandTracks[ i ].isClockwise )
@@ -149,7 +146,9 @@ function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, 
                                   heading + math.pi / 3,  heading - math.pi / 3,
                                   heading + 2 * math.pi / 3,  heading - 2 *  math.pi / 3 }
       for _, h in ipairs( headings ) do
-        table.insert( lines, { startLocation, addPolarVectorToPoint( startLocation, h, distance )})
+        if lines then
+          table.insert( lines, { startLocation, addPolarVectorToPoint( startLocation, h, distance )})
+        end
         if field.headlandTracks[ i + 1 ] then
           print( string.format( "Trying to link headland track %d to next track at angle %.2f (tangent is %.2f)", i, math.deg( h ),
                  math.deg(tangent)))
@@ -168,7 +167,6 @@ function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, 
         print( string.format( "Could not link headland track %d to next track at distance %.2f", i, distance ))
       end
     end
-    io.stdout:flush()
   end
   if doSmooth then
     -- skip the first and last point when smoothing, this makes sure smooth() won't try

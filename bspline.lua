@@ -77,7 +77,6 @@ end
 
 function smooth(points, angleThreshold, order, isLine )
   if ( order <= 0  ) then
-    io.stdout:flush()
     return points
   else
     local refined = _refine( points, angleThreshold, isLine )
