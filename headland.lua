@@ -10,7 +10,7 @@ require( 'bspline' )
 
 --- Calculate a headland track inside polygon in offset distance
 function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints, angleThreshold,
-                                 currentOffset, doSmooth, inward )
+                                 currentOffset, doSmooth, inward, turningRadius )
   -- recursion limit
   if currentOffset == 0 then 
     n = 1
@@ -30,7 +30,10 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
   local deltaOffset = polygon.shortestEdgeLength / 2
 
   --print( string.format( "** Before target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
-  if currentOffset >= targetOffset then return polygon end
+  if currentOffset >= targetOffset then 
+    findCurves( polygon, turningRadius )
+    return polygon 
+  end
 
   deltaOffset = math.min( deltaOffset, targetOffset - currentOffset )
   currentOffset = currentOffset + deltaOffset
@@ -74,7 +77,7 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
   -- only filter points too close, don't care about angle
   applyLowPassFilter( vertices, math.pi, minDistanceBetweenPoints )
   return calculateHeadlandTrack( vertices, targetOffset, minDistanceBetweenPoints, angleThreshold, 
-                                 currentOffset, doSmooth, inward )
+                                 currentOffset, doSmooth, inward, turningRadius )
 end
 
 --- This makes sense only when these turns are implemented in Coursplay.

@@ -39,13 +39,15 @@ function love.load( arg )
   field.doSmooth = true
   field.headlandClockwise = false
   field.roundCorners = false
+  field.turningRadius = 5
   if arg[ 2 ] == "fromCourse" then
     -- use the outermost headland path as the basis of the 
     -- generation, that is, the field.boundary is actually
     -- a headland pass of a course
     -- calculate the boundary from the headland track
     field.boundary = calculateHeadlandTrack( field.boundary, field.width / 2,
-                                             field.minDistanceBetweenPoints, math.rad( field.angleThresholdDeg), 0, field.doSmooth, false ) 
+                                             field.minDistanceBetweenPoints, math.rad( field.angleThresholdDeg), 0, 
+                                             field.doSmooth, false, field.turningRadius ) 
   end
   field.boundingBox = getBoundingBox( field.boundary )
   field.calculatedBoundaryVertices = getVertices( field.boundary )
@@ -108,6 +110,7 @@ function drawPoints( polygon )
       -- -y as y axis isn't flipped now
       --love.graphics.print( string.format( "%d", i ), point.x, -point.y, 0, 0.2 )
     end
+    
   end
   love.graphics.pop()
 end
@@ -132,8 +135,8 @@ function drawSettings()
   else
     roundCorners = "sharp"
   end
-  love.graphics.print( string.format( "HEADLAND width: %.1f m, overlap %d%% number of passes: %d, direction %s, corners: %s",
-           field.width, field.overlap, field.nHeadlandPasses, headlandDirection, roundCorners ), 10, 30, 0, 1 )
+  love.graphics.print( string.format( "HEADLAND width: %.1f m, overlap %d%% number of passes: %d, direction %s, corners: %s, radius: %.1f",
+           field.width, field.overlap, field.nHeadlandPasses, headlandDirection, roundCorners, field.turningRadius ), 10, 30, 0, 1 )
   love.graphics.print( string.format( "CENTER skipping %d tracks, extend %d m", 
            field.nTracksToSkip, field.extendTracks ), 10, 50, 0, 1 )
            
@@ -147,7 +150,7 @@ function drawSettings()
     love.graphics.print( string.format( "Options: best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 90, 0, 1 )
   end
   -- help text
-  local y = windowHeight - 280
+  local y = windowHeight - 300
   love.graphics.setColor( 240, 240, 240 )
   love.graphics.print( "KEYS", 10, y, 0, 1 )
   y = y + 20
@@ -161,6 +164,8 @@ function drawSettings()
   love.graphics.print( "h - show headland pass width", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "w/W - -/+ work width", 10, y, 0, 1 )
+  y = y + 20
+  love.graphics.print( "t/T - -/+ turning radius", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "x/X - -/+ extend center tracks into headland (m)", 10, y, 0, 1 )
   y = y + 20
@@ -246,10 +251,13 @@ function drawCoursePoints( course )
       love.graphics.setColor( 100, 100, 0 )
     end
     love.graphics.points( point.x, point.y )
-      love.graphics.push()
-      love.graphics.scale( 1, -1 )
-      love.graphics.print( i, point.x, -point.y, 0, 0.1 )
-      love.graphics.pop()
+    love.graphics.push()
+    love.graphics.scale( 1, -1 )
+    love.graphics.print( i, point.x, -point.y, 0, 0.1 )
+    love.graphics.pop()
+    if point.curveScore and point.curveScore > 0 then
+      love.graphics.circle( "line", point.x, point.y, point.curveScore )
+    end
   end
 end
 
@@ -381,7 +389,7 @@ function generate()
                                            field.overlap, field.nTracksToSkip,
                                            field.extendTracks, field.minDistanceBetweenPoints,
                                            math.rad( field.angleThresholdDeg ), field.doSmooth,
-                                           field.roundCorners
+                                           field.roundCorners, field.turningRadius
                                            )
   if not status then
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
@@ -441,6 +449,14 @@ function love.textinput( t )
   end
   if t == "d" then
     field.roundCorners = not field.roundCorners
+    generate()
+  end
+  if t == "t" then
+    field.turningRadius = field.turningRadius - 0.5
+    generate()
+  end
+  if t == "T" then
+    field.turningRadius = field.turningRadius + 0.5
     generate()
   end
   if t == "h" then

@@ -8,6 +8,32 @@ function eq( a, b )
   return a < ( b + epsilon ) and a > ( b - epsilon )
 end
 
+assert( eq( reverseAngle( math.rad( 0 )), math.rad( 180 )))
+assert( eq( reverseAngle( math.rad( 90 )), math.rad( 270 )))
+assert( eq( reverseAngle( math.rad( 270 )), math.rad( 90 )))
+assert( eq( reverseAngle( math.rad( -90 )), math.rad( 90 )))
+
+e1 = { from = { x=1, y=0 }, to = { x=2, y=0 }, dx=1, dy=0, length = 1, angle = 0 }
+e2 = { from = { x=3, y=1 }, to = { x=3, y=2 }, dx=0, dy=1, length = 1, angle = math.rad( 90 )}
+is = getIntersectionOfExtendedEdges( e1, e2, 10 )
+assert( is.x == 3 )
+assert( is.y == 0 )
+d = findCenterOfCircleFromTangents( e1, e2, 10 )
+print( d )
+assert( eq( d, 10 ))
+
+e2 = { from = { x=3, y=3 }, to = { x=3, y=4 }, dx=0, dy=1, length = 1, angle = math.rad( 90 )}
+is = getIntersectionOfExtendedEdges( e1, e2, 10 )
+assert( is.x == 3 )
+assert( is.y == 0 )
+
+is = getIntersectionOfExtendedEdges( e1, e2, 1 )
+assert( is == nil )
+
+e1 = { from = { x=1, y=0 }, to = { x=2, y=0 }, dx=1, dy=0, length = 1, angle = 0 }
+e2 = { from = { x=3, y=10 }, to = { x=0, y=13 }, dx=3, dy=3, length = math.sqrt( 2 ) * 3, angle = math.rad( 135 )}
+d = findCenterOfCircleFromTangents( e1, e2, 10 )
+print( d )
 
 pt = { 1, 2, 3, 4, 5 }
 pt = reorderTracksForAlternateFieldwork( pt, 0 )
@@ -202,7 +228,7 @@ calculatePolygonData( field.boundary )
 field.vehicle = { location = {x=-5, y=5}, heading = 0 }
 field.nHeadlandPasses = 2
 field.width = 3
-generateCourseForField( field, 2, 3, true, field.vehicle.location, 0, 0, 0, 0.5, 30, false, true )
+generateCourseForField( field, 2, 3, true, field.vehicle.location, 0, 0, 0, 0.5, 30, false, true, 5 )
 writeCourseToFile( field, "CoursePlay_Courses\\test\\course0101.xml" )
 --------------------------------------------------------------
 -- Smoke test
@@ -213,11 +239,11 @@ for i, fieldName in ipairs( { "pickles/8", "pickles/9", "pickles/23" }) do
   for width = 3, 6 do
     print( string.format( "\nGenerating course for field %s with width %d", fieldName, width ))
     local field = loadFieldFromPickle( fieldName )
-    generateCourseForField( field, width, 5, false, field.vehicle.location, 0, 0, 0, 0.5, 30, false, false )
-    generateCourseForField( field, width, 2, false, field.vehicle.location, 20, 1, 3, 0.5, 30, true, true )
+    generateCourseForField( field, width, 5, false, field.vehicle.location, 0, 0, 0, 0.5, 30, false, false, 5 )
+    generateCourseForField( field, width, 2, false, field.vehicle.location, 20, 1, 3, 0.5, 30, true, true, 5 )
     field = loadFieldFromPickle( fieldName .. "_reversed" )
-    generateCourseForField( field, width, 5, true, field.vehicle.location, 0, 0, 0, 0.5, 30, false, false )
-    generateCourseForField( field, width, 2, true, field.vehicle.location, 20, 1, 3, 0.5, 30, true, true )
+    generateCourseForField( field, width, 5, true, field.vehicle.location, 0, 0, 0, 0.5, 30, false, false, 5 )
+    generateCourseForField( field, width, 2, true, field.vehicle.location, 20, 1, 3, 0.5, 30, true, true, 5 )
   end
 end
 

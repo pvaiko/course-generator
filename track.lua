@@ -70,7 +70,8 @@ require( 'center' )
 function generateCourseForField( field, implementWidth, nHeadlandPasses, headlandClockwise, 
                                  headlandStartLocation, overlapPercent, 
                                  nTracksToSkip, extendTracks,
-                                 minDistanceBetweenPoints, angleThreshold, doSmooth, fromInside )
+                                 minDistanceBetweenPoints, angleThreshold, doSmooth, 
+                                 fromInside, turningRadius )
   field.boundingBox = getBoundingBox( field.boundary )
   calculatePolygonData( field.boundary )
   field.headlandTracks = {}
@@ -79,7 +80,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
     print( "Generating innermost headland track" )
     local distanceOfInnermostHeadlandFromBoundary = ( implementWidth - implementWidth * overlapPercent / 100 ) * ( nHeadlandPasses - 1 ) + implementWidth / 2
     field.headlandTracks[ nHeadlandPasses ] = calculateHeadlandTrack( field.boundary, distanceOfInnermostHeadlandFromBoundary, 
-                                                          minDistanceBetweenPoints, angleThreshold, 0, doSmooth, true ) 
+                                                          minDistanceBetweenPoints, angleThreshold, 0, doSmooth, true, turningRadius ) 
     previousTrack = field.headlandTracks[ nHeadlandPasses ]
     startHeadlandPass = nHeadlandPasses - 1
     endHeadlandPass = 1
@@ -101,7 +102,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
     end
     print( string.format( "Generating headland track #%d", j ))
     field.headlandTracks[ j ] = calculateHeadlandTrack( previousTrack, width - width * overlapPercent / 100, 
-                                                        minDistanceBetweenPoints, angleThreshold, 0, doSmooth, not fromInside ) 
+                                                        minDistanceBetweenPoints, angleThreshold, 0, doSmooth, not fromInside, turningRadius ) 
     previousTrack = field.headlandTracks[ j ]
   end
   linkHeadlandTracks( field, implementWidth, headlandClockwise, headlandStartLocation, doSmooth, angleThreshold )
@@ -121,7 +122,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
     end
   end
   if #field.course > 0 then
-    calculatePolygonData( field.course )
+    --calculatePolygonData( field.course )
   end
 end
 
@@ -145,7 +146,7 @@ function reverseCourse( course )
     end
     table.insert( result, newPoint )
   end
-  calculatePolygonData( result )
+  --calculatePolygonData( result )
   return result
 end
 
