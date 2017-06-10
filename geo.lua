@@ -327,19 +327,20 @@ function findArcBetweenEdges( e1, e2, r )
   local delta = e1ToIs - d
   local p = { x=e1.to.x + delta * e1.dx / e1.length,
               y=e1.to.y + delta * e1.dy / e1.length }
-  print( "  ", e1.to.x, p.x )
+  print( string.format( "d=%.2f, %.2f, %.2f", d, e1.to.x, p.x ))
   table.insert( points, p )
   -- from here, go around in an arc until we are heading to e2.angle
   alpha = getDeltaAngle( e1.angle, e2.angle )
   -- do about 10 degree steps
   local nSteps = math.floor( alpha * 36 / ( 2 * math.pi )) 
   -- delta angle for one step
-  local deltaAlpha = alpha / nSteps
+  local deltaAlpha = alpha / ( nSteps + 1 )
   -- length of a step
-  local length = 2 * r * math.sin( deltaAlpha / 2 )
+  local length = 2 * r * math.sin( alpha / nSteps / 2 )
   local currentAlpha = e1.angle + deltaAlpha
   -- now walk around the arc
   for n = 1, nSteps, 1 do
+    print( string.format( "a=%.2f da=%.2f len=%.2f", math.deg( currentAlpha ), math.deg( deltaAlpha ), length ))
     p = addPolarVectorToPoint( p, currentAlpha, length )
     table.insert( points, p )
     currentAlpha = currentAlpha + deltaAlpha
