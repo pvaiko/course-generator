@@ -137,12 +137,12 @@ function calculatePolygonData( polygon )
     dx = cp.x - pp.x
     dy = cp.y - pp.y
     angle, length = toPolar( dx, dy )
-    polygon[ i ].prevEdge = { from=pp, to=cp, angle=angle, length=length, dx=dx, dy=dy }
+    polygon[ i ].prevEdge = { from={ x=pp.x, y=pp.y} , to={ x=cp.x, y=cp.y }, angle=angle, length=length, dx=dx, dy=dy }
     -- vector from this to the next point 
     dx = np.x - cp.x
     dy = np.y - cp.y
     angle, length = toPolar( dx, dy )
-    polygon[ i ].nextEdge = { from=cp, to=np, angle=angle, length=length, dx=dx, dy=dy }
+    polygon[ i ].nextEdge = { from = { x=cp.x, y=cp.y }, to={x=np.x, y=np.y}, angle=angle, length=length, dx=dx, dy=dy }
     if length < shortestEdgeLength then shortestEdgeLength = length end
     -- detect clockwise/counterclockwise direction 
     if pp.prevEdge and cp.prevEdge then
@@ -159,42 +159,59 @@ function calculatePolygonData( polygon )
   polygon.boundingBox = getBoundingBox( polygon )
 end
 
--- Assign a score to each vertex. A vertices of a curve
+-- Assign a score to each vertex. A vertices of a corner
 -- will have a score > 0, the one in the middle of the
--- curve with the highest score.
+-- corner with the highest score.
 --
-function findCurves( polygon, turningRadius )
-  -- reset score
-  for i, point in ipairs( polygon ) do point.curveScore= 0 end
-  local ix = function( a ) return getPolygonIndex( polygon, a ) end
+function findCorners( polygon, turningRadius )
+  local result = {}
   -- check for corners in a distance depending on the turning radius
-  local d = turningRadius * 2 * math.pi / 3
+  local d = turningRadius * 3 
   local angleThreshold = math.rad( 45 )
-  for i, point in ipairs( polygon ) do
+  i = 1
+  while ( i <= #polygon ) do
     toIx = getIndexInDistance( polygon, i, d )
+    table.insert( result, polygon[ i ])
     if toIx then
-      -- there is a significant direction change within d distance
-      local da = getDeltaAngle( polygon[ ix( i )].nextEdge.angle,
-                        polygon[ ix( toIx )].nextEdge.angle )
+      -- Is there a significant direction change within d distance?
+      local da = getDeltaAngle( polygon[ i ].prevEdge.angle,
+                        polygon[ toIx ].nextEdge.angle )
+      print( string.format( "  %.2f distance, %.2f angle between %d and %d", d, math.deg( da ), i, toIx ))  
       if math.abs( da ) > angleThreshold then
-        for j = i, toIx do
-          polygon[ ix( j )].curveScore = polygon[ ix( j )].curveScore + 1
+        print( polygon[ i ].prevEdge.to.x - polygon[ i ].x )
+        local points = findArcBetweenEdges( polygon[ i ].prevEdge, 
+                                            polygon[ toIx ].nextEdge,
+                                            turningRadius )
+        if points then
+          print( string.format( "OK, Arc with %.2f radius found between %d and %d", turningRadius, i, toIx ))  
+          polygon[ i ].cornerScore = 1
+          points[ 1 ].cornerScore = 2
+          points[ #points ].cornerScore = 4
+          -- replace points between i and toIx with the arc
+          for j, point in ipairs( points ) do
+            table.insert( result, point )
+          end
+          i = toIx
+        else
+          print( string.format( "FAIL, Can't find an arc with %.2f radius", turningRadius ))  
         end
       end
       --print( string.format( "d=%.2f, i=%d, toIx=%d, da=%.2f", d, i, toIx, math.deg( da )))
     end
+    i = i + 1
   end
+  return result
 end
+
 
 -- Find the index of the vertex in d distance
 -- from startIx of a polygon
 --
 function getIndexInDistance( polygon, fromIx, distance )
-  local ix = function( a ) return getPolygonIndex( polygon, a ) end
   local d = 0
   local toIx = fromIx
-  while ( toIx < #polygon + fromIx and d < distance ) do 
-    d = d + polygon[ ix( toIx )].nextEdge.length  
+  while ( toIx < #polygon and d < distance ) do 
+    d = d + polygon[ toIx ].nextEdge.length  
     toIx = toIx + 1
   end
   return toIx
@@ -277,41 +294,71 @@ function getIntersectionOfLineAndPolygon( polygon, p1, p2 )
   return nil, nil
 end
 
---- Find the center of a circle with radius r which fits between
---  two tangent lines. 
+--- Find the points of an arc with radius r connecting to 
+--  edges of a polygon.
 --  e1, e2 are the edges like in calculatePolygonData
 --  and we assume that as we walk around the polygon with increasing
 --  vertice indexes, e1 comes first, then e2.
 --  We want to use this to round sharp edges of polygon.
 --
-function findCenterOfCircleFromTangents( e1, e2, r )
+function findArcBetweenEdges( e1, e2, r )
   -- first, find the intersection of ab and cd. We most likely 
   -- have to make them longer, as they are edges of a polygon 
   -- lengthen ab forward and cd bacwards by double radius
   -- calculate distance from 'is' to the point where a circle
   -- with r radius would touch ab/cd
-  local is = getIntersectionOfExtendedEdges( e1, e2, 2 * r )
+  local is = getIntersectionOfExtendedEdges( e1, e2, 2 * r * math.pi )
+  if is == nil then return nil end
   -- need to reverse one of the edges to get the correct angle between the two
   local alpha = getDeltaAngle( reverseAngle( e1.angle ), e2.angle )
   -- this is how far from 'is' the circle touches the e1 e2 lines
-  local d = r / math.tan( alpha / 2 )
+  local d = math.abs( r / math.tan( alpha / 2 ))
   -- our edges must be at least d distance from 'is' to be able
   -- to connect them with an arc  
-  return math.abs( d )
+  local e1ToIs = getDistanceBetweenPoints( e1.to, is ) 
+  local isToE2 = getDistanceBetweenPoints( is, e2.from ) 
+  print( "  ", d, e1ToIs, isToE2 ) 
+  if e1ToIs < d or isToE2 < d then
+    return nil 
+  end
+  -- looks good, so start adding waypoints between e1.to and e2.from.
+  -- first, go straight until we are exactly at d from is
+  local points = {}
+  local delta = e1ToIs - d
+  local p = { x=e1.to.x + delta * e1.dx / e1.length,
+              y=e1.to.y + delta * e1.dy / e1.length }
+  print( "  ", e1.to.x, p.x )
+  table.insert( points, p )
+  -- from here, go around in an arc until we are heading to e2.angle
+  alpha = getDeltaAngle( e1.angle, e2.angle )
+  -- do about 10 degree steps
+  local nSteps = math.floor( alpha * 36 / ( 2 * math.pi )) 
+  -- delta angle for one step
+  local deltaAlpha = alpha / nSteps
+  -- length of a step
+  local length = 2 * r * math.sin( deltaAlpha / 2 )
+  local currentAlpha = e1.angle + deltaAlpha
+  -- now walk around the arc
+  for n = 1, nSteps, 1 do
+    p = addPolarVectorToPoint( p, currentAlpha, length )
+    table.insert( points, p )
+    currentAlpha = currentAlpha + deltaAlpha
+  end
+  return points 
 end
 
 -- Find the intersection of ab and cd. We extend them both with
 -- extensionLength, ab forward, cd backwards as they are edges 
 -- of a polygon
 function getIntersectionOfExtendedEdges( ab, cd, extensionLength )
-  local ab = deepCopy( e1, true )
-  local cd = deepCopy( e2, true )
+  local ab = deepCopy( ab, true )
+  local cd = deepCopy( cd, true )
   ab.to.x = ab.to.x + extensionLength * ab.dx / ab.length
   ab.to.y = ab.to.y + extensionLength * ab.dy / ab.length
   cd.from.x = cd.from.x - extensionLength * cd.dx / cd.length
   cd.from.y = cd.from.y - extensionLength * cd.dy / cd.length
-  print( ab.from.x, ab.from.y, ab.to.x, ab.to.y,
-                              cd.from.x, cd.from.y, cd.to.x, cd.to.y )
+  --print( ab.from.x, ab.from.y, ab.to.x, ab.to.y,
+   --                           cd.from.x, cd.from.y, cd.to.x, cd.to.y )
   -- see if they inersect now 
   local is = getIntersection( ab.from.x, ab.from.y, ab.to.x, ab.to.y,
                               cd.from.x, cd.from.y, cd.to.x, cd.to.y )

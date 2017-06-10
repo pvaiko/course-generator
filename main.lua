@@ -253,10 +253,10 @@ function drawCoursePoints( course )
     love.graphics.points( point.x, point.y )
     love.graphics.push()
     love.graphics.scale( 1, -1 )
-    love.graphics.print( i, point.x, -point.y, 0, 0.1 )
+    love.graphics.print( i, point.x, -point.y, 0, 0.2 )
     love.graphics.pop()
-    if point.curveScore and point.curveScore > 0 then
-      love.graphics.circle( "line", point.x, point.y, point.curveScore )
+    if point.cornerScore and point.cornerScore > 0 then
+      love.graphics.circle( "line", point.x, point.y, point.cornerScore )
     end
   end
 end
@@ -515,6 +515,12 @@ function love.textinput( t )
   end
   if t == "5" then
     drawHelpers = not drawHelpers
+  end
+  if t == "=" then
+    love.wheelmoved( 0, 2 )
+  end
+  if t == "-" then
+    love.wheelmoved( 0, -2 )
   end
 end
 

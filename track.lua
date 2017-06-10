@@ -105,7 +105,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
                                                         minDistanceBetweenPoints, angleThreshold, 0, doSmooth, not fromInside, turningRadius ) 
     previousTrack = field.headlandTracks[ j ]
   end
-  linkHeadlandTracks( field, implementWidth, headlandClockwise, headlandStartLocation, doSmooth, angleThreshold )
+  linkHeadlandTracks( field, implementWidth, headlandClockwise, headlandStartLocation, doSmooth, angleThreshold, turningRadius )
   field.track = generateTracks( field.headlandTracks[ nHeadlandPasses ], implementWidth, nTracksToSkip, extendTracks )
   field.bestAngle = field.headlandTracks[ nHeadlandPasses ].bestAngle
   field.nTracks = field.headlandTracks[ nHeadlandPasses ].nTracks

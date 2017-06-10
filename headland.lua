@@ -31,7 +31,6 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
 
   --print( string.format( "** Before target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
   if currentOffset >= targetOffset then 
-    findCurves( polygon, turningRadius )
     return polygon 
   end
 
@@ -108,7 +107,7 @@ end
 --    to the first point of the first pass and then continue from there
 --    inwards
 --
-function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, doSmooth, angleThreshold )
+function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, doSmooth, angleThreshold, turningRadius )
   -- first, find the intersection of the outermost headland track and the 
   -- vehicles heading vector. 
   local headlandPath = {}
@@ -182,6 +181,7 @@ function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, 
   else
     field.headlandPath = headlandPath
   end
+  field.headlandPath = findCorners( field.headlandPath, turningRadius )
 end
 
 --- add a series of points (track) to the headland path. This is to 

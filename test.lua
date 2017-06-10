@@ -18,9 +18,8 @@ e2 = { from = { x=3, y=1 }, to = { x=3, y=2 }, dx=0, dy=1, length = 1, angle = m
 is = getIntersectionOfExtendedEdges( e1, e2, 10 )
 assert( is.x == 3 )
 assert( is.y == 0 )
-d = findCenterOfCircleFromTangents( e1, e2, 10 )
-print( d )
-assert( eq( d, 10 ))
+points = findArcBetweenEdges( e1, e2, 1 )
+assert( #points == 10 )
 
 e2 = { from = { x=3, y=3 }, to = { x=3, y=4 }, dx=0, dy=1, length = 1, angle = math.rad( 90 )}
 is = getIntersectionOfExtendedEdges( e1, e2, 10 )
@@ -31,9 +30,16 @@ is = getIntersectionOfExtendedEdges( e1, e2, 1 )
 assert( is == nil )
 
 e1 = { from = { x=1, y=0 }, to = { x=2, y=0 }, dx=1, dy=0, length = 1, angle = 0 }
-e2 = { from = { x=3, y=10 }, to = { x=0, y=13 }, dx=3, dy=3, length = math.sqrt( 2 ) * 3, angle = math.rad( 135 )}
-d = findCenterOfCircleFromTangents( e1, e2, 10 )
-print( d )
+e2 = { from = { x=3, y=10 }, to = { x=0, y=13 }, dx=-3, dy=3, length = math.sqrt( 2 ) * 3, angle = math.rad( 135 )}
+is = getIntersectionOfExtendedEdges( e1, e2, 20 )
+assert( is.x == 13 )
+assert( is.y == 0 )
+points = findArcBetweenEdges( e1, e2, 4 )
+assert( #points == 14 )
+points = findArcBetweenEdges( e1, e2, 5 )
+assert( points == nil )
+
+assert( false )
 
 pt = { 1, 2, 3, 4, 5 }
 pt = reorderTracksForAlternateFieldwork( pt, 0 )
