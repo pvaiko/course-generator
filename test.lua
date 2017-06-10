@@ -1,7 +1,10 @@
-require( "geo" )
-require( "track" )
-require( "file" )
-require( "Pickle" )
+dofile( 'track.lua' )
+dofile( 'file.lua' )
+dofile( 'headland.lua' )
+dofile( 'center.lua' )
+dofile( 'geo.lua' )
+dofile( 'bspline.lua' )
+dofile( 'Pickle.lua' )
 
 function eq( a, b )
   local epsilon = 0.00001

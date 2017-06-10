@@ -1,6 +1,5 @@
 -- all functions dealing with reading/writing files
 --
-require( "geo" )
 inputFields = {}
 
 --- convert a field from the CP representation to a format we are 

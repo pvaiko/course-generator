@@ -1,6 +1,5 @@
 -- http://stackoverflow.com/questions/29612584/creating-cubic-and-or-quadratic-bezier-curves-to-fit-a-path
 --
-require( "geo" )
 -- insert a point in the middle of each edge.
 function _refine( points, angleThreshold, isLine ) 
   local ix = function( a ) return getPolygonIndex( points, a ) end
@@ -78,7 +77,6 @@ end
 
 function smooth(points, angleThreshold, order, isLine )
   if ( order <= 0  ) then
-    io.stdout:flush()
     return points
   else
     local refined = _refine( points, angleThreshold, isLine )

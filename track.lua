@@ -3,10 +3,6 @@
 --
 --
 
-require( 'geo' )
-require( 'headland' )
-require( 'center' )
-
 --- Generate course for a field.
 -- The result will be:
 --

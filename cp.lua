@@ -1,0 +1,103 @@
+--- This is the interface to Courseplay
+-- 
+
+local p = g_currentModDirectory .. '/course-generator/'
+
+dofile( p .. 'track.lua' )
+dofile( p .. 'file.lua' )
+dofile( p .. 'headland.lua' )
+dofile( p .. 'center.lua' )
+dofile( p .. 'geo.lua' )
+dofile( p .. 'bspline.lua' )
+
+
+function generate( vehicle, name, poly )
+
+  DebugUtil.printTableRecursively( vehicle.components, "  ", 1, 6 )
+
+  local field = fromCpField( name, poly.points ) 
+  calculatePolygonData( field.boundary )
+
+  local location = {x=vehicle.components[ 1 ].sentTranslation[ 1 ], y=-vehicle.components[ 1 ].sentTranslation[ 3 ]}
+
+  field.width = vehicle.cp.workWidth 
+  field.headlandClockwise = true
+  field.overlap = 0
+  field.nTracksToSkip = 0
+  field.extendTracks = 0
+  field.minDistanceBetweenPoints = 0.5
+  field.angleThresholdDeg = 30
+  field.doSmooth = true
+  field.roundCorners = false
+
+--  DebugUtil.printTableRecursively( field, "  ", 1, 6 )
+  generateCourseForField( field, vehicle.cp.workWidth, vehicle.cp.headland.numLanes,
+                          vehicle.cp.headland.userDirClockwise, location,
+                          field.overlap, field.nTracksToSkip,
+                          field.extendTracks, field.minDistanceBetweenPoints,
+                          math.rad( field.angleThresholdDeg ), field.doSmooth,
+                          field.roundCorners
+                        )
+  writeCourseToVehicleWaypoints( vehicle, field.course )
+
+	vehicle.cp.numWaypoints = #vehicle.Waypoints	
+	
+	if vehicle.cp.numWaypoints == 0 then
+		courseplay:debug('ERROR: #vehicle.Waypoints == 0 -> cancel and return', 7);
+		return;
+	end;
+
+	courseplay:setWaypointIndex(vehicle, 1);
+	vehicle:setCpVar('canDrive',true,courseplay.isClient);
+	vehicle.Waypoints[1].wait = true;
+	vehicle.Waypoints[1].crossing = true;
+	vehicle.Waypoints[vehicle.cp.numWaypoints].wait = true;
+	vehicle.Waypoints[vehicle.cp.numWaypoints].crossing = true;
+	vehicle.cp.numCourses = 1;
+	courseplay.signs:updateWaypointSigns(vehicle);
+
+	-- extra data for turn maneuver
+	vehicle.cp.courseWorkWidth = vehicle.cp.workWidth;
+	vehicle.cp.courseNumHeadlandLanes = numHeadlandLanesCreated;
+	vehicle.cp.courseHeadlandDirectionCW = vehicle.cp.headland.userDirClockwise;
+
+	vehicle.cp.hasGeneratedCourse = true;
+	courseplay:setFieldEdgePath(vehicle, nil, 0);
+	courseplay:validateCourseGenerationData(vehicle);
+	courseplay:validateCanSwitchMode(vehicle);
+
+	-- SETUP 2D COURSE DRAW DATA
+	vehicle.cp.course2dUpdateDrawData = true;
+
+end
+
+--- Convert the generated course to CP waypoint format
+--
+function writeCourseToVehicleWaypoints( vehicle, course )
+	vehicle.Waypoints = {};
+
+  for i, point in ipairs( course ) do
+    local wp = {}
+
+    wp.generated = true
+    wp.ridgeMarker = 0
+    wp.angle = toCpAngle( point.nextEdge.angle )
+    wp.cx = point.x
+    wp.cz = -point.y
+    wp.wait = nil
+    wp.rev = nil
+    wp.crossing = nil
+
+    if point.passNumber then
+      wp.lane = -point.passNumber
+    end
+    if point.turnStart then
+      wp.turnStart = true
+    end
+    if point.turnEnd then
+      wp.turnEnd = true
+    end
+    table.insert( vehicle.Waypoints, wp )
+  end
+end
+
