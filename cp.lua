@@ -21,7 +21,7 @@ function generate( vehicle, name, poly )
   local location = {x=vehicle.components[ 1 ].sentTranslation[ 1 ], y=-vehicle.components[ 1 ].sentTranslation[ 3 ]}
 
   field.width = vehicle.cp.workWidth 
-  field.headlandClockwise = true
+  field.headlandClockwise = vehicle.cp.userDirClockwise
   field.overlap = 0
   field.nTracksToSkip = 0
   field.extendTracks = 0
@@ -30,7 +30,6 @@ function generate( vehicle, name, poly )
   field.doSmooth = true
   field.roundCorners = false
 
---  DebugUtil.printTableRecursively( field, "  ", 1, 6 )
   generateCourseForField( field, vehicle.cp.workWidth, vehicle.cp.headland.numLanes,
                           vehicle.cp.headland.userDirClockwise, location,
                           field.overlap, field.nTracksToSkip,
@@ -38,6 +37,11 @@ function generate( vehicle, name, poly )
                           math.rad( field.angleThresholdDeg ), field.doSmooth,
                           field.roundCorners
                         )
+ 
+  if not vehicle.cp.headland.orderBefore then
+    field.course = reverseCourse( field.course )
+  end
+
   writeCourseToVehicleWaypoints( vehicle, field.course )
 
 	vehicle.cp.numWaypoints = #vehicle.Waypoints	
