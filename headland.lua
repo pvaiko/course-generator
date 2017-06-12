@@ -172,6 +172,7 @@ function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, 
     -- skip the first and last point when smoothing, this makes sure smooth() won't try
     -- to wrap around the ends like in case of a closed polygon, this is just a line here.
     field.headlandPath = smooth( headlandPath, angleThreshold, 2, true )
+    addMissingPassNumber( field.headlandPath )
   else
     field.headlandPath = headlandPath
   end
@@ -184,6 +185,22 @@ function addTrackToHeadlandPath( headlandPath, track, passNumber, from, to, step
   for i, point in polygonIterator( track, from, to, step ) do
     table.insert( headlandPath, track[ i ])
     headlandPath[ #headlandPath ].passNumber = passNumber
+  end
+end
+
+-- smooth adds new points where we loose the passNumber attribute.
+-- here we fix that. I know it's ugly and there must be a better way to 
+-- do this somehow smooth should preserve these, but whatever...
+function addMissingPassNumber( headlandPath )
+  local currentPassNumber = 0
+  for i, point in ipairs( headlandPath ) do
+    if point.passNumber then 
+      if point.passNumber ~= currentPassNumber then 
+        currentPassNumber = point.passNumber
+      end
+    else
+      point.passNumber = currentPassNumber
+    end
   end
 end
 
