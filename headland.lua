@@ -177,7 +177,6 @@ function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, 
   else
     field.headlandPath = headlandPath
   end
-  field.headlandPath = findCorners( field.headlandPath, turningRadius )
 end
 
 --- add a series of points (track) to the headland path. This is to 

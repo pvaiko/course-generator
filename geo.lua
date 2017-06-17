@@ -159,11 +159,9 @@ function calculatePolygonData( polygon )
   polygon.boundingBox = getBoundingBox( polygon )
 end
 
--- Assign a score to each vertex. A vertices of a corner
--- will have a score > 0, the one in the middle of the
--- corner with the highest score.
+--- Round corners of a polygon to turningRadius
 --
-function findCorners( polygon, turningRadius )
+function roundCorners( polygon, turningRadius )
   local result = {}
   -- check for corners in a distance depending on the turning radius
   local d = turningRadius * 3 
@@ -196,7 +194,6 @@ function findCorners( polygon, turningRadius )
           print( string.format( "FAIL, Can't find an arc with %.2f radius", turningRadius ))  
         end
       end
-      --print( string.format( "d=%.2f, i=%d, toIx=%d, da=%.2f", d, i, toIx, math.deg( da )))
     end
     i = i + 1
   end
@@ -304,7 +301,7 @@ end
 function findArcBetweenEdges( e1, e2, r )
   -- first, find the intersection of ab and cd. We most likely 
   -- have to make them longer, as they are edges of a polygon 
-  -- lengthen ab forward and cd bacwards by double radius
+  -- lengthen ab forward and cd backwards by double radius
   -- calculate distance from 'is' to the point where a circle
   -- with r radius would touch ab/cd
   local is = getIntersectionOfExtendedEdges( e1, e2, 2 * r * math.pi )
@@ -317,7 +314,6 @@ function findArcBetweenEdges( e1, e2, r )
   -- to connect them with an arc  
   local e1ToIs = getDistanceBetweenPoints( e1.to, is ) 
   local isToE2 = getDistanceBetweenPoints( is, e2.from ) 
-  print( "  ", d, e1ToIs, isToE2 ) 
   if e1ToIs < d or isToE2 < d then
     return nil 
   end
@@ -327,20 +323,18 @@ function findArcBetweenEdges( e1, e2, r )
   local delta = e1ToIs - d
   local p = { x=e1.to.x + delta * e1.dx / e1.length,
               y=e1.to.y + delta * e1.dy / e1.length }
-  print( string.format( "d=%.2f, %.2f, %.2f", d, e1.to.x, p.x ))
   table.insert( points, p )
   -- from here, go around in an arc until we are heading to e2.angle
   alpha = getDeltaAngle( e1.angle, e2.angle )
   -- do about 10 degree steps
-  local nSteps = math.floor( alpha * 36 / ( 2 * math.pi )) 
+  local nSteps = math.abs( math.floor( alpha * 36 / ( 2 * math.pi )))
   -- delta angle for one step
   local deltaAlpha = alpha / ( nSteps + 1 )
   -- length of a step
-  local length = 2 * r * math.sin( alpha / nSteps / 2 )
+  local length = 2 * r * math.abs( math.sin( alpha / nSteps / 2 ))
   local currentAlpha = e1.angle + deltaAlpha
   -- now walk around the arc
   for n = 1, nSteps, 1 do
-    print( string.format( "a=%.2f da=%.2f len=%.2f", math.deg( currentAlpha ), math.deg( deltaAlpha ), length ))
     p = addPolarVectorToPoint( p, currentAlpha, length )
     table.insert( points, p )
     currentAlpha = currentAlpha + deltaAlpha

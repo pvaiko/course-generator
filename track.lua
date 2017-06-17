@@ -2,6 +2,10 @@
 -- Functions to manipulate tracks 
 --
 --
+--
+marks = {}
+lines = {}
+helperPolygon = {}
 
 --- Generate course for a field.
 -- The result will be:
@@ -77,6 +81,9 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
     local distanceOfInnermostHeadlandFromBoundary = ( implementWidth - implementWidth * overlapPercent / 100 ) * ( nHeadlandPasses - 1 ) + implementWidth / 2
     field.headlandTracks[ nHeadlandPasses ] = calculateHeadlandTrack( field.boundary, distanceOfInnermostHeadlandFromBoundary, 
                                                           minDistanceBetweenPoints, angleThreshold, 0, doSmooth, true, turningRadius ) 
+    helperPolygon = field.headlandTracks[ nHeadlandPasses ]                                                    
+    field.headlandTracks[ nHeadlandPasses ] = roundCorners( field.headlandTracks[ nHeadlandPasses ], turningRadius )
+    calculatePolygonData( field.headlandTracks[ nHeadlandPasses ])
     previousTrack = field.headlandTracks[ nHeadlandPasses ]
     startHeadlandPass = nHeadlandPasses - 1
     endHeadlandPass = 1
@@ -98,7 +105,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
     end
     print( string.format( "Generating headland track #%d", j ))
     field.headlandTracks[ j ] = calculateHeadlandTrack( previousTrack, width - width * overlapPercent / 100, 
-                                                        minDistanceBetweenPoints, angleThreshold, 0, doSmooth, not fromInside, turningRadius ) 
+                                                        minDistanceBetweenPoints, angleThreshold, 0, doSmooth, not fromInside, 0 ) 
     previousTrack = field.headlandTracks[ j ]
   end
   linkHeadlandTracks( field, implementWidth, headlandClockwise, headlandStartLocation, doSmooth, angleThreshold, turningRadius )

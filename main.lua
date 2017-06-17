@@ -24,9 +24,6 @@ drawHeadlandPath = true
 drawTrack = true
 drawHelpers = false
 
-marks = {}
-lines = {}
-
 function love.load( arg )
   if arg[#arg] == "-debug" then require("mobdebug").start() end
   fileName = arg[ 3 ]
@@ -245,6 +242,16 @@ function drawHeadlandTracks()
   end
 end
 
+function drawPolygon( polygon )
+  for i, point in ipairs( polygon ) do
+    love.graphics.points( point.x, point.y )
+    love.graphics.push()
+    love.graphics.scale( 1, -1 )
+    love.graphics.print( i, point.x, -point.y, 0, 0.2 )
+    love.graphics.pop()
+  end
+end
+
 function drawCoursePoints( course )
   for i, point in ipairs( course ) do
     if point.turnStart then
@@ -343,6 +350,7 @@ function drawField( field )
   if drawHelpers then
     drawMarks( marks )
     drawLines( lines )
+    drawPolygon( helperPolygon )
   end
   if ( field.vehicle ) then 
     --drawVehicle( field.vehicle )
