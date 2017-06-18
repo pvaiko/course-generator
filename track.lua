@@ -119,6 +119,10 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
   if #field.course > 0 then
     calculatePolygonData( field.course )
   end
+  -- flush STDOUT when not in the game for debugging
+  if not g_currentModDirectory then
+    io.flush()
+  end
 end
 
 
