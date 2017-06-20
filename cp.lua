@@ -1,7 +1,6 @@
 --- This is the interface to Courseplay
 -- 
 
-
 function generate( vehicle, name, poly )
 
   local field = fromCpField( name, poly.points ) 
@@ -94,3 +93,10 @@ function writeCourseToVehicleWaypoints( vehicle, course )
   end
 end
 
+--- Return true when running in the game
+-- used by file and log functions to determine how exactly to do things,
+-- for example, io.flush is not available from within the game.
+--
+function isRunningInGame()
+  return g_currentModDirectory ~= nil;
+end
