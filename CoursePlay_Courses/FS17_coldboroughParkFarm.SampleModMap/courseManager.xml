@@ -5,6 +5,7 @@
         <slot fileName="courseStorage0003.xml" id="3" parent="2" isUsed="true" name="9 harvest"/>
         <slot fileName="courseStorage0004.xml" id="4" parent="0" isUsed="true" name="Silo to Wynn"/>
         <slot fileName="courseStorage0005.xml" id="5" parent="0" isUsed="true" name="Silo to biogas"/>
+        <slot fileName="courseStorage0006.xml" id="6" parent="0" isUsed="true" name="Field 4 from Windsbach"/>
     </saveSlot>
     <folders>
         <folder id="1" parent="0" name="Folder 1"/>
