@@ -6,7 +6,10 @@ function generate( vehicle, name, poly )
   local field = fromCpField( name, poly.points ) 
   calculatePolygonData( field.boundary )
 
-  local location = {x=vehicle.components[ 1 ].sentTranslation[ 1 ], y=-vehicle.components[ 1 ].sentTranslation[ 3 ]}
+  --  get the vehicle position
+  local x, _, z = getWorldTranslation( vehicle.rootNode )
+  -- translate it into our coordinate system
+  local location = { x = x, y = -z }
 
   field.width = vehicle.cp.workWidth 
   field.headlandClockwise = vehicle.cp.userDirClockwise
@@ -27,6 +30,7 @@ function generate( vehicle, name, poly )
                         )
  
   if not vehicle.cp.headland.orderBefore then
+    -- work the center of the field first, then the headland
     field.course = reverseCourse( field.course )
   end
 
