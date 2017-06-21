@@ -121,7 +121,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
   end
   -- flush STDOUT when not in the game for debugging
   if not isRunningInGame then
-    io.flush()
+    io.stdout:flush()
   end
 end
 
