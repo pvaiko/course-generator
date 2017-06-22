@@ -12,12 +12,12 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
   -- recursion limit
   if currentOffset == 0 then 
     n = 1
-    print( string.format( "Generating headland track with offset %.2f", targetOffset ))
+    courseGenerator.debug( string.format( "Generating headland track with offset %.2f", targetOffset ))
   else
     n = n + 1
   end
   if n > 200 then 
-    print( string.format( "Recursion limit reached for headland generation"))
+    courseGenerator.debug( string.format( "Recursion limit reached for headland generation"))
     return polygon
   end
   -- we'll use the grassfire algorithm and approach the target offset by 
@@ -27,7 +27,7 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
   -- this can be ensured by choosing an offset small enough
   local deltaOffset = polygon.shortestEdgeLength / 5
 
-  --print( string.format( "** Before target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
+  --courseGenerator.debug( string.format( "** Before target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
   if currentOffset >= targetOffset then return polygon end
 
   deltaOffset = math.min( deltaOffset, targetOffset - currentOffset )
@@ -37,7 +37,7 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
     deltaOffset = -deltaOffset
   end
 
-  --print( string.format( "** After target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
+  --courseGenerator.debug( string.format( "** After target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
   local offsetEdges = {} 
   for i, point in ipairs( polygon ) do
     local newEdge = {} 
@@ -150,21 +150,21 @@ function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, 
           table.insert( lines, { startLocation, addPolarVectorToPoint( startLocation, h, distance )})
         end
         if field.headlandTracks[ i + 1 ] then
-          print( string.format( "Trying to link headland track %d to next track at angle %.2f (tangent is %.2f)", i, math.deg( h ),
+          courseGenerator.debug( string.format( "Trying to link headland track %d to next track at angle %.2f (tangent is %.2f)", i, math.deg( h ),
                  math.deg(tangent)))
           fromIndex, toIndex = getIntersectionOfLineAndPolygon( field.headlandTracks[ i + 1 ], startLocation, 
                                addPolarVectorToPoint( startLocation, h, distance ))
           if fromIndex then
             break
           else
-            print( string.format( "Could not link headland track %d to next track at angle %.2f", i, math.deg( h )))
+            courseGenerator.debug( string.format( "Could not link headland track %d to next track at angle %.2f", i, math.deg( h )))
           end
         end
       end
       if fromIndex then
         break
       else
-        print( string.format( "Could not link headland track %d to next track at distance %.2f", i, distance ))
+        courseGenerator.debug( string.format( "Could not link headland track %d to next track at distance %.2f", i, distance ))
       end
     end
   end

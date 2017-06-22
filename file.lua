@@ -42,7 +42,6 @@ function loadFieldsFromLogFile( fileName, fieldName )
     if match then 
       -- start of a new field data 
       field = match
-      print("Reading field " .. field ) 
       i = 1
       inputFields[ field ] = { boundary = {}, name=field }
     end
@@ -158,7 +157,6 @@ function getMapId( f )
   for line in f:lines() do
     local mapId = string.match( line, '<mapId>(.+)</mapId>')
     if mapId then
-      print( mapId )
       return mapId
     end
   end
