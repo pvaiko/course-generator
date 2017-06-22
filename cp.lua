@@ -13,7 +13,7 @@ function generate( vehicle, name, poly )
 
   field.width = vehicle.cp.workWidth 
   field.headlandClockwise = vehicle.cp.userDirClockwise
-  field.overlap = 0
+  field.overlap = 10
   field.nTracksToSkip = 0
   field.extendTracks = 0
   field.minDistanceBetweenPoints = 0.5
