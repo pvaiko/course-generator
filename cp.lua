@@ -21,13 +21,17 @@ function generate( vehicle, name, poly )
   field.doSmooth = true
   field.roundCorners = false
 
-  generateCourseForField( field, vehicle.cp.workWidth, vehicle.cp.headland.numLanes,
-                          vehicle.cp.headland.userDirClockwise, location,
-                          field.overlap, field.nTracksToSkip,
-                          field.extendTracks, field.minDistanceBetweenPoints,
-                          math.rad( field.angleThresholdDeg ), field.doSmooth,
-                          field.roundCorners
-                        )
+  
+  local status, err = xpcall( generateCourseForField, function() print( err, debug.traceback()) end, 
+                              field, vehicle.cp.workWidth, vehicle.cp.headland.numLanes,
+                              vehicle.cp.headland.userDirClockwise, location,
+                              field.overlap, field.nTracksToSkip,
+                              field.extendTracks, field.minDistanceBetweenPoints,
+                              math.rad( field.angleThresholdDeg ), field.doSmooth,
+                              field.roundCorners
+                             )
+  
+  if not status then return end
  
   if not vehicle.cp.headland.orderBefore then
     -- work the center of the field first, then the headland
