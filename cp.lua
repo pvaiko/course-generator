@@ -31,7 +31,13 @@ function generate( vehicle, name, poly )
                               field.roundCorners
                              )
   
-  if not status then return end
+  if not status then 
+    -- show message if there was an exception
+    local messageDialog = g_gui:showGui('InfoDialog');
+      messageDialog.target:setText(courseplay:loc('COURSEPLAY_COULDNT_GENERATE_COURSE'));
+      messageDialog.target:setCallback( function () g_gui:showGui('') end, self )
+    return 
+  end
  
   if not vehicle.cp.headland.orderBefore then
     -- work the center of the field first, then the headland
