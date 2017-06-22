@@ -1,9 +1,28 @@
 Fieldwork Course Generator
 ==========================
 
-This tool is a preview of an extended course generator and
-may at some point be integrated into Courseplay 
-(https://github.com/Courseplay/courseplay).
+This is an extended course generator for Courseplay. It can be used in standalone mode or from within the game.
+
+It is not yet officially integrated with Courseplay (https://github.com/Courseplay/courseplay) but there is a release candidate available at https://github.com/pvajko/course-generator/releases/tag/v1.1-with-courseplay.
+
+Using from the Game
+===================
+
+![HUD](https://user-images.githubusercontent.com/2379521/27035499-2804d290-4f47-11e7-8826-4eb461f6f024.PNG)
+
+You can now select 'Vehicle location' in the HUD as
+starting corner. If you do so, Starting Direction is set to
+automatic too and one headland is selected (can't generate
+without headland)
+
+As usual you can set the number of headlands, clockwise/counterclockwise
+and headland/center order.
+
+If you select anything other than 'Vehicle location' for the
+starting corner, the old generator is invoked.
+
+Using the Standalone Version
+============================
 
 ![Generated course](https://cloud.githubusercontent.com/assets/2379521/25396617/c6729b6e-29aa-11e7-92e2-6e26fe4af286.png)
 
