@@ -142,9 +142,11 @@ function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, 
     local distances = { implementWidth * 1.5, implementWidth * 2, implementWidth * 5 }
     for _, distance in ipairs( distances ) do
       -- we may have an issue finding the next track around corners, so try a couple of other headings
-      local headings = { heading, heading + math.pi / 6,  heading - math.pi / 6, 
-                                  heading + math.pi / 3,  heading - math.pi / 3,
-                                  heading + 2 * math.pi / 3,  heading - 2 *  math.pi / 3 }
+      local headings = { heading }
+      for h = 15,120,15 do 
+          table.insert( headings, heading + math.rad( h ))
+          table.insert( headings, heading - math.rad( h ))
+      end
       for _, h in ipairs( headings ) do
         if lines then
           table.insert( lines, { startLocation, addPolarVectorToPoint( startLocation, h, distance )})
