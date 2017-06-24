@@ -6,21 +6,29 @@ local rotatedMarks = {}
 -- Distance of waypoints on the generated track in meters
 waypointDistance = 5
 
---- Find the best angle to use for the tracks in a field.
+--- Find the best angle to use for the tracks in a polygon.
 --  The best angle results in the minimum number of tracks
---  (and thus, turns) needed to cover the field.
-function findBestTrackAngle( field, width )
+--  (and thus, turns) needed to cover the polygon.
+function findBestTrackAngle( polygon, width )
   local bestAngleStats = {}
   local bestAngleIndex 
+  local score
   local minScore = 10000
+  calculatePolygonData( polygon )
+  -- direction where the field is the longest
+  local bestDirection = polygon.bestDirection.dir
   for angle = 0, 180, 2 do
-    local rotated = rotatePoints( field, math.rad( angle ))
+    local rotated = rotatePoints( polygon, math.rad( angle ))
     local tracks = generateParallelTracks( rotated, width )
     local nFullTracks, nSplitTracks, nBlocks = countTracks( tracks )
     local blocks = {}
     blocks = splitCenterIntoBlocks( tracks, blocks )
     local nSmallBlocks = countSmallBlocks( blocks )
-    score = 50 * nSmallBlocks + 20 * #blocks + 5 * nSplitTracks + nFullTracks 
+    -- instead of just the number of tracks, consider some other factors. We prefer just one block (that is,
+    -- the field has a convex solution) and angles closest to the direction of the longest edge of the field
+    -- bestDirection + angle is the longest edge dir at the current rotation. cos( angle - currentBestDir ) will be 0 
+    -- when angle is the closest.
+    score = 50 * nSmallBlocks + 20 * #blocks + 5 * nSplitTracks + nFullTracks + 2 * math.abs( math.cos( math.rad( angle - bestDirection + angle )))
     table.insert( bestAngleStats, { angle=angle, nBlocks=#blocks, nFullTracks=nFullTracks, nSplitTracks=nSplitTracks, score=score })
     if score < minScore then
       minScore = score
@@ -28,7 +36,7 @@ function findBestTrackAngle( field, width )
     end
   end
   local b = bestAngleStats[ bestAngleIndex ]
-  print( string.format( "Best angle=%d, nBlocks=%d, nFullTracks=%d, nSplitTracks=%d, score=%d",
+  courseGenerator.debug( string.format( "Best angle=%d, nBlocks=%d, nFullTracks=%d, nSplitTracks=%d, score=%.1f",
                          b.angle, b.nBlocks, b.nFullTracks, b.nSplitTracks, b.score))
   return b.angle, b.nFullTracks + b.nSplitTracks, b.nBlocks 
 end
@@ -36,6 +44,8 @@ end
 --- Count the blocks with just a few tracks 
 function countSmallBlocks( blocks )
   local nResult = 0
+  -- if there's only one block, we don't care
+  if #blocks == 1 then return nResult end
   for _, b in ipairs( blocks ) do
     -- TODO: consider implement width
     if #b < 5 then
@@ -45,24 +55,25 @@ function countSmallBlocks( blocks )
   return nResult
 end
 
---- Generate up/down tracks covering a field at the optimum angle
-function generateTracks( field, width, nTracksToSkip, extendTracks )
-  -- translate field so we can rotate it around its center. This way all points
+--- Generate up/down tracks covering a polygon at the optimum angle
+-- 
+function generateTracks( polygon, width, nTracksToSkip, extendTracks )
+  -- translate polygon so we can rotate it around its center. This way all points
   -- will be approximately the same distance from the origo and the rotation calculation
   -- will be more accurate
-  local bb = getBoundingBox( field )
+  local bb = getBoundingBox( polygon )
   local dx, dy = ( bb.maxX + bb.minX ) / 2, ( bb.maxY + bb.minY ) / 2 
-  local translated = translatePoints( field, -dx , -dy )
+  local translatedPolygon = translatePoints( polygon, -dx , -dy )
   -- Now, determine the angle where the number of tracks is the minimum
-  field.bestAngle, field.nTracks = findBestTrackAngle( translated, width )
-  if not field.bestAngle then
-    field.bestAngle = field.bestDirection.dir
-    print( "No best angle found, use the longest edge direction " .. field.bestAngle )
+  polygon.bestAngle, polygon.nTracks = findBestTrackAngle( translatedPolygon, width )
+  if not polygon.bestAngle then
+    polygon.bestAngle = polygon.bestDirection.dir
+    courseGenerator.debug( "No best angle found, use the longest edge direction " .. polygon.bestAngle )
   end
   rotatedMarks = {}
-  -- now, generate the tracks according to the implement width within the rotated field's bounding box
+  -- now, generate the tracks according to the implement width within the rotated polygon's bounding box
   -- using the best angle
-  local rotated = rotatePoints( translated, math.rad( field.bestAngle ))
+  local rotated = rotatePoints( translatedPolygon, math.rad( polygon.bestAngle ))
 
   local parallelTracks = generateParallelTracks( rotated, width )
 
@@ -76,18 +87,18 @@ function generateTracks( field, width, nTracksToSkip, extendTracks )
       table.insert( rotatedMarks, block[ j ].intersections[ 2 ])
       rotatedMarks[ #rotatedMarks ].label = string.format( "%d-%d/2", i, j )
     end
-    print( string.format( "Block %d has %d tracks", i, #block ))
+    courseGenerator.debug( string.format( "Block %d has %d tracks", i, #block ))
     block.tracksWithWaypoints = addWaypointsToTracks( block, width, extendTracks )
     block.covered = false
   end
   
   -- We now have split the area within the headland into blocks. If this is 
-  -- a convex field, there is only one block, non-convex ones may have multiple
+  -- a convex polygon, there is only one block, non-convex ones may have multiple
   -- blocks. 
   -- Now we have to connect the first block with the end of the headland track
-  -- and then connect each block so we cover the entire field.
+  -- and then connect each block so we cover the entire polygon.
 
-  local startIx, endIx, step = field.circleStart, field.circleEnd, field.circleStep
+  local startIx, endIx, step = polygon.circleStart, polygon.circleEnd, polygon.circleStep
   local workedBlocks = {} 
   while startIx do
     startIx, endIx, block = findTrackToNextBlock( blocks, rotated, startIx, endIx, step )
@@ -100,28 +111,26 @@ function generateTracks( field, width, nTracksToSkip, extendTracks )
   local connectingTracks = {}
   for i, block in ipairs( workedBlocks ) do
     connectingTracks[ i ] = {}
-    print( string.format( "Track to block %d has %d points", i, #block.trackToThisBlock ))
+    courseGenerator.debug( string.format( "Track to block %d has %d points", i, #block.trackToThisBlock ))
     for j = 1, #block.trackToThisBlock do
       table.insert( track, block.trackToThisBlock[ j ])
       table.insert( connectingTracks[ i ], block.trackToThisBlock[ j ])
-      --table.insert( rotatedMarks,block.trackToThisBlock[ j ])
-      --rotatedMarks[ #rotatedMarks ].label = string.format( "%d/%d", i, j )
     end
     linkParallelTracks( track, block.tracksWithWaypoints, block.bottomToTop, block.leftToRight, nTracksToSkip ) 
   end
 
   -- now rotate and translate everything back to the original coordinate system
   if marks then 
-    rotatedMarks = translatePoints( rotatePoints( rotatedMarks, -math.rad( field.bestAngle )), dx, dy )
+    rotatedMarks = translatePoints( rotatePoints( rotatedMarks, -math.rad( polygon.bestAngle )), dx, dy )
     for i = 1, #rotatedMarks do
       table.insert( marks, rotatedMarks[ i ])
     end
   end
   for i = 1, #connectingTracks do
-    connectingTracks[ i ] = translatePoints( rotatePoints( connectingTracks[ i ], -math.rad( field.bestAngle )), dx, dy )
+    connectingTracks[ i ] = translatePoints( rotatePoints( connectingTracks[ i ], -math.rad( polygon.bestAngle )), dx, dy )
   end
-  field.connectingTracks = connectingTracks
-  return translatePoints( rotatePoints( track, -math.rad( field.bestAngle )), dx, dy )
+  polygon.connectingTracks = connectingTracks
+  return translatePoints( rotatePoints( track, -math.rad( polygon.bestAngle )), dx, dy )
 end
 
 ----------------------------------------------------------------------------------
@@ -222,7 +231,7 @@ function findTrackToNextBlock( blocks, headland, from, to, step )
       if not b.covered then
         -- TODO: we are repeating ourselves here a lot, should be refactored
         if i == b.bottomLeftIntersection.index then
-          print( string.format( "Starting block %d at bottom left", j ))
+          courseGenerator.debug( string.format( "Starting block %d at bottom left", j ))
           b.bottomToTop, b.leftToRight = true, true
           b.covered = true
           -- where we end working the block depends on the number of track
@@ -238,7 +247,7 @@ function findTrackToNextBlock( blocks, headland, from, to, step )
           b.trackToThisBlock = track
           return ix, getPolygonIndex( headland, ix - step ), b
         elseif i == b.bottomRightIntersection.index then
-          print( string.format( "Starting block %d at bottom right", j ))
+          courseGenerator.debug( string.format( "Starting block %d at bottom right", j ))
           b.bottomToTop, b.leftToRight = true, false
           b.covered = true
           if #b % 2 == 0 then 
@@ -251,7 +260,7 @@ function findTrackToNextBlock( blocks, headland, from, to, step )
           b.trackToThisBlock = track
           return ix, getPolygonIndex( headland, ix - step ), b
         elseif i == b.topLeftIntersection.index then 
-          print( string.format( "Starting block %d at top left", j ))
+          courseGenerator.debug( string.format( "Starting block %d at top left", j ))
           b.bottomToTop, b.leftToRight = false, true
           b.covered = true
           if #b % 2 == 0 then 
@@ -264,7 +273,7 @@ function findTrackToNextBlock( blocks, headland, from, to, step )
           b.trackToThisBlock = track
           return ix, getPolygonIndex( headland, ix - step ), b
         elseif i == b.topRightIntersection.index then
-          print( string.format( "Starting block %d at top right", j ))
+          courseGenerator.debug( string.format( "Starting block %d at top right", j ))
           b.bottomToTop, b.leftToRight = false, false
           b.covered = true
           if #b % 2 == 0 then 
@@ -329,7 +338,7 @@ function linkParallelTracks( result, parallelTracks, bottomToTop, leftToRight, n
         table.insert( result, point )
       end      
     else
-      print( string.format( "Track %d has no waypoints, skipping.", i ))
+      courseGenerator.debug( string.format( "Track %d has no waypoints, skipping.", i ))
     end
   end
 end
@@ -349,7 +358,6 @@ function addWaypointsForTurnsWhenNeeded( track )
       if distanceFromTurnStart > waypointDistance * 2 then
         -- too far, add a waypoint between the start of the current track and 
         -- the end of the previous one.
-        print( "adding a point at ", i )
         local x, y = getPointInTheMiddle( point, track[ i - 1])
         -- also, we are moving the turn end to this new point
         track[ i - 1 ].turnStart = nil
@@ -358,7 +366,7 @@ function addWaypointsForTurnsWhenNeeded( track )
     end
     table.insert( result, point )
   end
-  print( "track had " .. #track .. ", result has " .. #result )
+  courseGenerator.debug( "track had " .. #track .. ", result has " .. #result )
   return result
 end
 
@@ -463,9 +471,6 @@ function splitCenterIntoBlocks( tracks, blocks )
       table.insert( block, newTrack )
       table.remove( t.intersections, 1 )
       table.remove( t.intersections, 1 )
-    end
-    if #t.intersections > 0 and ( #t.intersections % 2  ) == 1 then
-      print( string.format( "**** Track %d has %d intersections!", i, #t.intersections ))
     end
   end
   if #block == 0 then

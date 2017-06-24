@@ -10,6 +10,7 @@
 --  (Customized) original name
 --
 dofile( 'file.lua' )
+dofile( 'geo.lua' )
 
 -- generated courses will be prefixed with this string
 prefix="(Customized)"

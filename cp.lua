@@ -1,28 +1,19 @@
 --- This is the interface to Courseplay
 -- 
 
-local p = g_currentModDirectory .. '/course-generator/'
-
-dofile( p .. 'track.lua' )
-dofile( p .. 'file.lua' )
-dofile( p .. 'headland.lua' )
-dofile( p .. 'center.lua' )
-dofile( p .. 'geo.lua' )
-dofile( p .. 'bspline.lua' )
-
-
 function generate( vehicle, name, poly )
-
-  DebugUtil.printTableRecursively( vehicle.components, "  ", 1, 6 )
 
   local field = fromCpField( name, poly.points ) 
   calculatePolygonData( field.boundary )
 
-  local location = {x=vehicle.components[ 1 ].sentTranslation[ 1 ], y=-vehicle.components[ 1 ].sentTranslation[ 3 ]}
+  --  get the vehicle position
+  local x, _, z = getWorldTranslation( vehicle.rootNode )
+  -- translate it into our coordinate system
+  local location = { x = x, y = -z }
 
   field.width = vehicle.cp.workWidth 
-  field.headlandClockwise = true
-  field.overlap = 0
+  field.headlandClockwise = vehicle.cp.userDirClockwise
+  field.overlap = 10
   field.nTracksToSkip = 0
   field.extendTracks = 0
   field.minDistanceBetweenPoints = 0.5
@@ -30,14 +21,29 @@ function generate( vehicle, name, poly )
   field.doSmooth = true
   field.roundCorners = false
 
---  DebugUtil.printTableRecursively( field, "  ", 1, 6 )
-  generateCourseForField( field, vehicle.cp.workWidth, vehicle.cp.headland.numLanes,
-                          vehicle.cp.headland.userDirClockwise, location,
-                          field.overlap, field.nTracksToSkip,
-                          field.extendTracks, field.minDistanceBetweenPoints,
-                          math.rad( field.angleThresholdDeg ), field.doSmooth,
-                          field.roundCorners
-                        )
+  
+  local status, err = xpcall( generateCourseForField, function() print( err, debug.traceback()) end, 
+                              field, vehicle.cp.workWidth, vehicle.cp.headland.numLanes,
+                              vehicle.cp.headland.userDirClockwise, location,
+                              field.overlap, field.nTracksToSkip,
+                              field.extendTracks, field.minDistanceBetweenPoints,
+                              math.rad( field.angleThresholdDeg ), field.doSmooth,
+                              field.roundCorners
+                             )
+  
+  if not status then 
+    -- show message if there was an exception
+    local messageDialog = g_gui:showGui('InfoDialog');
+      messageDialog.target:setText(courseplay:loc('COURSEPLAY_COULDNT_GENERATE_COURSE'));
+      messageDialog.target:setCallback( function () g_gui:showGui('') end, self )
+    return 
+  end
+ 
+  if not vehicle.cp.headland.orderBefore then
+    -- work the center of the field first, then the headland
+    field.course = reverseCourse( field.course )
+  end
+
   writeCourseToVehicleWaypoints( vehicle, field.course )
 
 	vehicle.cp.numWaypoints = #vehicle.Waypoints	
@@ -101,3 +107,10 @@ function writeCourseToVehicleWaypoints( vehicle, course )
   end
 end
 
+--- Return true when running in the game
+-- used by file and log functions to determine how exactly to do things,
+-- for example, io.flush is not available from within the game.
+--
+function isRunningInGame()
+  return g_currentModDirectory ~= nil;
+end

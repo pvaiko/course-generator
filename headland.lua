@@ -12,12 +12,12 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
   -- recursion limit
   if currentOffset == 0 then 
     n = 1
-    print( string.format( "Generating headland track with offset %.2f", targetOffset ))
+    courseGenerator.debug( string.format( "Generating headland track with offset %.2f", targetOffset ))
   else
     n = n + 1
   end
   if n > 200 then 
-    print( string.format( "Recursion limit reached for headland generation"))
+    courseGenerator.debug( string.format( "Recursion limit reached for headland generation"))
     return polygon
   end
   -- we'll use the grassfire algorithm and approach the target offset by 
@@ -25,12 +25,10 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
   -- so the resulting offset polygon is always clean (its edges don't intersect
   -- each other)
   -- this can be ensured by choosing an offset small enough
-  local deltaOffset = polygon.shortestEdgeLength / 2
+  local deltaOffset = polygon.shortestEdgeLength / 5
 
-  --print( string.format( "** Before target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
-  if currentOffset >= targetOffset then 
-    return polygon 
-  end
+  --courseGenerator.debug( string.format( "** Before target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
+  if currentOffset >= targetOffset then return polygon end
 
   deltaOffset = math.min( deltaOffset, targetOffset - currentOffset )
   currentOffset = currentOffset + deltaOffset
@@ -39,7 +37,7 @@ function calculateHeadlandTrack( polygon, targetOffset, minDistanceBetweenPoints
     deltaOffset = -deltaOffset
   end
 
-  --print( string.format( "** After target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
+  --courseGenerator.debug( string.format( "** After target=%.2f, current=%.2f, delta=%.2f", targetOffset, currentOffset, deltaOffset))
   local offsetEdges = {} 
   for i, point in ipairs( polygon ) do
     local newEdge = {} 
@@ -144,29 +142,31 @@ function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, 
     local distances = { implementWidth * 1.5, implementWidth * 2, implementWidth * 5 }
     for _, distance in ipairs( distances ) do
       -- we may have an issue finding the next track around corners, so try a couple of other headings
-      local headings = { heading, heading + math.pi / 6,  heading - math.pi / 6, 
-                                  heading + math.pi / 3,  heading - math.pi / 3,
-                                  heading + 2 * math.pi / 3,  heading - 2 *  math.pi / 3 }
+      local headings = { heading }
+      for h = 15,120,15 do 
+          table.insert( headings, heading + math.rad( h ))
+          table.insert( headings, heading - math.rad( h ))
+      end
       for _, h in ipairs( headings ) do
         if lines then
           table.insert( lines, { startLocation, addPolarVectorToPoint( startLocation, h, distance )})
         end
         if field.headlandTracks[ i + 1 ] then
-          print( string.format( "Trying to link headland track %d to next track at angle %.2f (tangent is %.2f)", i, math.deg( h ),
+          courseGenerator.debug( string.format( "Trying to link headland track %d to next track at angle %.2f (tangent is %.2f)", i, math.deg( h ),
                  math.deg(tangent)))
           fromIndex, toIndex = getIntersectionOfLineAndPolygon( field.headlandTracks[ i + 1 ], startLocation, 
                                addPolarVectorToPoint( startLocation, h, distance ))
           if fromIndex then
             break
           else
-            print( string.format( "Could not link headland track %d to next track at angle %.2f", i, math.deg( h )))
+            courseGenerator.debug( string.format( "Could not link headland track %d to next track at angle %.2f", i, math.deg( h )))
           end
         end
       end
       if fromIndex then
         break
       else
-        print( string.format( "Could not link headland track %d to next track at distance %.2f", i, distance ))
+        courseGenerator.debug( string.format( "Could not link headland track %d to next track at distance %.2f", i, distance ))
       end
     end
   end
@@ -174,6 +174,7 @@ function linkHeadlandTracks( field, implementWidth, isClockwise, startLocation, 
     -- skip the first and last point when smoothing, this makes sure smooth() won't try
     -- to wrap around the ends like in case of a closed polygon, this is just a line here.
     field.headlandPath = smooth( headlandPath, angleThreshold, 2, true )
+    addMissingPassNumber( field.headlandPath )
   else
     field.headlandPath = headlandPath
   end
@@ -186,6 +187,22 @@ function addTrackToHeadlandPath( headlandPath, track, passNumber, from, to, step
   for i, point in polygonIterator( track, from, to, step ) do
     table.insert( headlandPath, track[ i ])
     headlandPath[ #headlandPath ].passNumber = passNumber
+  end
+end
+
+-- smooth adds new points where we loose the passNumber attribute.
+-- here we fix that. I know it's ugly and there must be a better way to 
+-- do this somehow smooth should preserve these, but whatever...
+function addMissingPassNumber( headlandPath )
+  local currentPassNumber = 0
+  for i, point in ipairs( headlandPath ) do
+    if point.passNumber then 
+      if point.passNumber ~= currentPassNumber then 
+        currentPassNumber = point.passNumber
+      end
+    else
+      point.passNumber = currentPassNumber
+    end
   end
 end
 

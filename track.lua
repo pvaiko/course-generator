@@ -77,7 +77,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
   field.headlandTracks = {}
   local previousTrack, startHeadlandPass, endHeadlandPass, step
   if fromInside then 
-    print( "Generating innermost headland track" )
+    courseGenerator.debug( "Generating innermost headland track" )
     local distanceOfInnermostHeadlandFromBoundary = ( implementWidth - implementWidth * overlapPercent / 100 ) * ( nHeadlandPasses - 1 ) + implementWidth / 2
     field.headlandTracks[ nHeadlandPasses ] = calculateHeadlandTrack( field.boundary, distanceOfInnermostHeadlandFromBoundary, 
                                                           minDistanceBetweenPoints, angleThreshold, 0, doSmooth, true, turningRadius ) 
@@ -103,7 +103,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
     else 
       width = implementWidth
     end
-    print( string.format( "Generating headland track #%d", j ))
+    courseGenerator.debug( string.format( "Generating headland track #%d", j ))
     field.headlandTracks[ j ] = calculateHeadlandTrack( previousTrack, width - width * overlapPercent / 100, 
                                                         minDistanceBetweenPoints, angleThreshold, 0, doSmooth, not fromInside, 0 ) 
     previousTrack = field.headlandTracks[ j ]
@@ -126,6 +126,10 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
   end
   if #field.course > 0 then
     --calculatePolygonData( field.course )
+  end
+  -- flush STDOUT when not in the game for debugging
+  if not isRunningInGame then
+    io.stdout:flush()
   end
 end
 

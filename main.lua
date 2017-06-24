@@ -1,3 +1,4 @@
+dofile( 'courseGenerator.lua' )
 dofile( 'track.lua' )
 dofile( 'file.lua' )
 dofile( 'headland.lua' )

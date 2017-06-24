@@ -1,3 +1,4 @@
+dofile( 'courseGenerator.lua' )
 dofile( 'track.lua' )
 dofile( 'file.lua' )
 dofile( 'headland.lua' )
@@ -44,7 +45,7 @@ assert( points == nil )
 
 assert( false )
 
-pt = { 1, 2, 3, 4, 5 }
+local pt = { 1, 2, 3, 4, 5 }
 pt = reorderTracksForAlternateFieldwork( pt, 0 )
 assert( pt[ 1 ] == 1 and pt[ 2 ] == 2 and pt[ 3 ] == 3 and pt[ 4 ] == 4 and pt[ 5 ] == 5 )
 assert( #pt == 5 )
@@ -81,7 +82,7 @@ assert( #pt == 11 )
 --------------------------------------------------------------
 -- Polygon iterator
 --------------------------------------------------------------
-t = { 1, 2, 3, 4 }
+local t = { 1, 2, 3, 4 }
 r = {}
 for i, val in polygonIterator( t, 1, 4, 1 ) do
   table.insert( r, i ) 
