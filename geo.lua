@@ -174,7 +174,6 @@ function roundCorners( polygon, turningRadius )
       -- Is there a significant direction change within d distance?
       local da = getDeltaAngle( polygon[ i ].prevEdge.angle,
                         polygon[ toIx ].nextEdge.angle )
-      print( string.format( "  %.2f distance, %.2f angle between %d and %d", d, math.deg( da ), i, toIx ))  
       if math.abs( da ) > angleThreshold then
         print( polygon[ i ].prevEdge.to.x - polygon[ i ].x )
         local points = findArcBetweenEdges( polygon[ i ].prevEdge, 
@@ -316,7 +315,7 @@ function findArcBetweenEdges( e1, e2, r )
   -- to connect them with an arc  
   local e1ToIs = getDistanceBetweenPoints( e1.to, is ) 
   local isToE2 = getDistanceBetweenPoints( is, e2.from ) 
-  if e1ToIs < d or isToE2 < d then
+  if lt( e1ToIs, d ) or lt( isToE2, d ) then
     return nil 
   end
   -- looks good, so start adding waypoints between e1.to and e2.from.
@@ -491,3 +490,12 @@ function deepCopy(tab, recursive)
 	end;
 	return result;
 end;
+
+--- Less than operator with limited precision
+-- to tolerate floating point precision errors
+function lt( a, b )
+  -- for courseplay, we are calculating in meters, so 
+  -- we are fine with one millimeter precision
+  local epsilon = 0.001
+  return a < ( b - epsilon )
+end

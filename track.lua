@@ -84,6 +84,8 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
     helperPolygon = field.headlandTracks[ nHeadlandPasses ]                                                    
     field.headlandTracks[ nHeadlandPasses ] = roundCorners( field.headlandTracks[ nHeadlandPasses ], turningRadius )
     calculatePolygonData( field.headlandTracks[ nHeadlandPasses ])
+    field.headlandTracks[ nHeadlandPasses ] = roundCorners( field.headlandTracks[ nHeadlandPasses ], turningRadius )
+    calculatePolygonData( field.headlandTracks[ nHeadlandPasses ])
     previousTrack = field.headlandTracks[ nHeadlandPasses ]
     startHeadlandPass = nHeadlandPasses - 1
     endHeadlandPass = 1
@@ -125,7 +127,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
     end
   end
   if #field.course > 0 then
-    --calculatePolygonData( field.course )
+    calculatePolygonData( field.course )
   end
   -- flush STDOUT when not in the game for debugging
   if not isRunningInGame then
@@ -153,7 +155,7 @@ function reverseCourse( course )
     end
     table.insert( result, newPoint )
   end
-  --calculatePolygonData( result )
+    calculatePolygonData( result )
   return result
 end
 
