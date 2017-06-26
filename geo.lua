@@ -318,6 +318,15 @@ function findArcBetweenEdges( e1, e2, r )
   if lt( e1ToIs, d ) or lt( isToE2, d ) then
     return nil 
   end
+  -- let's check if we really need to find an arc here. If we can
+  -- draw a circle with a radius > r, there's nothing to do here.
+  local rCalculated = math.abs( math.min( e1ToIs, isToE2 ) * math.tan( alpha / 2 ))
+  print( string.format( "rCalculated=%.2f", rCalculated )) 
+  if r < rCalculated then 
+    r = rCalculated 
+    d = math.min( e1ToIs, isToE2 )
+    is = getIntersectionOfExtendedEdges( e1, e2, 2 * r * math.pi )
+  end
   -- looks good, so start adding waypoints between e1.to and e2.from.
   -- first, go straight until we are exactly at d from is
   local points = {}
