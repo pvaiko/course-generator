@@ -9,8 +9,9 @@
 --  The new course should be available in the game, with the name
 --  (Customized) original name
 --
-dofile( 'file.lua' )
-dofile( 'geo.lua' )
+cgPath = 'course-generator/'
+dofile( cgPath .. 'file.lua' )
+dofile( cgPath .. 'geo.lua' )
 
 -- generated courses will be prefixed with this string
 prefix="(Customized)"
