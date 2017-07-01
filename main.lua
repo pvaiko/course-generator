@@ -28,7 +28,20 @@ drawHelpers = false
 function love.load( arg )
   if arg[#arg] == "-debug" then require("mobdebug").start() end
   fileName = arg[ 3 ]
-  field = loadFieldFromSavedCourse( fileName )
+  if arg[ 2 ] == "fromCourse" then
+    field = loadFieldFromSavedCourse( fileName )
+  else
+    savedFields = loadSavedFields( fileName ) 
+    print( "Fields found in file:" )
+    for i, f in ipairs( savedFields ) do
+      print(f.number )
+      if f.number == arg[ 4 ] then
+        field = f
+      end
+    end
+    field.width = 3
+    field.nHeadlandPasses = 1
+  end 
   calculatePolygonData( field.boundary )
   field.loadedBoundaryVertices = getVertices( field.boundary )
   field.vehicle = { location = {x=335, y=145}, heading = 180 }
