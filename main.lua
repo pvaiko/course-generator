@@ -5,6 +5,8 @@ dofile( 'headland.lua' )
 dofile( 'center.lua' )
 dofile( 'geo.lua' )
 dofile( 'bspline.lua' )
+dofile( 'a-star.lua' )
+dofile( 'pathfinder.lua' )
 dofile( 'Pickle.lua' )
 
 field = {}
@@ -23,7 +25,11 @@ drawConnectingTracks = true
 drawCourse = true
 drawHeadlandPath = true 
 drawTrack = true
-drawHelpers = false
+drawHelpers = true
+
+-- pathfinding
+path = {}
+gridWidth = 3 
 
 function love.load( arg )
   if arg[#arg] == "-debug" then require("mobdebug").start() end
@@ -43,6 +49,7 @@ function love.load( arg )
     field.nHeadlandPasses = 1
   end 
   calculatePolygonData( field.boundary )
+  grid = generateGridForPolygon( field.boundary, gridWidth ) 
   field.loadedBoundaryVertices = getVertices( field.boundary )
   field.vehicle = { location = {x=335, y=145}, heading = 180 }
   field.vehicle = { location = {x=-33.6, y=-346.1}, heading = 180 }
@@ -112,6 +119,23 @@ function saveFile()
     -- Save
     writeCourseToFile( field, fileName )
   end
+end
+
+function drawPathFindingHelpers()
+  love.graphics.setColor( 100, 100, 0 )
+  -- for text, don't flip y axis as it results in mirrored characters
+  love.graphics.push()
+  for i, point in ipairs( grid ) do
+    local len = 0.3
+    love.graphics.line( point.x - len, point.y, point.x + len, point.y )
+    love.graphics.line( point.x, point.y - len, point.x, point.y + len )
+  end
+  love.graphics.setLineWidth( 1 )
+  love.graphics.setColor( 200, 200, 0 )
+  if path.course then
+    love.graphics.line( getVertices( path.course ))
+  end
+  love.graphics.pop()
 end
 
 function drawPoints( polygon )
@@ -278,7 +302,7 @@ function drawCoursePoints( course )
     love.graphics.points( point.x, point.y )
     love.graphics.push()
     love.graphics.scale( 1, -1 )
-    love.graphics.print( i, point.x, -point.y, 0, 0.2 )
+    --love.graphics.print( i, point.x, -point.y, 0, 0.2 )
     love.graphics.pop()
     if point.cornerScore and point.cornerScore > 0 then
       love.graphics.circle( "line", point.x, point.y, point.cornerScore )
@@ -365,6 +389,7 @@ function drawField( field )
     drawMarks( marks )
     drawLines( lines )
     drawPolygon( helperPolygon )
+    drawPathFindingHelpers()
   end
   if ( field.vehicle ) then 
     --drawVehicle( field.vehicle )
@@ -557,14 +582,21 @@ end
 
 function love.mousepressed(x, y, button, istouch)
    if button == 1 then 
-      leftMouseKeyPressedAt = { x=x, y=y }
-      leftMouseKeyPressed = true
+     leftMouseKeyPressedAt = { x=x, y=y }
+     leftMouseKeyPressed = true
+     path.from = {}
+     path.from.x, path.from.y = love2real( x, y )
    end
    if button == 2 then
      cix, ciy = love2real( x, y )
      field.vehicle.location.x = cix
      field.vehicle.location.y = ciy
      generate()
+     path.to = {}
+     path.to.x, path.to.y = love2real( x, y )
+     if path.from then
+       path.course = findPath( field.boundary, path.from, path.to, gridWidth )
+     end
    end
 end
 

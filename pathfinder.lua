@@ -7,21 +7,19 @@ local gridDistance
 
 function generateGridForPolygon( polygon, width )
   local grid = {}
-  local bb = getBoundingBox( polygon )
-  local w = bb.maxX - bb.minX
-  local h = bb.maxY - bb.minY
-  local fminX, fmaxX, fminY, fmaxY = bb.minX + w * 0.3, bb.maxX - w * 0.3, bb.minY + h * 0.2, bb.maxY - h * 0.2 
   local horizontalLines = generateParallelTracks( polygon, width )
   -- now, add the grid points 
   local margin = width / 2
   for i, line in ipairs( horizontalLines ) do
+    local nPoints = 0
     for x = line.from.x, line.to.x, width do
-      for j = 1, #line.intersections,2 do
+      for j = 1, #line.intersections, 2 do
         if line.intersections[ j + 1 ] then
           if x > line.intersections[ j ].x + margin and x < line.intersections[ j + 1 ].x - margin then
-            if (( x < fminX or x > fmaxX ) or ( line.from.y < fminY or line.from.y > fmaxY )) then
-            table.insert( grid, { x = x, y = line.from.y, ix = j, iy = i })
-          end
+            if ( not hasFruit( x, y )) then
+              table.insert( grid, { x = x, y = line.from.y, ix = j, iy = i })
+              nPoints = nPoints + 1
+            end
           end
         end
       end
@@ -47,4 +45,18 @@ function findPath( polygon, from, to, width )
     io.stdout:flush()
   end
   return path
+end
+
+function hasFruit( x, y )
+  if courseGenerator.isRunningInGame() then
+    return true
+  else
+    return false
+  end
+--  local bb = getBoundingBox( polygon )
+--  local w = bb.maxX - bb.minX
+--  local h = bb.maxY - bb.minY
+--  local fminX, fmaxX, fminY, fmaxY = bb.minX + w * 0.3, bb.maxX - w * 0.3, bb.minY + h * 0.3, bb.maxY - h * 0.2 
+--  if (( x < fminX or x > fmaxX ) or ( line.from.y < fminY or line.from.y > fmaxY )) then
+--  end
 end
