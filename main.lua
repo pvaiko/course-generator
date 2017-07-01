@@ -1,11 +1,11 @@
-cgPath = 'course-generator/'
-dofile( cgPath .. 'courseGenerator.lua' )
-dofile( cgPath .. 'track.lua' )
-dofile( cgPath .. 'file.lua' )
-dofile( cgPath .. 'headland.lua' )
-dofile( cgPath .. 'center.lua' )
-dofile( cgPath .. 'geo.lua' )
-dofile( cgPath .. 'bspline.lua' )
+dofile( 'courseGenerator.lua' )
+dofile( 'track.lua' )
+dofile( 'file.lua' )
+dofile( 'headland.lua' )
+dofile( 'center.lua' )
+dofile( 'geo.lua' )
+dofile( 'bspline.lua' )
+dofile( 'Pickle.lua' )
 
 field = {}
 
@@ -28,7 +28,9 @@ drawHelpers = false
 function love.load( arg )
   if arg[#arg] == "-debug" then require("mobdebug").start() end
   fileName = arg[ 3 ]
-  if arg[ 2 ] == "fromCpCustomFields" then
+  if arg[ 2 ] == "fromCourse" then
+    field = loadFieldFromSavedCourse( fileName )
+  else
     savedFields = loadSavedFields( fileName ) 
     print( "Fields found in file:" )
     for i, f in ipairs( savedFields ) do
@@ -39,8 +41,6 @@ function love.load( arg )
     end
     field.width = 3
     field.nHeadlandPasses = 1
-  else
-    field = loadFieldFromSavedCourse( fileName )
   end 
   calculatePolygonData( field.boundary )
   field.loadedBoundaryVertices = getVertices( field.boundary )

@@ -1,11 +1,10 @@
-cgPath = 'course-generator/'
-dofile( cgPath .. 'courseGenerator.lua' )
-dofile( cgPath .. 'track.lua' )
-dofile( cgPath .. 'file.lua' )
-dofile( cgPath .. 'headland.lua' )
-dofile( cgPath .. 'center.lua' )
-dofile( cgPath .. 'geo.lua' )
-dofile( cgPath .. 'bspline.lua' )
+dofile( 'courseGenerator.lua' )
+dofile( 'track.lua' )
+dofile( 'file.lua' )
+dofile( 'headland.lua' )
+dofile( 'center.lua' )
+dofile( 'geo.lua' )
+dofile( 'bspline.lua' )
 dofile( 'Pickle.lua' )
 
 function eq( a, b )
