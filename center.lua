@@ -340,8 +340,10 @@ function linkParallelTracks( result, parallelTracks, bottomToTop, leftToRight, n
         if ( j == #parallelTracks[ i ].waypoints and i ~= endTrack ) then
           point.turnStart = true
         end
+        -- these will come in handy for the ridge markers
         point.trackNumber = i 
         point.lastTrack = i == endTrack
+        point.firstTrack = i == startTrack
         table.insert( result, point )
       end      
     else
@@ -523,6 +525,11 @@ function overlaps( t1, t2 )
   end
 end
 
+--- Add ridge markers to all up/down tracks, including the first and the last.
+-- The last one does not need it but we'll take care of that once we know 
+-- which track will really be the last one, because if we reverse the course
+-- this changes.
+--
 function addRidgeMarkers( track )
   -- ugly copy paste, should be refactored
 	local ridgeMarker = {
@@ -548,8 +555,7 @@ function addRidgeMarkers( track )
   local startRidgeMarkerOnTheRight = ( drivingToTheRight and turningDown ) or
                                      ( not drivingToTheRight and not turningDown )
   for i, p in ipairs( track ) do
-    -- no ridge marker on the last track
-    if not p.lastTrack and p.trackNumber and not p.turnStart and not p.turnEnd then 
+    if p.trackNumber and not p.turnStart and not p.turnEnd then 
       if p.trackNumber % 2 == 1 then
         -- odd tracks
         if startRidgeMarkerOnTheRight then
@@ -565,6 +571,29 @@ function addRidgeMarkers( track )
           p.ridgeMarker = ridgeMarker.right
         end
       end
+    end
+  end
+end
+
+--- Make sure the last worked up down track does not have 
+-- ridge markers.
+-- Also, remove the ridge marker after the turn end so it is off
+-- during the turn
+function removeRidgeMarkersFromLastTrack( course, isReversed )
+  for i, p in ipairs( course ) do
+    -- if the course is not reversed (working on headland first)
+    -- remove ridge markers from the last track
+    if not isReversed and p.lastTrack then
+      p.ridgeMarker = nil
+    end
+    -- if it is reversed, the first track becomes the last
+    if isReversed and p.firstTrack then
+      p.ridgeMarker = nil
+    end
+    -- if the previous wp is a turn end, remove 
+    -- (dunno why, this is how the old course generator works)
+    if i > 1 and course[ i - 1 ].turnEnd then
+      p.ridgeMarker = nil
     end
   end
 end
