@@ -525,18 +525,19 @@ function overlaps( t1, t2 )
   end
 end
 
+-- ugly copy paste, should be refactored
+local ridgeMarker = {
+  none = 0,
+  left = 1,
+  right = 2
+};
+
 --- Add ridge markers to all up/down tracks, including the first and the last.
 -- The last one does not need it but we'll take care of that once we know 
 -- which track will really be the last one, because if we reverse the course
 -- this changes.
 --
 function addRidgeMarkers( track )
-  -- ugly copy paste, should be refactored
-	local ridgeMarker = {
-		none = 0,
-		left = 1,
-		right = 2
-	};
   -- ridge markers should be on the unworked side so 
   -- just check the turn at the end of the first track.
   -- If it is a right turn then we start with the ridge marker on the right
@@ -584,16 +585,16 @@ function removeRidgeMarkersFromLastTrack( course, isReversed )
     -- if the course is not reversed (working on headland first)
     -- remove ridge markers from the last track
     if not isReversed and p.lastTrack then
-      p.ridgeMarker = nil
+      p.ridgeMarker = ridgeMarker.none
     end
     -- if it is reversed, the first track becomes the last
     if isReversed and p.firstTrack then
-      p.ridgeMarker = nil
+      p.ridgeMarker = ridgeMarker.none 
     end
     -- if the previous wp is a turn end, remove 
     -- (dunno why, this is how the old course generator works)
     if i > 1 and course[ i - 1 ].turnEnd then
-      p.ridgeMarker = nil
+      p.ridgeMarker = ridgeMarker.none
     end
   end
 end
