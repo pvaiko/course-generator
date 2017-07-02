@@ -3,8 +3,6 @@ Fieldwork Course Generator
 
 This is an extended course generator for Courseplay. It can be used in standalone mode or from within the game.
 
-It is not yet officially integrated with Courseplay (https://github.com/Courseplay/courseplay) but there is a release candidate available at https://github.com/pvajko/course-generator/releases/tag/v1.1-with-courseplay.
-
 Using from the Game
 ===================
 
