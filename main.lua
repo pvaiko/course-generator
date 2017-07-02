@@ -515,6 +515,7 @@ function love.textinput( t )
   end
   if t == "r" then
     field.course = reverseCourse( field.course )
+    -- TODO: remove ridge markers from last track
   end
   if t == "A" then
     if field.nTracksToSkip < 5 then
