@@ -17,5 +17,5 @@ end
 -- for example, io.flush is not available from within the game.
 --
 function courseGenerator.isRunningInGame()
-  return g_currentModDirectory ~= nil;
+  return courseplay ~= nil;
 end
