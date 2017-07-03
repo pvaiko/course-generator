@@ -5,7 +5,7 @@ courseGenerator = {}
 --  or use the CP debug channel when running in the game.
 
 function courseGenerator.debug( text )
-  if isRunningInGame then
+  if courseGenerator.isRunningInGame() then
 	  courseplay:debug( text, 7 );
   else
     print( text )

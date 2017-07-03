@@ -129,7 +129,7 @@ function generateCourseForField( field, implementWidth, nHeadlandPasses, headlan
     calculatePolygonData( field.course )
   end
   -- flush STDOUT when not in the game for debugging
-  if not courseGenerator.isRunningInGame then
+  if not courseGenerator.isRunningInGame() then
     io.stdout:flush()
   end
 end

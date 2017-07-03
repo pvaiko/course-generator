@@ -212,9 +212,13 @@ function addWaypointsToTracks( tracks, width, extendTracks )
         end
       end
     end
-    -- return only tracks with waypoints
+    -- return only tracks with at least two waypoints
     if tracks[ i ].waypoints then
-      table.insert( result, tracks[ i ])
+      if #tracks[ i ].waypoints > 1 then
+        table.insert( result, tracks[ i ])
+      else
+        courseGenerator.debug( string.format( "Track %d has only one waypoint, skipping.", i ))
+      end
     end
   end
   return result
