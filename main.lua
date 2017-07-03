@@ -124,22 +124,23 @@ end
 function drawPathFindingHelpers()
   -- for text, don't flip y axis as it results in mirrored characters
   love.graphics.push()
-  if grid then 
-    for i, point in ipairs( grid ) do
-      if ( point.hasFruit ) then
-        love.graphics.setColor( 100, 000, 0 )
-      else
-        love.graphics.setColor( 000, 100, 0 )
-      end
-      local len = 0.3
-      love.graphics.line( point.x - len, point.y, point.x + len, point.y )
-      love.graphics.line( point.x, point.y - len, point.x, point.y + len )
-    end
-  end
   love.graphics.setLineWidth( 1 )
   love.graphics.setColor( 200, 200, 0 )
   if path.course then
     love.graphics.line( getVertices( path.course ))
+  end
+  if grid then 
+    love.graphics.setLineWidth( lineWidth )
+    for i, point in ipairs( grid ) do
+      local len = 0.3
+      if point.hasFruit then
+        love.graphics.setColor( 100, 000, 0 )
+      else
+        love.graphics.setColor( 000, 100, 0 )
+      end
+      love.graphics.line( point.x - len, point.y, point.x + len, point.y )
+      love.graphics.line( point.x, point.y - len, point.x, point.y + len )
+    end
   end
   love.graphics.pop()
 end
