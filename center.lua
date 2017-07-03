@@ -541,7 +541,7 @@ function addRidgeMarkers( track )
   -- ridge markers should be on the unworked side so 
   -- just check the turn at the end of the first track.
   -- If it is a right turn then we start with the ridge marker on the right
-  local turnStartIx = nil
+  local turnStartIx = 0
   for i=1, #track do
     if track[ i ].turnStart then 
       turnStartIx = i
