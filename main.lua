@@ -49,7 +49,7 @@ function love.load( arg )
     field.nHeadlandPasses = 1
   end 
   calculatePolygonData( field.boundary )
-  grid = generateGridForPolygon( field.boundary, gridWidth ) 
+  --grid = generateGridForPolygon( field.boundary, gridWidth ) 
   field.loadedBoundaryVertices = getVertices( field.boundary )
   field.vehicle = { location = {x=335, y=145}, heading = 180 }
   field.vehicle = { location = {x=-33.6, y=-346.1}, heading = 180 }
@@ -122,13 +122,19 @@ function saveFile()
 end
 
 function drawPathFindingHelpers()
-  love.graphics.setColor( 100, 100, 0 )
   -- for text, don't flip y axis as it results in mirrored characters
   love.graphics.push()
-  for i, point in ipairs( grid ) do
-    local len = 0.3
-    love.graphics.line( point.x - len, point.y, point.x + len, point.y )
-    love.graphics.line( point.x, point.y - len, point.x, point.y + len )
+  if grid then 
+    for i, point in ipairs( grid ) do
+      if ( point.hasFruit ) then
+        love.graphics.setColor( 100, 000, 0 )
+      else
+        love.graphics.setColor( 000, 100, 0 )
+      end
+      local len = 0.3
+      love.graphics.line( point.x - len, point.y, point.x + len, point.y )
+      love.graphics.line( point.x, point.y - len, point.x, point.y + len )
+    end
   end
   love.graphics.setLineWidth( 1 )
   love.graphics.setColor( 200, 200, 0 )
@@ -596,7 +602,8 @@ function love.mousepressed(x, y, button, istouch)
      path.to = {}
      path.to.x, path.to.y = love2real( x, y )
      if path.from then
-       path.course = findPath( field.boundary, path.from, path.to, gridWidth )
+       path.course, grid = pathFinder.findPath(  pointToXz( path.from ), pointToXz( path.to ), pointsToXz( field.boundary ), gridWidth )
+       if path.course ~= nil then path.course = pointsToXy( path.course ) end
      end
    end
 end

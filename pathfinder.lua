@@ -1,12 +1,24 @@
-
+pathFinder = {}
 --- Generate nodes for the A* algorithm. The nodes
 -- cover the polygon and are arranged in a grid.
 --
 --
-local gridDistance
+local gridSpacing
 
-function generateGridForPolygon( polygon, width )
+--- Does the area around x, z has fruit?
+-- 
+local function hasFruit( x, y, width )
+  if courseGenerator.isRunningInGame() then
+    return courseplay:areaHasFruit( x, -y, nil, width )  
+  else
+    -- for testing in standalone mode
+    return math.random() > 0.75
+  end
+end
+
+local function generateGridForPolygon( polygon, width )
   local grid = {}
+  polygon.boundingBox = getBoundingBox( polygon )
   local horizontalLines = generateParallelTracks( polygon, width )
   -- now, add the grid points 
   local margin = width / 2
@@ -16,10 +28,10 @@ function generateGridForPolygon( polygon, width )
       for j = 1, #line.intersections, 2 do
         if line.intersections[ j + 1 ] then
           if x > line.intersections[ j ].x + margin and x < line.intersections[ j + 1 ].x - margin then
-            if ( not hasFruit( x, y )) then
-              table.insert( grid, { x = x, y = line.from.y, ix = j, iy = i })
-              nPoints = nPoints + 1
-            end
+            local y = line.from.y
+            local hasFruit = hasFruit( x, y, width )
+            table.insert( grid, { x = x, y = y, hasFruit = hasFruit, ix = j, iy = i })
+            nPoints = nPoints + 1
           end
         end
       end
@@ -28,35 +40,65 @@ function generateGridForPolygon( polygon, width )
   return grid
 end
 
-function isValidNeighbor( theNode, node )
+--- Is 'node' a valid neighbor of 'theNode'?
+--
+local function isValidNeighbor( theNode, node )
+  -- this is called by a_star so we are in the x/y system
+  --courseplay:debug( string.format( "theNode: %.2f, %2.f", theNode.x, theNode.y))
+  --courseplay:debug( string.format( "node: %.2f, %.2f", node.x, node.y ))
   local d = a_star.distance( theNode.x, theNode.y, node.x, node.y )
-  return d < gridDistance * 1.5 
+  -- must be close enough (little more than sqrt(2) to allow for diagonals
+  -- and must not have fruit.
+  return d < gridSpacing * 1.5 and not node.hasFruit
 end
 
-function findPath( polygon, from, to, width )
-  gridDistance = width
-  local grid = generateGridForPolygon( polygon, width ) 
-  table.insert( grid, from )
-  table.insert( grid, to )
-  print( from.x, from.y )
-  local path = a_star.path( from, to, grid, isValidNeighbor )
-  print( "Path done", path ) 
+function pointsToXy( points )
+  local result = {}
+  for _, point in ipairs( points ) do
+    table.insert( result, { x = point.cx, y = -point.cz })
+  end
+  return result
+end
+
+function pointsToXz( points )
+  local result = {}
+  for _, point in ipairs( points) do
+    table.insert( result, { cx = point.x, cz = -point.y })
+  end
+  return result
+end
+
+local function pointToXy( point )
+  return({ x = point.x, y = -point.z })
+end
+
+function pointToXz( point )
+  return({ x = point.x, z = -point.y })
+end
+
+
+--- Find a path between from and to in a polygon using the A star
+-- algorithm where the nodes are a grid with 'width' spacing. 
+-- Expects FS coordinates (x,-z)
+function pathFinder.findPath( from, to, cpPolygon, width )
+  gridSpacing = width
+  local grid = generateGridForPolygon( pointsToXy( cpPolygon ), width ) 
+  -- from and to must be a node. change z to y as a-star works in x/y system
+  local fromNode = pointToXy( from )
+  local toNode = pointToXy( to )
+  table.insert( grid, fromNode )
+  table.insert( grid, toNode )
+	courseGenerator.debug( string.format( "Grid generated with %d points", #grid) , 9);
+  local path = a_star.path( fromNode, toNode, grid, isValidNeighbor )
   if not isRunningInGame then
     io.stdout:flush()
   end
-  return path
+  if path then 
+	  courseGenerator.debug( string.format( "Path generated with %d points", #path) , 9);
+    return pointsToXz( path ), grid 
+  else
+    return nil, grid 
+  end
 end
 
-function hasFruit( x, y )
-  if courseGenerator.isRunningInGame() then
-    return true
-  else
-    return false
-  end
---  local bb = getBoundingBox( polygon )
---  local w = bb.maxX - bb.minX
---  local h = bb.maxY - bb.minY
---  local fminX, fmaxX, fminY, fmaxY = bb.minX + w * 0.3, bb.maxX - w * 0.3, bb.minY + h * 0.3, bb.maxY - h * 0.2 
---  if (( x < fminX or x > fmaxX ) or ( line.from.y < fminY or line.from.y > fmaxY )) then
---  end
-end
+
