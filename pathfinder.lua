@@ -63,7 +63,7 @@ end
 function pointsToXz( points )
   local result = {}
   for _, point in ipairs( points) do
-    table.insert( result, { cx = point.x, cz = -point.y })
+    table.insert( result, { x = point.x, z = -point.y })
   end
   return result
 end
@@ -90,11 +90,13 @@ function pathFinder.findPath( from, to, cpPolygon, width )
   table.insert( grid, toNode )
 	courseGenerator.debug( string.format( "Grid generated with %d points", #grid) , 9);
   local path = a_star.path( fromNode, toNode, grid, isValidNeighbor )
-  if not isRunningInGame then
+  if not courseGenerator.isRunningInGame() then
     io.stdout:flush()
   end
   if path then 
-	  courseGenerator.debug( string.format( "Path generated with %d points", #path) , 9);
+    calculatePolygonData( path )
+    path = smooth( path, math.rad( 30 ), 1, true )
+	  courseGenerator.debug( string.format( "Path generated with %d points", #path ) , 9);
     return pointsToXz( path ), grid 
   else
     return nil, grid 
