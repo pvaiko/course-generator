@@ -603,7 +603,7 @@ function love.mousepressed(x, y, button, istouch)
      path.to = {}
      path.to.x, path.to.y = love2real( x, y )
      if path.from then
-       path.course, grid = pathFinder.findPath(  pointToXz( path.from ), pointToXz( path.to ), pointsToXz( field.boundary ), gridWidth )
+       path.course, grid = pathFinder.findPath(  pointToXz( path.from ), pointToXz( path.to ), pointsToCxCz( field.boundary ), gridWidth )
        if path.course ~= nil then path.course = pointsToXy( path.course ) end
      end
    end

@@ -55,7 +55,7 @@ end
 function pointsToXy( points )
   local result = {}
   for _, point in ipairs( points ) do
-    table.insert( result, { x = point.cx, y = -point.cz })
+    table.insert( result, { x = point.x or point.cx, y = - ( point.z or point.cz )})
   end
   return result
 end
@@ -68,8 +68,16 @@ function pointsToXz( points )
   return result
 end
 
+function pointsToCxCz( points )
+  local result = {}
+  for _, point in ipairs( points) do
+    table.insert( result, { cx = point.x, cz = -point.y })
+  end
+  return result
+end
+
 local function pointToXy( point )
-  return({ x = point.x, y = -point.z })
+  return({ x = point.x or point.cx, y = - ( point.z or point.cz )})
 end
 
 function pointToXz( point )
@@ -94,9 +102,9 @@ function pathFinder.findPath( from, to, cpPolygon, width )
     io.stdout:flush()
   end
   if path then 
+	  courseGenerator.debug( string.format( "Path generated with %d points", #path ) , 9);
     calculatePolygonData( path )
     path = smooth( path, math.rad( 30 ), 1, true )
-	  courseGenerator.debug( string.format( "Path generated with %d points", #path ) , 9);
     return pointsToXz( path ), grid 
   else
     return nil, grid 
