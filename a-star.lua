@@ -105,7 +105,7 @@ end
 -- public functions
 ----------------------------------------------------------------
 
-function a_star.path ( start, goal, nodes, valid_node_func )
+function a_star.path ( start, goal, nodes, valid_node_func, neighbor_nodes_func )
 
   print(string.format( "from: %.1f, %.1f to: %.1f, %.1f, distance %.1f", start.x, start.y, goal.x, goal.y, 
                           dist( start.x, start.y, goal.x, goal.y )))
@@ -114,6 +114,7 @@ function a_star.path ( start, goal, nodes, valid_node_func )
 	local came_from = {}
 
 	if valid_node_func then is_valid_node = valid_node_func end
+	if neighbor_nodes_func then neighbor_nodes = neighbor_nodes_func end
 
 	local g_score, f_score = {}, {}
 	g_score [ start ] = 0
