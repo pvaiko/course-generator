@@ -12,7 +12,7 @@ local function hasFruit( x, y, width )
     return courseplay:areaHasFruit( x, -y, nil, width )  
   else
     -- for testing in standalone mode
-    return math.random() > 0.8
+    return math.random() > 1.8
   end
 end
 
@@ -40,7 +40,8 @@ local function generateGridForPolygon( polygon, width )
         if line.intersections[ j + 1 ] then
           if x > line.intersections[ j ].x + margin and x < line.intersections[ j + 1 ].x - margin then
             local y = line.from.y
-            local hasFruit = hasFruit( x, y, width )
+            -- check an area bigger than the width to make sure the path is not too close to the fruit
+            local hasFruit = hasFruit( x, y, width * 2 )
             table.insert( grid, { x = x, y = y, hasFruit = hasFruit, column = column, row = row })
             grid.map[ row ][ column ] = #grid
           end
@@ -54,7 +55,6 @@ end
 --- Is 'node' a valid neighbor of 'theNode'?
 --
 local function isValidNeighbor( theNode, node )
-  count = count + 1
   -- this is called by a_star so we are in the x/y system
   --courseplay:debug( string.format( "theNode: %.2f, %2.f", theNode.x, theNode.y))
   --courseplay:debug( string.format( "node: %.2f, %.2f", node.x, node.y ))
@@ -66,17 +66,20 @@ end
 
 --- a_star will call back here to get the valid neighbors
 -- This is an optimization of the original algorithm which would iterate through all nodes
--- of grid and see if theNode is close enough. We don't need that as we have our nodes in 
+-- of the grid and see if theNode is close enough. We don't need that as we have our nodes in 
 -- a grid and we know exactly which (up to) eight nodes are the neighbors.
 -- This reduces the iterations by two magnitudes
 local function getNeighbors( theNode, grid )
 	local neighbors = {}
   if theNode.column and theNode.row then
     -- we have the grid coordinates of theNode, we can figure out its neighbors
-    for column = theNode.column - 1, theNode.column + 1 do
-      for row = theNode.row - 1, theNode.row + 1 do
+    -- how big is the area to check for neighbors?
+    local width, height = 2, 2
+    for column = theNode.column - width, theNode.column + width do
+      for row = theNode.row - height, theNode.row + height do
         -- skip own node
         if not ( column == theNode.column and row == theNode.row ) and grid.map[ row ] and grid.map[ row ][ column ] then
+          count = count + 1
           neighbor = grid[ grid.map[ row ][ column ]]
           if neighbor and not neighbor.hasFruit then table.insert( neighbors, neighbor ) end
         end
@@ -162,7 +165,7 @@ function pathFinder.findPath( from, to, cpPolygon, width )
   addOffGridNode( grid, fromNode )
   addOffGridNode( grid, toNode )
   local path = a_star.path( fromNode, toNode, grid, isValidNeighbor, getNeighbors )
-	courseGenerator.debug( string.format( "isValidNeighbor called %d times", count) , 9);
+	courseGenerator.debug( string.format( "Number of iterations %d", count) , 9);
   if not courseGenerator.isRunningInGame() then
     io.stdout:flush()
   end
