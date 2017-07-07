@@ -29,7 +29,7 @@ drawHelpers = true
 
 -- pathfinding
 path = {}
-gridWidth = 3 
+gridSpacing = 4 
 
 function love.load( arg )
   if arg[#arg] == "-debug" then require("mobdebug").start() end
@@ -49,7 +49,7 @@ function love.load( arg )
     field.nHeadlandPasses = 1
   end 
   calculatePolygonData( field.boundary )
-  --grid = generateGridForPolygon( field.boundary, gridWidth ) 
+  --grid = generateGridForPolygon( field.boundary, gridSpacing ) 
   field.loadedBoundaryVertices = getVertices( field.boundary )
   field.vehicle = { location = {x=335, y=145}, heading = 180 }
   field.vehicle = { location = {x=-33.6, y=-346.1}, heading = 180 }
@@ -125,9 +125,11 @@ function drawPathFindingHelpers()
   -- for text, don't flip y axis as it results in mirrored characters
   love.graphics.push()
   love.graphics.setLineWidth( 1 )
-  love.graphics.setColor( 200, 200, 0 )
+  love.graphics.setColor( 140, 140, 0 )
   if path.course then
     love.graphics.line( getVertices( path.course ))
+    love.graphics.setColor( 200, 200, 0 )
+    love.graphics.points( getVertices( path.course ))
   end
   if grid then 
     love.graphics.setLineWidth( lineWidth )
@@ -603,7 +605,7 @@ function love.mousepressed(x, y, button, istouch)
      path.to = {}
      path.to.x, path.to.y = love2real( x, y )
      if path.from then
-       path.course, grid = pathFinder.findPath(  pointToXz( path.from ), pointToXz( path.to ), pointsToCxCz( field.boundary ), gridWidth )
+       path.course, grid = pathFinder.findPath(  pointToXz( path.from ), pointToXz( path.to ), pointsToCxCz( field.boundary ), gridSpacing )
        if path.course ~= nil then path.course = pointsToXy( path.course ) end
      end
    end
