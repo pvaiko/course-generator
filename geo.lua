@@ -97,9 +97,17 @@ end
 -- If the distance to the next point is less than distanceThreshold,
 -- the current point is removed and the next one is replaced with a 
 -- point between the current and the next.
-function applyLowPassFilter( polygon, angleThreshold, distanceThreshold )
+function applyLowPassFilter( polygon, angleThreshold, distanceThreshold, isLine )
   local ix = function( a ) return getPolygonIndex( polygon, a ) end
-  local index = 1
+  local index, lastIndex
+  if isLine then 
+    -- don't wrap around the ends if it is a line
+    index = 1
+    lastIndex = #polygon - 1
+  else
+    index = 1
+    lastIndex = #polygon
+  end
   repeat
     local cp, np = polygon[ ix( index )], polygon[ ix( index + 1 )]
     -- need to recalculate the edge length as we are moving points 
@@ -114,11 +122,24 @@ function applyLowPassFilter( polygon, angleThreshold, distanceThreshold )
     if isTooSharp or isTooClose then
       table.remove( polygon, ix( index ))
       calculatePolygonData( polygon )
-      --table.insert( marks, cp )
     else
       index = index + 1
     end
   until index > #polygon
+end
+
+--- make sure points in line are at least d apart
+-- except in curves 
+function space( line, angleThreshold, d )
+  local result = { line[ 1 ]}
+  for i = 2, #line do
+    local cp, pp = line[ i ], result[ #result ]
+    local isCurve = math.abs( getDeltaAngle( cp.prevEdge.angle, pp.prevEdge.angle )) > angleThreshold 
+    if getDistanceBetweenPoints( cp, pp ) > d or isCurve then
+      table.insert( result, cp ) 
+    end
+  end
+  return result
 end
 
 function calculatePolygonData( polygon )
