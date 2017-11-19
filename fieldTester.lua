@@ -15,6 +15,7 @@ function printParameters()
   print( "fromInside = ", tostring( fromInside ))
   print( "turnRadius = ", turnRadius )
   print( "minHeadlandTurnAngleDeg =", minHeadlandTurnAngleDeg )
+  print( "#idlandNodes = ", field.islandNodes and #field.islandNodes or 0 )
 end
 
 function generate()
@@ -23,7 +24,7 @@ function generate()
                              headlandStartLocation, overlapPercent, 
                              nTracksToSkip, extendTracks,
                              minDistanceBetweenPoints, math.rad( minSmoothAngleDeg ), math.rad( maxSmoothAngleDeg ), doSmooth, fromInside,
-                             turnRadius, math.rad( minHeadlandTurnAngleDeg ), returnToFirst)
+                             turnRadius, math.rad( minHeadlandTurnAngleDeg ), returnToFirst, field.islandNodes)
 end
 
 function generateFromAllCorners()
@@ -55,8 +56,23 @@ function resetParameter()
   fromInside = false
   turnRadius = 6
   minHeadlandTurnAngleDeg = 60
-  returnToFirst = true	
+  returnToFirst = true
+  islandNodes = {}
 end
+
+-----------------------------------------------------------------------------
+resetParameter()
+fieldFile = "fields/coldborough.xml"
+savedFields = loadSavedFields( fieldFile )
+
+fieldNumber = 9
+field = savedFields[ fieldNumber ]
+print( "#####################################################################" )
+print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
+
+bb = getBoundingBox( field.boundary )
+headlandStartLocation = { x = bb.minX, y = bb.minY }
+nHeadlandPasses = 3; generate()
 --
 -----------------------------------------------------------------------------
 resetParameter()

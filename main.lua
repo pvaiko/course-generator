@@ -498,7 +498,7 @@ function generate()
                                            field.extendTracks, field.minDistanceBetweenPoints,
                                            math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), field.doSmooth,
                                            field.roundCorners, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ),
-  										   true	
+  										                     true, field.islandNodes or {}
                                            )
   if not status then
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
@@ -667,7 +667,6 @@ function love.mousepressed(x, y, button, istouch)
        local now = os.clock()
        path.course, grid = pathFinder.findPath( path.from, path.to , field.boundary, nil, nil, pathFinder.addFruitDistanceFromBoundary )
        reversePath.course, grid = pathFinder.findPath( path.to, path.from, field.boundary, nil, nil, pathFinder.addFruitDistanceFromBoundary )
-       pathFinder.findIslands( courseGenerator.pointsToCxCz( field.boundary ))
        print( string.format( "Pathfinding ran for %.2f seconds", os.clock() - now ))
        io.stdout:flush()
        if path.course ~= nil then path.course = path.course end
