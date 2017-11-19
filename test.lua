@@ -1,11 +1,4 @@
-dofile( 'courseGenerator.lua' )
-dofile( 'track.lua' )
-dofile( 'file.lua' )
-dofile( 'headland.lua' )
-dofile( 'center.lua' )
-dofile( 'geo.lua' )
-dofile( 'bspline.lua' )
-dofile( 'Pickle.lua' )
+dofile( 'include.lua' )
 
 function eq( a, b )
   local epsilon = 0.00001
@@ -163,18 +156,6 @@ assert( eq( avg, 0), "Got " ..  avg );
 avg = math.deg( getAverageAngle( math.rad( -89 ), math.rad( 91 )))
 assert( eq( avg, 1), "Got " ..  avg );
 
-local t = { name='hello', loc = {{x=1,y=2},{x=3,y=4}}}
-
-local f = io.output( "test.pickle" )
-io.write( pickle( t )) 
-io.close( f )
-
-f = io.input( "test.pickle" )
-local r = unpickle( io.read( "*all" ))
-assert( r.loc[ 1 ].x == 1 and r.loc[ 1 ].y == 2 )
-io.close( f )
-os.execute( "del test.pickle" )
-
 
 --------------------------------------------------------------
 -- reverse table
@@ -237,37 +218,9 @@ calculatePolygonData( field.boundary )
 field.vehicle = { location = {x=-5, y=5}, heading = 0 }
 field.nHeadlandPasses = 2
 field.width = 3
-generateCourseForField( field, 2, 3, true, field.vehicle.location, 0, 0, 0, 0.5, 30, false, true, 5 )
+minHeadlandTurnAngle = math.rad( 60 )
+generateCourseForField( field, 2, 3, true, field.vehicle.location, 0, 0, 0, 0.5, math.rad( 30 ), math.rad( 60), false, true, 5, minHeadlandTurnAngle )
 writeCourseToFile( field, "CoursePlay_Courses\\test\\course0101.xml" )
---------------------------------------------------------------
--- Smoke test
---------------------------------------------------------------
-
-marks = {}
-for i, fieldName in ipairs( { "pickles/8", "pickles/9", "pickles/23" }) do
-  for width = 3, 6 do
-    print( string.format( "\nGenerating course for field %s with width %d", fieldName, width ))
-    local field = loadFieldFromPickle( fieldName )
-    generateCourseForField( field, width, 5, false, field.vehicle.location, 0, 0, 0, 0.5, 30, false, false, 5 )
-    generateCourseForField( field, width, 2, false, field.vehicle.location, 20, 1, 3, 0.5, 30, true, true, 5 )
-    field = loadFieldFromPickle( fieldName .. "_reversed" )
-    generateCourseForField( field, width, 5, true, field.vehicle.location, 0, 0, 0, 0.5, 30, false, false, 5 )
-    generateCourseForField( field, width, 2, true, field.vehicle.location, 20, 1, 3, 0.5, 30, true, true, 5 )
-  end
-end
-
-
-local fileName = "CoursePlay_Courses\\courseStorage0004.xml"
-
-field = {}
-field = loadFieldFromPickle("pickles/23")
-field.nHeadlandPasses = 5
-field.width = 4.4
-field.isClockwise = "true"
-
-generateCourseForField( field, field.width, field.nHeadlandPasses, false, field.vehicle.location, 0, 0, 0, 0.5, 30, false, false )
-writeCourseToFile( field, fileName ) 
-os.execute( "del " .. fileName )
 
 testDir = "CoursePlay_Courses\\test\\"
 managerFileName="courseManager.xml"

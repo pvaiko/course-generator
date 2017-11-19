@@ -1,0 +1,36 @@
+<CPFields>
+    <field fieldNum="1" numPoints="32">
+        <point1 pos="-100 0 -100"/>
+        <point2 pos="-75 0 -100"/>
+        <point3 pos="-50 0 -100"/>
+        <point4 pos="-25 0 -100"/>
+        <point5 pos="0 0 -100"/>
+        <point6 pos="25 0 -100"/>
+        <point7 pos="50 0 -100"/>
+        <point8 pos="75 0 -100"/>
+        <point9 pos="100 0 -100"/>
+        <point10 pos="100 0 -75"/>
+        <point11 pos="100 0 -50"/>
+        <point12 pos="100 0 -25"/>
+        <point13 pos="100 0 0"/>
+        <point14 pos="100 0 25"/>
+        <point15 pos="100 0 50"/>
+        <point16 pos="100 0 75"/>
+        <point17 pos="100 0 100"/>
+        <point18 pos="75 0 100"/>
+        <point19 pos="50 0 100"/>
+        <point20 pos="25 0 100"/>
+        <point21 pos="0 0 100"/>
+        <point22 pos="-25 0 100"/>
+        <point23 pos="-50 0 100"/>
+        <point24 pos="-75 0 100"/>
+        <point25 pos="-100 0 100"/>
+        <point26 pos="-100 0 75"/>
+        <point27 pos="-100 0 50"/>
+        <point28 pos="-100 0 25"/>
+        <point29 pos="-100 0 0"/>
+        <point30 pos="-100 0 -25"/>
+        <point31 pos="-100 0 -50"/>
+        <point32 pos="-100 0 -75"/>
+    </field>
+</CPFields>

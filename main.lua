@@ -1,15 +1,9 @@
-dofile( 'courseGenerator.lua' )
-dofile( 'track.lua' )
-dofile( 'file.lua' )
-dofile( 'headland.lua' )
-dofile( 'center.lua' )
-dofile( 'geo.lua' )
-dofile( 'bspline.lua' )
-dofile( 'a-star.lua' )
-dofile( 'pathfinder.lua' )
-dofile( 'Pickle.lua' )
+dofile( 'include.lua' )
 
 field = {}
+marks = {}
+lines = {}
+helperPolygon = {}
 
 leftMouseKeyPressedAt = {}
 leftMouseKeyPressed = false
@@ -17,8 +11,8 @@ pointSize = 1
 lineWidth = 0.1
 scale = 1.0
 xOffset, yOffset = 10000, 10000
-windowWidth = 1200
-windowHeight = 900
+windowWidth = 1400
+windowHeight = 950
 showWidth = false
 
 drawConnectingTracks = true
@@ -26,10 +20,12 @@ drawCourse = true
 drawHeadlandPath = true 
 drawTrack = true
 drawHelpers = true
+showSettings = true
 
 -- pathfinding
 path = {}
-gridSpacing = 4 
+reversePath = {}
+gridSpacing = 4.07
 
 function love.load( arg )
   if arg[#arg] == "-debug" then require("mobdebug").start() end
@@ -39,14 +35,14 @@ function love.load( arg )
   else
     savedFields = loadSavedFields( fileName ) 
     print( "Fields found in file:" )
-    for i, f in ipairs( savedFields ) do
+    for i, f in pairs( savedFields ) do
       print(f.number )
       if f.number == arg[ 4 ] then
         field = f
       end
     end
-    field.width = 3
-    field.nHeadlandPasses = 1
+    field.width = 6 
+    field.nHeadlandPasses = 3
   end 
   calculatePolygonData( field.boundary )
   --grid = generateGridForPolygon( field.boundary, gridSpacing ) 
@@ -57,7 +53,8 @@ function love.load( arg )
   field.nTracksToSkip = 0
   field.extendTracks = 0
   field.minDistanceBetweenPoints = 0.5
-  field.angleThresholdDeg = 30
+  minSmoothingAngleDeg = 30
+  minHeadlandTurnAngleDeg = 60
   field.doSmooth = true
   field.headlandClockwise = false
   field.roundCorners = false
@@ -68,7 +65,7 @@ function love.load( arg )
     -- a headland pass of a course
     -- calculate the boundary from the headland track
     field.boundary = calculateHeadlandTrack( field.boundary, field.width / 2,
-                                             field.minDistanceBetweenPoints, math.rad( field.angleThresholdDeg), 0, 
+                                             field.minDistanceBetweenPoints, math.rad( minSmoothingAngleDeg), 0, 
                                              field.doSmooth, false, field.turningRadius ) 
   end
   field.boundingBox = getBoundingBox( field.boundary )
@@ -80,8 +77,10 @@ function love.load( arg )
   local yScale = windowHeight / fieldHeight
   if xScale > yScale then
     scale = 0.9 * yScale
+    pointSize = 0.9 * yScale
   else
     scale = 0.9 * xScale
+    pointSize = 0.9 * xScale
   end
 
   fieldCenterX = ( field.boundingBox.maxX + field.boundingBox.minX ) / 2
@@ -131,6 +130,11 @@ function drawPathFindingHelpers()
     love.graphics.setColor( 200, 200, 0 )
     love.graphics.points( getVertices( path.course ))
   end
+  if reversePath.course then
+    love.graphics.line( getVertices( reversePath.course ))
+    love.graphics.setColor( 220, 100, 0 )
+    love.graphics.points( getVertices( reversePath.course ))
+  end
   if grid then 
     love.graphics.setLineWidth( lineWidth )
     for i, point in ipairs( grid ) do
@@ -138,8 +142,9 @@ function drawPathFindingHelpers()
       if point.hasFruit then
         love.graphics.setColor( 100, 000, 0 )
       else
-        love.graphics.setColor( 000, 100, 0 )
+        love.graphics.setColor( 000, 150, 0 )
       end
+      if point.visited then len = 1 end
       love.graphics.line( point.x - len, point.y, point.x + len, point.y )
       love.graphics.line( point.x, point.y - len, point.x, point.y + len )
     end
@@ -158,8 +163,8 @@ function drawPoints( polygon )
       -- -y as y axis isn't flipped now
       --love.graphics.print( string.format( "%d", i ), point.x, -point.y, 0, 0.2 )
     end
-    
   end
+
   love.graphics.pop()
 end
 
@@ -191,14 +196,14 @@ function drawSettings()
   local smoothingStatus 
   if field.doSmooth then smoothingStatus = "on" else smoothingStatus = "off" end
   
-  love.graphics.print( string.format( "min point distance: %.2f m, corner smoothing: %s, angle threshold: %d", 
-    field.minDistanceBetweenPoints, smoothingStatus, field.angleThresholdDeg ), 10, 70, 0, 1 )
+  love.graphics.print( string.format( "min point distance: %.2f m, corner smoothing: %s, min. smoothing angle: %d, min. headland turn angle = %d", 
+    field.minDistanceBetweenPoints, smoothingStatus, minSmoothingAngleDeg, minHeadlandTurnAngleDeg ), 10, 70, 0, 1 )
   if field.bestAngle then
     love.graphics.setColor( 200, 200, 00 )
     love.graphics.print( string.format( "Options: best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 90, 0, 1 )
   end
   -- help text
-  local y = windowHeight - 300
+  local y = windowHeight - 320
   love.graphics.setColor( 240, 240, 240 )
   love.graphics.print( "KEYS", 10, y, 0, 1 )
   y = y + 20
@@ -223,7 +228,9 @@ function drawSettings()
   y = y + 20
   love.graphics.print( ",/< - -/+ min. distance between points", 10, y, 0, 1 )
   y = y + 20
-  love.graphics.print( "./> - -/+ smoothing angle threshold", 10, y, 0, 1 )
+  love.graphics.print( "./> - -/+ min. smoothing angle", 10, y, 0, 1 )
+  y = y + 20
+  love.graphics.print( "k/K - -/+ min headland turn angle", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "m - toggle corner smoothing", 10, y, 0, 1 )
   y = y + 20
@@ -301,20 +308,43 @@ end
 
 function drawCoursePoints( course )
   for i, point in ipairs( course ) do
+    local ps = love.graphics.getPointSize()
     if point.turnStart then
-      love.graphics.setColor( 255, 0, 0 )
-    elseif point.turnEnd then
+      love.graphics.setPointSize( ps * 1.2 )
       love.graphics.setColor( 0, 255, 0 )
-    else
+    elseif point.turnEnd then
+      love.graphics.setPointSize( ps * 1.2 )
+      love.graphics.setColor( 255, 0, 0 )
+    elseif point.headlandCorner then
+      love.graphics.setPointSize( ps * 1.2 )
+      love.graphics.setColor( 255, 255, 0 )
+    elseif point.returnToFirst then
+      love.graphics.setPointSize( ps * 1.2 )
+      love.graphics.setColor( 255, 255, 255 )
+    elseif point.isConnectingTrack then
+      love.graphics.setPointSize( ps * 0.5 )
+      love.graphics.setColor( 255, 0, 255 )
+	elseif point.tooCloseToIsland then
+		love.graphics.setPointSize( ps * 1.5 )
+		love.graphics.setColor( 255, 255, 255 )
+	else
       love.graphics.setColor( 100, 100, 0 )
     end
     love.graphics.points( point.x, point.y )
-    love.graphics.push()
-    love.graphics.scale( 1, -1 )
-    --love.graphics.print( i, point.x, -point.y, 0, 0.2 )
-    love.graphics.pop()
-    if point.cornerScore and point.cornerScore > 0 then
-      love.graphics.circle( "line", point.x, point.y, point.cornerScore )
+    love.graphics.setPointSize( ps )
+    if drawHelpers then 
+      love.graphics.push()
+      love.graphics.scale( 1, -1 )
+      if point.text then
+        love.graphics.print( point.text, point.x, -point.y, -point.prevEdge.angle + math.pi / 2, 0.2 )
+      end
+      love.graphics.pop()
+      if point.cornerScore and point.cornerScore > 0 then
+        love.graphics.circle( "line", point.x, point.y, point.cornerScore )
+      end
+      if point.deltaAngle and math.abs( point.deltaAngle ) > 0.0 then
+        love.graphics.circle( "line", point.x, point.y, math.abs( point.deltaAngle ))
+      end
     end
   end
 end
@@ -344,10 +374,11 @@ function drawField( field )
         love.graphics.setLineWidth( field.width )
         love.graphics.setColor( 100, 200, 100, 100 )
       else
-        love.graphics.setLineWidth( lineWidth )
-        love.graphics.setColor( 100, 200, 100 )
+        love.graphics.setLineWidth( lineWidth * 6 )
+        love.graphics.setColor( 00, 200, 00 )
       end
       love.graphics.line( getVertices( field.headlandPath ))
+      love.graphics.setLineWidth( lineWidth )
     end
   end
 
@@ -355,30 +386,29 @@ function drawField( field )
   if drawCourse then
     if field.course and #field.course > 1 then
       -- course line
-      --love.graphics.setColor( 50, 100, 50, 80 )
-      --love.graphics.setLineWidth( field.width / 2 )
       love.graphics.setColor( 150, 150, 50, 80 )
-      love.graphics.line( getVertices( field.course ))
+      --love.graphics.line( getVertices( field.course ))
       love.graphics.setLineWidth( lineWidth )
-      -- start of course, green dot
-      love.graphics.setColor( 0, 255, 0, 80 )
-      love.graphics.circle( "fill", field.course[ 1 ].x, field.course[ 1 ].y, 5 )
-      -- end of course, red dot
-      love.graphics.setColor( 255, 0, 0, 80 )
-      love.graphics.circle( "fill", field.course[ #field.course ].x, field.course[ #field.course ].y, 5 )
       -- course points
       love.graphics.setColor( 100, 100, 100 )
       drawCoursePoints( field.course )
+      -- start of course, green dot
+      love.graphics.setColor( 0, 255, 0, 180 )
+      love.graphics.circle( "fill", field.course[ 1 ].x, field.course[ 1 ].y, 5 )
+      -- end of course, red dot
+      love.graphics.setColor( 255, 0, 0, 180 )
+      love.graphics.circle( "fill", field.course[ #field.course ].x, field.course[ #field.course ].y, 5 )
+
     end
   end
 
   if ( field.headlandTracks ) then
     if drawConnectingTracks then
-      if field.headlandTracks[ #field.headlandTracks ].connectingTracks then
+      if field.headlandTracks[ #field.headlandTracks ] and field.headlandTracks[ #field.headlandTracks ].connectingTracks then
         -- track connecting blocks
         for i, t in ipairs( field.headlandTracks[ #field.headlandTracks ].connectingTracks ) do
-          love.graphics.setColor( 180, 100, 000, 190 )
-          love.graphics.setLineWidth( lineWidth * 10 )
+          love.graphics.setColor( 255, 165, 000, 200 )
+          love.graphics.setLineWidth( lineWidth * 15 )
           if #t > 1 then love.graphics.line( getVertices( t )) end
           love.graphics.setLineWidth( lineWidth )
         end
@@ -389,8 +419,13 @@ function drawField( field )
   -- draw tracks in field body
   if drawTrack then
     if field.track and #field.track > 1 then
-      love.graphics.setLineWidth( lineWidth )
-      love.graphics.setColor( 00, 00, 200 )
+      if showWidth then
+        love.graphics.setLineWidth( field.width )
+        love.graphics.setColor( 100, 200, 100, 100 )
+      else
+        love.graphics.setLineWidth( lineWidth )
+        love.graphics.setColor( 100, 100, 100 )
+      end
       love.graphics.line( getVertices( field.track ))
     end
   end
@@ -399,9 +434,7 @@ function drawField( field )
     drawLines( lines )
     drawPolygon( helperPolygon )
     drawPathFindingHelpers()
-  end
-  if ( field.vehicle ) then 
-    --drawVehicle( field.vehicle )
+	drawIslands( field.islandNodes )  
   end
   if vectors then
     for i, vec in ipairs( vectors ) do
@@ -413,6 +446,17 @@ function drawField( field )
     drawVehicle( v)
   end
 
+end
+
+function drawIslands( points )
+	love.graphics.setLineWidth( lineWidth )
+	for i, point in ipairs( points ) do
+		local len = 0.4
+		love.graphics.setColor( 000, 100, 200 )
+		if point.visited then len = 1 end
+		love.graphics.line( point.x - len, point.y, point.x + len, point.y )
+		love.graphics.line( point.x, point.y - len, point.x, point.y + len )
+	end
 end
 
 function drawWaypoints( course )
@@ -432,7 +476,9 @@ function love.draw()
   else
     drawField(field)
   end
-  drawSettings()
+  if showSettings then
+    drawSettings()
+  end
 end
 
 function errorHandler( err )
@@ -441,15 +487,18 @@ function errorHandler( err )
 end
 
 function generate()
+  -- clear debug graphics
   marks = {}
   lines = {}
+  helperPolygon = {}
   status = xpcall( generateCourseForField, errorHandler, 
                                            field, field.width, field.nHeadlandPasses, 
                                            field.headlandClockwise, field.vehicle.location,
                                            field.overlap, field.nTracksToSkip,
                                            field.extendTracks, field.minDistanceBetweenPoints,
-                                           math.rad( field.angleThresholdDeg ), field.doSmooth,
-                                           field.roundCorners, field.turningRadius
+                                           math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), field.doSmooth,
+                                           field.roundCorners, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ),
+  										   true	
                                            )
   if not status then
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
@@ -458,13 +507,10 @@ end
 
 function love.textinput( t )
   if t == "g" then
-    generate()
+    gridSpacing = gridSpacing - 0.5
   end
-  if t == "j" then
-    field.vehicle.heading = field.vehicle.heading + 5
-  end
-  if t == "k" then
-    field.vehicle.heading = field.vehicle.heading - 5
+  if t == "G" then
+    gridSpacing = gridSpacing + 0.5
   end
   if t == "s" then
     saveFile()
@@ -498,7 +544,7 @@ function love.textinput( t )
     generate()
   end
   if t == "p" then
-    if field.nHeadlandPasses > 1 then
+    if field.nHeadlandPasses > 0 then
       field.nHeadlandPasses = field.nHeadlandPasses - 1
       generate()
     end
@@ -523,8 +569,7 @@ function love.textinput( t )
     showWidth = not showWidth
   end
   if t == "r" then
-    field.course = reverseCourse( field.course )
-    -- TODO: remove ridge markers from last track
+    field.course = reverseCourse( field.course, field.width, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ))
   end
   if t == "A" then
     if field.nTracksToSkip < 5 then
@@ -549,13 +594,23 @@ function love.textinput( t )
     generate()
   end
   if t == "." then
-    if field.angleThresholdDeg > 5 then
-      field.angleThresholdDeg = field.angleThresholdDeg - 5
+    if minSmoothingAngleDeg > 5 then
+      minSmoothingAngleDeg = minSmoothingAngleDeg - 5
       generate()
     end
   end
   if t == ">" then
-    field.angleThresholdDeg = field.angleThresholdDeg + 5
+    minSmoothingAngleDeg = minSmoothingAngleDeg + 5
+    generate()
+  end
+  if t == "k" then
+    if minHeadlandTurnAngleDeg > 5 then
+      minHeadlandTurnAngleDeg = minHeadlandTurnAngleDeg - 5
+      generate()
+    end
+  end
+  if t == "K" then
+    minHeadlandTurnAngleDeg = minHeadlandTurnAngleDeg + 5
     generate()
   end
   if t == "m" then
@@ -577,6 +632,9 @@ function love.textinput( t )
   if t == "5" then
     drawHelpers = not drawHelpers
   end
+  if t == "6" then
+    showSettings = not showSettings
+  end
   if t == "=" then
     love.wheelmoved( 0, 2 )
   end
@@ -587,7 +645,7 @@ end
 
 function love.wheelmoved( dx, dy )
   scale = scale + scale * dy * 0.05
-  pointSize = pointSize + pointSize * dy * 0.05
+  pointSize = pointSize + pointSize * dy * 0.04
 end
 
 function love.mousepressed(x, y, button, istouch)
@@ -605,8 +663,15 @@ function love.mousepressed(x, y, button, istouch)
      path.to = {}
      path.to.x, path.to.y = love2real( x, y )
      if path.from then
-       path.course, grid = pathFinder.findPath(  pointToXz( path.from ), pointToXz( path.to ), pointsToCxCz( field.boundary ), gridSpacing )
-       if path.course ~= nil then path.course = pointsToXy( path.course ) end
+       print( string.format( "Finding path between %.2f, %.2f and %.2f, %.2f", path.from.x, path.from.y, path.to.x, path.to.y ))
+       local now = os.clock()
+       path.course, grid = pathFinder.findPath( path.from, path.to , field.boundary, nil, nil, pathFinder.addFruitDistanceFromBoundary )
+       reversePath.course, grid = pathFinder.findPath( path.to, path.from, field.boundary, nil, nil, pathFinder.addFruitDistanceFromBoundary )
+       pathFinder.findIslands( courseGenerator.pointsToCxCz( field.boundary ))
+       print( string.format( "Pathfinding ran for %.2f seconds", os.clock() - now ))
+       io.stdout:flush()
+       if path.course ~= nil then path.course = path.course end
+       if reversePath.course ~= nil then reversePath.course = reversePath.course end
      end
    end
 end
