@@ -45,14 +45,6 @@ function love.load( arg )
     field.nHeadlandPasses = 3
   end 
   calculatePolygonData( field.boundary )
-  field.islandPerimeterNodes = getIslandPerimeterNodes( field.islandNodes )
-  field.origIslandPerimeterNodes = deepCopy( field.islandPerimeterNodes )
-  field.islands = {}
-  while #field.islandPerimeterNodes > 0 do
-    island = Island:new()
-    island:createFromPerimeterNodes( field.islandPerimeterNodes )
-    table.insert( field.islands, island )
-  end
   --grid = generateGridForPolygon( field.boundary, gridSpacing ) 
   field.loadedBoundaryVertices = getVertices( field.boundary )
   field.vehicle = { location = {x=335, y=145}, heading = 180 }
@@ -442,7 +434,7 @@ function drawField( field )
     drawLines( lines )
     drawPolygon( helperPolygon )
     drawPathFindingHelpers()
-	  drawIslands( field.origIslandPerimeterNodes )  
+	  drawIslands( field.islandNodes )  
   end
   if vectors then
     for i, vec in ipairs( vectors ) do
@@ -469,6 +461,17 @@ function drawIslands( points )
     love.graphics.setColor( 100, 200, 100 )
     for _, island in ipairs( field.islands ) do
       love.graphics.polygon('line', getVertices( island.nodes ))
+      if showWidth then
+        love.graphics.setLineWidth( field.width )
+        love.graphics.setColor( 100, 200, 100, 100 )
+      else
+        love.graphics.setLineWidth( lineWidth * 6 )
+        love.graphics.setColor( 00, 200, 00 )
+      end
+      for _, headland in ipairs( island.headlandTracks ) do
+        love.graphics.line( getVertices( headland ))
+        love.graphics.setLineWidth( lineWidth )
+      end
     end
   end
 end
