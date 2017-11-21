@@ -45,6 +45,14 @@ function love.load( arg )
     field.nHeadlandPasses = 3
   end 
   calculatePolygonData( field.boundary )
+  field.islandPerimeterNodes = getIslandPerimeterNodes( field.islandNodes )
+  field.origIslandPerimeterNodes = deepCopy( field.islandPerimeterNodes )
+  field.islands = {}
+  while #field.islandPerimeterNodes > 0 do
+    island = Island:new()
+    island:createFromPerimeterNodes( field.islandPerimeterNodes )
+    table.insert( field.islands, island )
+  end
   --grid = generateGridForPolygon( field.boundary, gridSpacing ) 
   field.loadedBoundaryVertices = getVertices( field.boundary )
   field.vehicle = { location = {x=335, y=145}, heading = 180 }
@@ -434,7 +442,7 @@ function drawField( field )
     drawLines( lines )
     drawPolygon( helperPolygon )
     drawPathFindingHelpers()
-	drawIslands( field.islandNodes )  
+	  drawIslands( field.origIslandPerimeterNodes )  
   end
   if vectors then
     for i, vec in ipairs( vectors ) do
@@ -456,7 +464,13 @@ function drawIslands( points )
 		if point.visited then len = 1 end
 		love.graphics.line( point.x - len, point.y, point.x + len, point.y )
 		love.graphics.line( point.x, point.y - len, point.x, point.y + len )
-	end
+  end
+  if field.islands then
+    love.graphics.setColor( 100, 200, 100 )
+    for _, island in ipairs( field.islands ) do
+      love.graphics.polygon('line', getVertices( island.nodes ))
+    end
+  end
 end
 
 function drawWaypoints( course )
@@ -665,8 +679,8 @@ function love.mousepressed(x, y, button, istouch)
      if path.from then
        print( string.format( "Finding path between %.2f, %.2f and %.2f, %.2f", path.from.x, path.from.y, path.to.x, path.to.y ))
        local now = os.clock()
-       path.course, grid = pathFinder.findPath( path.from, path.to , field.boundary, nil, nil, pathFinder.addFruitDistanceFromBoundary )
-       reversePath.course, grid = pathFinder.findPath( path.to, path.from, field.boundary, nil, nil, pathFinder.addFruitDistanceFromBoundary )
+       path.course, grid = pathFinder.findPath( path.from, path.to , field.boundary, nil, nil, nil )-- pathFinder.addFruitDistanceFromBoundary )
+       reversePath.course, grid = pathFinder.findPath( path.to, path.from, field.boundary, nil, nil, nil )--pathFinder.addFruitDistanceFromBoundary )
        print( string.format( "Pathfinding ran for %.2f seconds", os.clock() - now ))
        io.stdout:flush()
        if path.course ~= nil then path.course = path.course end

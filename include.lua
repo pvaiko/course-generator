@@ -8,5 +8,6 @@ dofile( courseGeneratorPath .. 'geo.lua' )
 dofile( courseGeneratorPath .. 'bspline.lua' )
 dofile( courseGeneratorPath .. 'a-star.lua' )
 dofile( courseGeneratorPath .. 'pathfinder.lua' )
+dofile( courseGeneratorPath .. 'Island.lua' )
 
 dofile( 'file.lua' )
