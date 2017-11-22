@@ -1,5 +1,7 @@
 dofile( 'include.lua' )
 
+marks = {}
+
 function printParameters()
   print( "implementWidth = ", implementWidth )
   print( "nHeadlandPasses = ", nHeadlandPasses )
@@ -59,6 +61,23 @@ function resetParameter()
   returnToFirst = true
   islandNodes = {}
 end
+
+-----------------------------------------------------------------------------
+resetParameter()
+fieldFile = "fields/coldborough.xml"
+savedFields = loadSavedFields( fieldFile )
+
+fieldNumber = 7
+field = savedFields[ fieldNumber ]
+print( "#####################################################################" )
+print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
+
+bb = getBoundingBox( field.boundary )
+headlandStartLocation = { x = bb.minX, y = bb.minY }
+nHeadlandPasses = 20; generate()
+nHeadlandPasses = 0; generate()
+nHeadlandPasses = 4; generate()
+
 
 -----------------------------------------------------------------------------
 resetParameter()

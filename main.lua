@@ -324,7 +324,7 @@ function drawCoursePoints( course )
     elseif point.isConnectingTrack then
       love.graphics.setPointSize( ps * 0.5 )
       love.graphics.setColor( 255, 0, 255 )
-	elseif point.tooCloseToIsland then
+	elseif point.onIsland then
 		love.graphics.setPointSize( ps * 1.5 )
 		love.graphics.setColor( 255, 255, 255 )
 	else
@@ -671,6 +671,15 @@ function love.mousepressed(x, y, button, istouch)
      leftMouseKeyPressed = true
      path.from = {}
      path.from.x, path.from.y = love2real( x, y )
+     if field.course then
+       for i, point in ipairs( field.course ) do
+         if math.abs( point.x - path.from.x ) < 1 and math.abs( point.y - path.from.y ) < 1 then
+           print( i, point.x, point.y )
+           io.stdout:flush()
+           break
+         end
+       end
+     end
    end
    if button == 2 then
      cix, ciy = love2real( x, y )
