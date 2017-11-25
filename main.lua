@@ -14,6 +14,7 @@ xOffset, yOffset = 10000, 10000
 windowWidth = 1400
 windowHeight = 950
 showWidth = false
+currentWaypointIndex = 1
 
 drawConnectingTracks = true
 drawCourse = true
@@ -41,8 +42,8 @@ function love.load( arg )
         field = f
       end
     end
-    field.width = 6 
-    field.nHeadlandPasses = 3
+    field.width = 5
+    field.nHeadlandPasses = 2
   end 
   calculatePolygonData( field.boundary )
   --grid = generateGridForPolygon( field.boundary, gridSpacing ) 
@@ -201,6 +202,15 @@ function drawSettings()
   if field.bestAngle then
     love.graphics.setColor( 200, 200, 00 )
     love.graphics.print( string.format( "Options: best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 90, 0, 1 )
+  end
+  -- Info on waypoint under mouse cursor
+  if field.course then
+    love.graphics.setColor( 255, 255, 255 )
+    local cWp = field.course[ currentWaypointIndex ]
+    if cWp then
+      love.graphics.print(string.format("ix = %d, x = %.1f y = %.1f", currentWaypointIndex, cWp.x, cWp.y),
+        windowWidth - 300, windowHeight - 40, 0, 1)
+    end
   end
   -- help text
   local y = windowHeight - 320
@@ -469,8 +479,8 @@ function drawIslands( points )
         love.graphics.setColor( 00, 200, 00 )
       end
       for _, headland in ipairs( island.headlandTracks ) do
-        love.graphics.line( getVertices( headland ))
         love.graphics.setLineWidth( lineWidth )
+        love.graphics.line( getVertices( headland ))
       end
     end
   end
@@ -520,6 +530,7 @@ function generate()
   if not status then
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
   end
+  io.stdout:flush()
 end
 
 function love.textinput( t )
@@ -711,5 +722,15 @@ function love.mousemoved( x, y, dx, dy )
   if leftMouseKeyPressed then
     xOffset = xOffset + dx
     yOffset = yOffset - dy
+  end
+  -- show point info
+  local rx, ry = love2real( x, y )
+  if field.course then
+    for i, point in ipairs( field.course ) do
+      if math.abs( point.x - rx ) < 1 and math.abs( point.y - ry ) < 1 then
+        currentWaypointIndex = i
+        break
+      end
+    end
   end
 end
