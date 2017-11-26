@@ -19,7 +19,7 @@ currentWaypointIndex = 1
 drawConnectingTracks = true
 drawCourse = true
 drawHeadlandPath = true 
-drawTrack = true
+drawTrack = false
 drawHelpers = true
 showSettings = true
 
@@ -210,7 +210,12 @@ function drawSettings()
     if cWp then
       love.graphics.print(string.format("ix = %d, x = %.1f y = %.1f", currentWaypointIndex, cWp.x, cWp.y),
         windowWidth - 300, windowHeight - 40, 0, 1)
-    end
+      local pass = cWp.passNumber or 'n/a'
+      local track = cWp.trackNumber or 'n/a'        
+        love.graphics.print(string.format("pass = %s, track = %s", tostring( pass), tostring( track )),
+          windowWidth - 300, windowHeight - 20, 0, 1)
+
+      end
   end
   -- help text
   local y = windowHeight - 320
@@ -316,7 +321,24 @@ function drawPolygon( polygon )
   end
 end
 
+function highlighPoint()
+  love.graphics.push()
+  love.graphics.setLineWidth( lineWidth * 2 )
+  love.graphics.setColor( 255, 255, 255 )
+  love.graphics.circle( "line", field.course[ currentWaypointIndex ].x, field.course[ currentWaypointIndex ].y, 2 )
+  if field.course[ currentWaypointIndex - 1 ] then
+    love.graphics.setColor( 255, 0, 0 )
+    love.graphics.circle( "line", field.course[ currentWaypointIndex - 1 ].x, field.course[ currentWaypointIndex - 1 ].y, 2 )
+  end
+  if field.course[ currentWaypointIndex + 1 ] then
+    love.graphics.setColor( 0, 255, 0 )
+    love.graphics.circle( "line", field.course[ currentWaypointIndex + 1 ].x, field.course[ currentWaypointIndex + 1 ].y, 2 )
+  end
+  love.graphics.pop()
+end
+
 function drawCoursePoints( course )
+  highlighPoint()
   for i, point in ipairs( course ) do
     local ps = love.graphics.getPointSize()
     if point.turnStart then
@@ -334,15 +356,15 @@ function drawCoursePoints( course )
     elseif point.isConnectingTrack then
       love.graphics.setPointSize( ps * 0.5 )
       love.graphics.setColor( 255, 0, 255 )
-	elseif point.onIsland then
-		love.graphics.setPointSize( ps * 1.5 )
-		love.graphics.setColor( 255, 255, 255 )
-	else
+    elseif point.onIsland then
+      love.graphics.setPointSize( ps * 1.5 )
+      love.graphics.setColor( 255, 255, 255 )
+    else
       love.graphics.setColor( 100, 100, 0 )
     end
     love.graphics.points( point.x, point.y )
     love.graphics.setPointSize( ps )
-    if drawHelpers then 
+    if drawHelpers then
       love.graphics.push()
       love.graphics.scale( 1, -1 )
       if point.text then
@@ -402,6 +424,8 @@ function drawField( field )
       -- course points
       love.graphics.setColor( 100, 100, 100 )
       drawCoursePoints( field.course )
+      love.graphics.setColor( 100, 100, 100 )
+      love.graphics.line( getVertices( field.course ))
       -- start of course, green dot
       love.graphics.setColor( 0, 255, 0, 180 )
       love.graphics.circle( "fill", field.course[ 1 ].x, field.course[ 1 ].y, 5 )
