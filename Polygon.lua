@@ -1,14 +1,21 @@
 --- 2D Polygon
 --
 Polygon = {}
-local Polygon_mt = cgClass( Polygon )
+Polygon.__index = function( t, k ) 
+  if type( k ) == "number" then 
+    print( string.format("**getting number index %d, returning %d, size = %d", k, t.getIndex( t, k ), #t))
+    return t[ t.getIndex( t, k )]
+  else
+    --print( string.format("**getting index %s", tostring( k )))
+    return Polygon[ k ]
+  end
+end
 
 --- Polygon constructor.
 -- Integer indices are the vertices of the polygon
 function Polygon:new( vertices )
-  local newPolygon = {}
-  newPolygon = { table.unpack( vertices )}
-  return setmetatable( newPolygon, Polygon_mt )
+  local newPolygon = { table.unpack( vertices )}
+  return setmetatable( newPolygon, self )
 end
 
 local function addToDirectionStats( directionStats, angle, length )

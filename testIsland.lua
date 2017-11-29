@@ -6,30 +6,22 @@
 -- To change this template use File | Settings | File Templates.
 --
 dofile( 'include.lua' )
+dofile( 'testCommon.lua' )
 
 marks = {}
 
 local minSmoothingAngleDeg = 30
 local minHeadlandTurnAngleDeg = 60
 local doSmooth = true
-local course
 
-local function p( x, y ) 
-  return { x = x, y = y, trackNumber = 1 }
-end
-
-local function printCourse( course )
-  for i, p in ipairs( course ) do
-    print( string.format( '%d %1.1f %1.1f', i, p.x, p.y ))
+local function courseHasRepeatingWaypoints( course )
+  for i = 1, #course - 1 do
+    if course[ i ].x == course[ i + 1 ].x and course[ i + 1 ].y == course[ i ].y then
+      -- for now ignore this, always return false
+      return false
+    end
   end
-end
-
-local function assertEquals( a, b )
-  local epsilon = 0.00001
-  if not ( a < ( b + epsilon ) and a > ( b - epsilon )) then
-    printCourse( course )
-    assert( false )
-  end
+  return false
 end
 
 local savedFields = loadSavedFields( 'testFields.xml' )
@@ -38,6 +30,7 @@ local field = savedFields[ 1 ]
 field.width = 5
 field.nHeadlandPasses = 2
 
+local expectedNumberOfWaypoints = 87
 setupIslands( field, 2, 6, 0.5, math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), doSmooth )
 
 assertEquals( #field.islands , 1 )
@@ -47,46 +40,50 @@ assertEquals( #island.nodes , 171 )
 print( '\n*** course with multiple waypoints on the island' )
 -- x | x x x x | x x
 -- 1   2 3 4 5   6 7
-course = { p(-25, 0 ), p( -15, 0 ), p( -5, 0 ), p(5, 0 ), p( 15, 0 ), p( 25, 0 ), p( 35, 0 )}
+course = { point(-25, 0 ), point( -15, 0 ), point( -5, 0 ), point(5, 0 ), point( 15, 0 ), point( 25, 0 ), point( 35, 0 )}
 island:bypass( course )
-assertEquals( #course, 87 )
+assertEquals( #course, expectedNumberOfWaypoints )
 assertEquals( course[ 2 ].x , -23 )
 assertEquals( course[ 45 ].y , 23 )
-assertEquals( course[ 85 ].x , 23 )
+assertEquals( course[ 84 ].x , 23 )
+assertFalse( courseHasRepeatingWaypoints( course ))
 
 print( '\n*** course with two waypoints on the island' )
 -- x | x x | x x
 -- 1   2 3   4 5
-course = { p( -25, 0 ), p( -15, 0 ), p( 15, 0 ), p( 25, 0 ), p( 35, 0 ) }
+course = { point( -25, 0 ), point( -15, 0 ), point( 15, 0 ), point( 25, 0 ), point( 35, 0 ) }
 island:bypass( course )
-assertEquals( #course, 87 )
+assertEquals( #course, expectedNumberOfWaypoints )
 assertEquals( course[ 2 ].x , -23 )
 assertEquals( course[ 45 ].y , 23 )
-assertEquals( course[ 85 ].x , 23 )
+assertEquals( course[ 84 ].x , 23 )
+assertFalse( courseHasRepeatingWaypoints( course ))
 
 print( '\n*** course with one waypoint on the island' )
 -- x | x | x x
 -- 1   2   3 4
-course = { p( -25, 0 ), p( 0, 0 ), p( 25, 0 ), p( 35, 0 ) }
+course = { point( -25, 0 ), point( 0, 0 ), point( 25, 0 ), point( 35, 0 ) }
 island:bypass( course )
-assertEquals( #course, 87 )
+assertEquals( #course, expectedNumberOfWaypoints )
 assertEquals( course[ 2 ].x , -23 )
-assertEquals( course[ 85 ].x , 23 )
+assertEquals( course[ 84 ].x , 23 )
+assertFalse( courseHasRepeatingWaypoints( course ))
 
 print( '\n*** course reenters the island after one waypoint on the island' )
 -- x | x | x | x x
 -- 1   2   3   4 5 
-course = { p( -25, -10 ), p( -15, -10), p( -5, -10 ), p( 10, -10 ), p( 35, -10 ) }
+course = { point( -25, -10 ), point( -15, -10), point( -5, -10 ), point( 10, -10 ), point( 35, -10 ) }
 island:bypass( course )
 assertEquals( #course, 52 )
 assertEquals( course[ 2 ].x , -23 )
 assertEquals( course[ 33 ].y , -10 )
 assertEquals( course[ 42 ].y , -17 )
+assertFalse( courseHasRepeatingWaypoints( course ))
 
 print( '\n*** course enters then exits the island, but exit also reenters' )
 -- x | x |   | x | x x
 -- 1   2       3   4  
-course = { p( -25, -10 ), p( -15, -10), p( 5, -10 ), p( 25, -10 ), p( 35, -10 ) }
+course = { point( -25, -10 ), point( -15, -10), point( 5, -10 ), point( 25, -10 ), point( 35, -10 ) }
 island:bypass( course )
 -- x | x |   | x | x x
 -- 1 2 3 4   5 6 7 8 9
@@ -94,12 +91,14 @@ assertEquals( #course, 36 )
 assertEquals( course[ 2 ].x , -23 )
 assertEquals( course[ 16 ].y , -23 )
 assertEquals( course[ 33 ].x , 5 )
+assertFalse( courseHasRepeatingWaypoints( course ))
 
 print( '\n*** course with no waypoint on the island' )
 -- x |   | x x
 -- 1 |   | 2 3
-course = { p( -25, 0 ), p( 25, 0 ), p( 35, 0 ) }
+course = { point( -25, 0 ), point( 25, 0 ), point( 35, 0 ) }
 island:bypass( course )
-assertEquals( #course, 5 )
+assertEquals( #course, expectedNumberOfWaypoints )
 assertEquals( course[ 2 ].x , -23 )
-assertEquals( course[ 3 ].x , 23 )
+assertEquals( course[ 80 ].x , 23 )
+assertFalse( courseHasRepeatingWaypoints( course ))

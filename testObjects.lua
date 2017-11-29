@@ -2,7 +2,7 @@ require( 'Object' )
 require( 'Point' )
 require( 'Vertex' )
 require( 'Polygon' )
-require( 'geo' )
+require( 'courseplay/course-generator/geo' )
 
 local function equals( a, b )
   local epsilon = 0.00001
@@ -41,3 +41,24 @@ assert( equals( o.y, 0 ))
 p = Polygon:new( { Vertex:new( 0, 0 ), Vertex:new( 1, 0 ), Vertex:new( 1, 1 ), Vertex:new( 0, 1 ) })
 p:calculateData()
 
+p = Polygon:new( { Vertex:new( 1, 0 ), Vertex:new( 2, 0 ), Vertex:new( 3, 0 ), Vertex:new( 4, 0 ) })
+assert( equals( p[ 1 ].x, 1 ))
+assert( equals( p[ 0 ].x, 4 ))
+assert( equals( p[ -1 ].x, 3 ))
+assert( equals( p[ 5 ].x, 1 ))
+assert( equals( p[ 9 ].x, 1 ))
+assert( equals( p[ 6 ].x, 2 ))
+
+p[ 0 ].x = 0
+assert( equals( p[ 0 ].x, 0 ))
+
+p[ 5 ].x = -1
+assert( #p == 4 )
+assert( equals( p[ 5 ].x, -1 ))
+assert( equals( p[ 1 ].x, -1 ))
+    
+p[ 5 ] = Vertex:new( 5, 0 )
+assert( #p == 5 )
+assert( equals( p[ 1 ].x, -1 ))
+assert( equals( p[ 5 ].x, 5 ))
+assert( equals( p[ 6 ].x, -1 ))

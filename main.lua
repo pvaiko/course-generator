@@ -1,32 +1,34 @@
 dofile( 'include.lua' )
 
-field = {}
+local field = {}
 marks = {}
-lines = {}
-helperPolygon = {}
+local lines = {}
+local helperPolygon = {}
 
-leftMouseKeyPressedAt = {}
-leftMouseKeyPressed = false
-pointSize = 1
-lineWidth = 0.1
-scale = 1.0
-xOffset, yOffset = 10000, 10000
-windowWidth = 1400
-windowHeight = 950
-showWidth = false
-currentWaypointIndex = 1
-
-drawConnectingTracks = true
-drawCourse = true
-drawHeadlandPath = true 
-drawTrack = false
-drawHelpers = true
-showSettings = true
+local leftMouseKeyPressedAt = {}
+local leftMouseKeyPressed = false
+local pointSize = 1
+local lineWidth = 0.1
+local scale = 1.0
+local xOffset, yOffset = 10000, 10000
+local windowWidth = 1400
+local windowHeight = 950
+local showWidth = false
+local currentWaypointIndex = 1
+ 
+local drawConnectingTracks = true
+local drawCourse = true
+local drawHeadlandPath = true 
+local drawTrack = false
+local drawHelpers = true
+local showSettings = true
+local bypassIslands = true
 
 -- pathfinding
-path = {}
-reversePath = {}
-gridSpacing = 4.07
+local path = {}
+local reversePath = {}
+local gridSpacing = 4.07
+local islandNodes = {}
 
 function love.load( arg )
   if arg[#arg] == "-debug" then require("mobdebug").start() end
@@ -42,10 +44,11 @@ function love.load( arg )
         field = f
       end
     end
-    field.width = 5
-    field.nHeadlandPasses = 2
+    field.width = 6
+    field.nHeadlandPasses = 3
   end 
   calculatePolygonData( field.boundary )
+  islandNodes = field.islandNodes
   --grid = generateGridForPolygon( field.boundary, gridSpacing ) 
   field.loadedBoundaryVertices = getVertices( field.boundary )
   field.vehicle = { location = {x=335, y=145}, heading = 180 }
@@ -126,12 +129,12 @@ function drawPathFindingHelpers()
   love.graphics.push()
   love.graphics.setLineWidth( 1 )
   love.graphics.setColor( 140, 140, 0 )
-  if path.course then
+  if path.course and #path.course > 2 then
     love.graphics.line( getVertices( path.course ))
     love.graphics.setColor( 200, 200, 0 )
     love.graphics.points( getVertices( path.course ))
   end
-  if reversePath.course then
+  if reversePath.course and #reversePath.course > 2 then
     love.graphics.line( getVertices( reversePath.course ))
     love.graphics.setColor( 220, 100, 0 )
     love.graphics.points( getVertices( reversePath.course ))
@@ -218,7 +221,7 @@ function drawSettings()
       end
   end
   -- help text
-  local y = windowHeight - 320
+  local y = windowHeight - 340
   love.graphics.setColor( 240, 240, 240 )
   love.graphics.print( "KEYS", 10, y, 0, 1 )
   y = y + 20
@@ -252,6 +255,8 @@ function drawSettings()
   love.graphics.print( "r - reverse course", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "a/A - tracks to skip between alternating tracks", 10, y, 0, 1 )
+  y = y + 20
+  love.graphics.print( "i - toggle bypass islands", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "g - generate course", 10, y, 0, 1 )
   y = y + 20
@@ -325,7 +330,9 @@ function highlighPoint()
   love.graphics.push()
   love.graphics.setLineWidth( lineWidth * 2 )
   love.graphics.setColor( 255, 255, 255 )
-  love.graphics.circle( "line", field.course[ currentWaypointIndex ].x, field.course[ currentWaypointIndex ].y, 2 )
+  if field.course[ currentWaypointIndex ] then
+    love.graphics.circle( "line", field.course[ currentWaypointIndex ].x, field.course[ currentWaypointIndex ].y, 2 )
+  end
   if field.course[ currentWaypointIndex - 1 ] then
     love.graphics.setColor( 255, 0, 0 )
     love.graphics.circle( "line", field.course[ currentWaypointIndex - 1 ].x, field.course[ currentWaypointIndex - 1 ].y, 2 )
@@ -549,7 +556,7 @@ function generate()
                                            field.extendTracks, field.minDistanceBetweenPoints,
                                            math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), field.doSmooth,
                                            field.roundCorners, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ),
-  										                     true, field.islandNodes or {}
+  										                     true, islandNodes
                                            )
   if not status then
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
@@ -634,6 +641,11 @@ function love.textinput( t )
       field.nTracksToSkip = field.nTracksToSkip - 1
       generate()
     end
+  end
+  if t == "i" then
+    bypassIslands = not bypassIslands
+    islandNodes = bypassIslands and field.islandNodes or {}
+    generate()
   end
   if t == "," then
     if field.minDistanceBetweenPoints > 0.25 then
