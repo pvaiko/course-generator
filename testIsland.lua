@@ -31,6 +31,7 @@ field.width = 5
 field.nHeadlandPasses = 2
 
 local expectedNumberOfWaypoints = 87
+
 setupIslands( field, 2, 6, 0.5, math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), doSmooth )
 
 assertEquals( #field.islands , 1 )
