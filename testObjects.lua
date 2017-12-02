@@ -1,7 +1,6 @@
 require( 'Object' )
 require( 'Point' )
 require( 'Vertex' )
-require( 'Polygon' )
 require( 'courseplay/course-generator/geo' )
 
 local function equals( a, b )
@@ -62,3 +61,43 @@ assert( #p == 5 )
 assert( equals( p[ 1 ].x, -1 ))
 assert( equals( p[ 5 ].x, 5 ))
 assert( equals( p[ 6 ].x, -1 ))
+--
+--------------------------------------------------------------
+-- Polygon iterator
+--------------------------------------------------------------
+local t = Polygon:new({ 1, 2, 3, 4 })
+
+r = {}
+for i, val in t:iterator() do
+  table.insert( r, i )
+end
+assert( #r == #t )
+assert( r[ 1 ] == 1, r[ 2 ] == 2, r[ 3 ] == 3, r[ 4 ] == 4 )
+
+r = {}
+for i, val in t:iterator( 1, 4, 1 ) do
+  table.insert( r, i )
+end
+assert( #r == #t )
+assert( r[ 1 ] == 1, r[ 2 ] == 2, r[ 3 ] == 3, r[ 4 ] == 4 )
+
+r = {}
+for i, val in t:iterator( 4, 1, -1 ) do
+  table.insert( r, i )
+end
+assert( #r == #t )
+assert( r[ 1 ] == 4, r[ 2 ] == 3, r[ 3 ] == 2, r[ 4 ] == 1 )
+
+r = {}
+for i, val in t:iterator( 2, 1, 1 ) do
+  table.insert( r, i )
+end
+assert( #r == #t )
+assert( r[ 1 ] == 2, r[ 2 ] == 3, r[ 3 ] == 4, r[ 4 ] == 1 )
+
+r = {}
+for i, val in t:iterator( 2, 3, -1 ) do
+  table.insert( r, i )
+end
+assert( #r == #t )
+assert( r[ 1 ] == 2, r[ 2 ] == 1, r[ 3 ] == 4, r[ 4 ] == 3 )

@@ -47,7 +47,6 @@ function love.load( arg )
     field.width = 6
     field.nHeadlandPasses = 3
   end 
-  calculatePolygonData( field.boundary )
   islandNodes = field.islandNodes
   --grid = generateGridForPolygon( field.boundary, gridSpacing ) 
   field.loadedBoundaryVertices = getVertices( field.boundary )
@@ -72,7 +71,8 @@ function love.load( arg )
                                              field.minDistanceBetweenPoints, math.rad( minSmoothingAngleDeg), 0, 
                                              field.doSmooth, false, field.turningRadius ) 
   end
-  field.boundingBox = getBoundingBox( field.boundary )
+  field.boundary = Polygon:new( field.boundary )
+  field.boundingBox = field.boundary:getBoundingBox()
   field.calculatedBoundaryVertices = getVertices( field.boundary )
   -- translate and scale everything so they are visible
   fieldWidth = field.boundingBox.maxX - field.boundingBox.minX
@@ -209,6 +209,7 @@ function drawSettings()
   -- Info on waypoint under mouse cursor
   if field.course then
     love.graphics.setColor( 255, 255, 255 )
+    --print( currentWaypointIndex )
     local cWp = field.course[ currentWaypointIndex ]
     if cWp then
       love.graphics.print(string.format("ix = %d, x = %.1f y = %.1f", currentWaypointIndex, cWp.x, cWp.y),

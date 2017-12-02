@@ -70,38 +70,6 @@ assert( pt[ 1 ] == 1 and pt[ 2 ] == 5 and pt[ 3 ] == 9 and pt[ 4 ] == 10 and pt[
 assert( pt[ 7 ] == 3 and pt[ 8 ] == 7 and pt[ 9 ] == 11 and pt[ 10 ] == 8 and pt[ 11 ] == 4 )
 assert( #pt == 11 )
 
---
---------------------------------------------------------------
--- Polygon iterator
---------------------------------------------------------------
-local t = { 1, 2, 3, 4 }
-r = {}
-for i, val in polygonIterator( t, 1, 4, 1 ) do
-  table.insert( r, i ) 
-end
-assert( #r == #t )
-assert( r[ 1 ] == 1, r[ 2 ] == 2, r[ 3 ] == 3, r[ 4 ] == 4 )
-
-r = {}
-for i, val in polygonIterator( t, 4, 1, -1 ) do
-  table.insert( r, i ) 
-end
-assert( #r == #t )
-assert( r[ 1 ] == 4, r[ 2 ] == 3, r[ 3 ] == 2, r[ 4 ] == 1 )
-
-r = {}
-for i, val in polygonIterator( t, 2, 1, 1 ) do
-  table.insert( r, i ) 
-end
-assert( #r == #t )
-assert( r[ 1 ] == 2, r[ 2 ] == 3, r[ 3 ] == 4, r[ 4 ] == 1 )
-
-r = {}
-for i, val in polygonIterator( t, 2, 3, -1 ) do
-  table.insert( r, i ) 
-end
-assert( #r == #t )
-assert( r[ 1 ] == 2, r[ 2 ] == 1, r[ 3 ] == 4, r[ 4 ] == 3 )
 
 --------------------------------------------------------------
 -- toPolar
@@ -213,8 +181,8 @@ end
 marks = {}
 lines = {}
 field = {}
-field.boundary = nonConvexField
-calculatePolygonData( field.boundary )
+field.boundary = Polygon:new( nonConvexField )
+field.boundary:calculateData()
 field.vehicle = { location = {x=-5, y=5}, heading = 0 }
 field.nHeadlandPasses = 2
 field.width = 3

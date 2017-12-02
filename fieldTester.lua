@@ -27,7 +27,9 @@ function generate()
                              nTracksToSkip, extendTracks,
                              minDistanceBetweenPoints, math.rad( minSmoothAngleDeg ), math.rad( maxSmoothAngleDeg ), doSmooth, fromInside,
                              turnRadius, math.rad( minHeadlandTurnAngleDeg ), returnToFirst, field.islandNodes)
-end
+  reverseCourse( field.course, implementWidth, turnRadius, math.rad( minHeadlandTurnAngleDeg ))
+
+  end
 
 function generateFromAllCorners()
   generate()
@@ -71,12 +73,14 @@ fieldNumber = 7
 field = savedFields[ fieldNumber ]
 print( "#####################################################################" )
 print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
-
-bb = getBoundingBox( field.boundary )
+field.boundary = Polygon:new( field.boundary )
+bb =  field.boundary:getBoundingBox()
 headlandStartLocation = { x = bb.minX, y = bb.minY }
 nHeadlandPasses = 20; generate()
 nHeadlandPasses = 0; generate()
 nHeadlandPasses = 4; generate()
+headlandClockwise = false; generate()
+
 
 
 -----------------------------------------------------------------------------
@@ -86,10 +90,11 @@ savedFields = loadSavedFields( fieldFile )
 
 fieldNumber = 9
 field = savedFields[ fieldNumber ]
+field.boundary = Polygon:new( field.boundary )
 print( "#####################################################################" )
 print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
 
-bb = getBoundingBox( field.boundary )
+bb =  field.boundary:getBoundingBox()
 headlandStartLocation = { x = bb.minX, y = bb.minY }
 nHeadlandPasses = 3; generate()
 --
@@ -100,10 +105,11 @@ savedFields = loadSavedFields( fieldFile )
 
 fieldNumber = 24
 field = savedFields[ fieldNumber ]
+field.boundary = Polygon:new( field.boundary )
 print( "#####################################################################" )
 print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
 
-bb = getBoundingBox( field.boundary )
+bb =  field.boundary:getBoundingBox()
 headlandStartLocation = { x = bb.minX, y = bb.minY }
 implementWidth = 3.5
 nHeadlandPasses = 0; generate()
@@ -117,10 +123,11 @@ savedFields = loadSavedFields( fieldFile )
 
 fieldNumber = 59
 field = savedFields[ fieldNumber ]
+field.boundary = Polygon:new( field.boundary )
 print( "#####################################################################" )
 print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
 
-bb = getBoundingBox( field.boundary )
+bb =  field.boundary:getBoundingBox()
 headlandStartLocation = { x = bb.minX, y = bb.minY }
 nHeadlandPasses = 4; generate()
 nHeadlandPasses = 0; generate()
@@ -133,10 +140,11 @@ savedFields = loadSavedFields( fieldFile )
 
 fieldNumber = 7
 field = savedFields[ fieldNumber ]
+field.boundary = Polygon:new( field.boundary )
 print( "#####################################################################" )
 print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
 
-bb = getBoundingBox( field.boundary )
+bb =  field.boundary:getBoundingBox()
 headlandStartLocation = { x = bb.minX, y = bb.minY }
 nHeadlandPasses = 20; generate()
 nHeadlandPasses = 0; generate()
