@@ -77,11 +77,20 @@ field.boundary = Polygon:new( field.boundary )
 bb =  field.boundary:getBoundingBox()
 headlandStartLocation = { x = bb.minX, y = bb.minY }
 nHeadlandPasses = 20; generate()
+assert( #field.course > 100 )
+assert( #field.headlandTracks == 12 )
+
 nHeadlandPasses = 0; generate()
+assert( #field.course > 100 )
+assert( #field.headlandTracks == 0 )
+
 nHeadlandPasses = 4; generate()
+assert( #field.course > 100 )
+assert( #field.headlandTracks == 4 )
+
 headlandClockwise = false; generate()
-
-
+assert( #field.course > 100 )
+assert( #field.headlandTracks == 4 )
 
 -----------------------------------------------------------------------------
 resetParameter()
@@ -97,6 +106,8 @@ print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
 bb =  field.boundary:getBoundingBox()
 headlandStartLocation = { x = bb.minX, y = bb.minY }
 nHeadlandPasses = 3; generate()
+assert( #field.course > 100 )
+assert( #field.headlandTracks == 3 )
 --
 -----------------------------------------------------------------------------
 resetParameter()
@@ -113,9 +124,21 @@ bb =  field.boundary:getBoundingBox()
 headlandStartLocation = { x = bb.minX, y = bb.minY }
 implementWidth = 3.5
 nHeadlandPasses = 0; generate()
+assert( #field.course > 100 )
+assert( #field.headlandTracks == 0 )
+
 nHeadlandPasses = 4; generate()
+assert( #field.course > 100 )
+assert( #field.headlandTracks == 4 )
+
 nHeadlandPasses = 12; generate()
+assert( #field.course > 100 )
+assert( #field.headlandTracks == 11 )
+
 nHeadlandPasses = 4; fromInside = true; generate()
+assert( #field.course > 100 )
+assert( #field.headlandTracks == 4 )
+
 -----------------------------------------------------------------------------
 resetParameter()
 fieldFile = "fields/FlusstalXXL.xml"
@@ -130,23 +153,15 @@ print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
 bb =  field.boundary:getBoundingBox()
 headlandStartLocation = { x = bb.minX, y = bb.minY }
 nHeadlandPasses = 4; generate()
+assert( #field.course > 100 )
+assert( #field.headlandTracks == 4 )
+
 nHeadlandPasses = 0; generate()
+assert( #field.course > 100 )
+assert( #field.headlandTracks == 0 )
+
 nHeadlandPasses = 200; generate()
+assert( #field.course > 100 )
+assert( #field.headlandTracks == 44 )
 
------------------------------------------------------------------------------
-resetParameter()
-fieldFile = "fields/coldborough.xml"
-savedFields = loadSavedFields( fieldFile )
-
-fieldNumber = 7
-field = savedFields[ fieldNumber ]
-field.boundary = Polygon:new( field.boundary )
-print( "#####################################################################" )
-print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
-
-bb =  field.boundary:getBoundingBox()
-headlandStartLocation = { x = bb.minX, y = bb.minY }
-nHeadlandPasses = 20; generate()
-nHeadlandPasses = 0; generate()
-nHeadlandPasses = 4; generate()
 
