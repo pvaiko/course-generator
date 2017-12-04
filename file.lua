@@ -42,18 +42,6 @@ function loadFieldFromSavedCourse( fileName )
 end
 
 
---- Convert our angle representation (measured from the x axis up in radians)
--- into CP's, where 0 is to the south, to our negative y axis.
---
-function toCpAngle( angle )
-  local a = math.deg( angle ) + 90
-  if a > 180 then
-    a = a - 360
-  end
-  return a
-end
-
-
 --- Write field.course to a CP saved course file
 --
 function writeCourseToFile( field, fileName )
