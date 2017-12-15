@@ -3,7 +3,11 @@
 function assertEquals( a, b )
   local epsilon = 0.00001
   if not ( a < ( b + epsilon ) and a > ( b - epsilon )) then
-    if course then printPoints( course ) end
+    if course then 
+      printPoints( course ) 
+    else
+      print( a )
+    end
     assert( false )
   end
 end

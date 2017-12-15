@@ -32,7 +32,7 @@ field.nHeadlandPasses = 2
 
 local expectedNumberOfWaypoints = 87
 
-setupIslands( field, 2, 6, 0.5, math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), doSmooth )
+setupIslands( field, 2, 6, 0.5, math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), doSmooth, field.islandNodes )
 
 assertEquals( #field.islands , 1 )
 local island = field.islands[ 1 ]
@@ -46,6 +46,9 @@ island:bypass( course )
 assertEquals( #course, expectedNumberOfWaypoints )
 assertEquals( course[ 2 ].x , -23 )
 assertEquals( course[ 45 ].y , 23 )
+assert( course[ 45 ].islandBypass)
+
+assertEquals( course[ 45 ].radius, 34 )
 assertEquals( course[ 84 ].x , 23 )
 assertFalse( courseHasRepeatingWaypoints( course ))
 

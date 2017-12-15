@@ -214,9 +214,17 @@ function drawSettings()
     if cWp then
       love.graphics.print(string.format("ix = %d, x = %.1f y = %.1f", currentWaypointIndex, cWp.x, cWp.y),
         windowWidth - 300, windowHeight - 40, 0, 1)
+      local radius = 'n/a'
+      if cWp.radius then
+        if cWp.radius > 100 then
+          radius = 'inf'
+        else
+          radius = string.format( '%.0f', cWp.radius ) 
+        end
+      end
       local pass = cWp.passNumber or 'n/a'
       local track = cWp.trackNumber or 'n/a'        
-        love.graphics.print(string.format("pass = %s, track = %s", tostring( pass), tostring( track )),
+        love.graphics.print(string.format("pass = %s, track = %s, r = %s", tostring( pass), tostring( track ), radius ),
           windowWidth - 300, windowHeight - 20, 0, 1)
 
       end
