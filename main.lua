@@ -23,6 +23,7 @@ local drawTrack = false
 local drawHelpers = true
 local showSettings = true
 local bypassIslands = true
+local headlandFirst = true
 
 -- pathfinding
 local path = {}
@@ -565,7 +566,7 @@ function generate()
                                            field.extendTracks, field.minDistanceBetweenPoints,
                                            math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), field.doSmooth,
                                            field.roundCorners, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ),
-  										                     true, islandNodes
+  										                     true, islandNodes, headlandFirst
                                            )
   if not status then
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
@@ -637,7 +638,8 @@ function love.textinput( t )
     showWidth = not showWidth
   end
   if t == "r" then
-    field.course = reverseCourse( field.course, field.width, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ))
+    headlandFirst = not headlandFirst
+    generate()
   end
   if t == "A" then
     if field.nTracksToSkip < 5 then

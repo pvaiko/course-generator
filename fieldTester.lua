@@ -18,6 +18,7 @@ function printParameters()
   print( "turnRadius = ", turnRadius )
   print( "minHeadlandTurnAngleDeg =", minHeadlandTurnAngleDeg )
   print( "#idlandNodes = ", field.islandNodes and #field.islandNodes or 0 )
+  print( "headlandFirst = ", tostring( headlandFirst ))
 end
 
 function generate()
@@ -26,9 +27,7 @@ function generate()
                              headlandStartLocation, overlapPercent, 
                              nTracksToSkip, extendTracks,
                              minDistanceBetweenPoints, math.rad( minSmoothAngleDeg ), math.rad( maxSmoothAngleDeg ), doSmooth, fromInside,
-                             turnRadius, math.rad( minHeadlandTurnAngleDeg ), returnToFirst, field.islandNodes)
-  reverseCourse( field.course, implementWidth, turnRadius, math.rad( minHeadlandTurnAngleDeg ))
-
+                             turnRadius, math.rad( minHeadlandTurnAngleDeg ), returnToFirst, field.islandNodes, headlandFirst )
   end
 
 function generateFromAllCorners()
@@ -62,6 +61,7 @@ function resetParameter()
   minHeadlandTurnAngleDeg = 60
   returnToFirst = true
   islandNodes = {}
+  headlandFirst = true
 end
 
 -----------------------------------------------------------------------------
@@ -89,6 +89,10 @@ assert( #field.course > 100 )
 assert( #field.headlandTracks == 4 )
 
 headlandClockwise = false; generate()
+assert( #field.course > 100 )
+assert( #field.headlandTracks == 4 )
+
+headlandFirst = false; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 4 )
 
