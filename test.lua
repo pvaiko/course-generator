@@ -126,6 +126,43 @@ assert( eq( avg, 1), "Got " ..  avg );
 
 
 --------------------------------------------------------------
+-- getDeltaAngle
+--------------------------------------------------------------
+avg = math.deg( getDeltaAngle( math.rad( 10 ), math.rad( 50 )))
+assert( eq( avg, 40 ), "Got " ..  avg );
+avg = math.deg( getDeltaAngle( math.rad( 50 ), math.rad( 10 )))
+assert( eq( avg, -40 ), "Got " ..  avg );
+
+avg = math.deg( getDeltaAngle( math.rad( -10 ), math.rad( -20 )))
+assert( eq( avg, -10), "Got " ..  avg );
+avg = math.deg( getDeltaAngle( math.rad( -140 ), math.rad( -150 )))
+assert( eq( avg, -10), "Got " ..  avg );
+
+avg = math.deg( getDeltaAngle( math.rad( -160 ), math.rad( -185 )))
+assert( eq( avg, -25), "Got " ..  avg );
+avg = math.deg( getDeltaAngle( math.rad( -185 ), math.rad( -160 )))
+assert( eq( avg, 25), "Got " ..  avg );
+
+avg = math.deg( getDeltaAngle( math.rad( 160 ), math.rad( 185 )))
+assert( eq( avg, 25), "Got " ..  avg );
+avg = math.deg( getDeltaAngle( math.rad( 185 ), math.rad( 160 )))
+assert( eq( avg, -25), "Got " ..  avg );
+
+avg = math.deg( getDeltaAngle( math.rad( -10 ), math.rad( 110 )))
+assert( eq( avg, 120), "Got " ..  avg );
+
+avg = math.deg( getDeltaAngle( math.rad( 110 ), math.rad( -10 )))
+assert( eq( avg, -120), "Got " ..  avg );
+
+avg = math.deg( getDeltaAngle( math.rad( -170 ), math.rad( 90 )))
+assert( eq( avg, -100), "Got " ..  avg );
+
+avg = math.deg( getDeltaAngle( math.rad( 90 ), math.rad( 180 )))
+assert( eq( avg, 90), "Got " ..  avg );
+
+
+
+--------------------------------------------------------------
 -- reverse table
 --------------------------------------------------------------
 
