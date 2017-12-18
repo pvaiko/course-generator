@@ -62,6 +62,14 @@ assertEquals( lastI, 1 )
 
 polyline:calculateData()
 
+polyline[ 3 ].turnStart = true
+polyline[ 4 ].turnEnd = true
+
+assertFalse( polyline:hasTurnWaypoint( polyline:iterator( 1, 2 )))
+assertTrue( polyline:hasTurnWaypoint())
+assertFalse( polyline:hasTurnWaypoint( polyline:iterator( 2, 1, -1 )))
+assertTrue( polyline:hasTurnWaypoint( polyline:iterator( 1, 3 )))
+assertTrue( polyline:hasTurnWaypoint( polyline:iterator( 3, 4 )))
 
 local polygon = Polygon:new( { point( 1, 0 ), point( 2, 0 ), point( 3, 0 ), point( 4, 0 ) })
 assertEquals( polygon[ 1 ].x, 1 )

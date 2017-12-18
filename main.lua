@@ -337,20 +337,22 @@ function drawPolygon( polygon )
 end
 
 function highlighPoint()
-  love.graphics.push()
-  love.graphics.setLineWidth( lineWidth * 2 )
-  love.graphics.setColor( 255, 255, 255 )
-  if field.course[ currentWaypointIndex ] then
-    love.graphics.circle( "line", field.course[ currentWaypointIndex ].x, field.course[ currentWaypointIndex ].y, 2 )
-  end
-  if field.course[ currentWaypointIndex - 1 ] then
-    love.graphics.setColor( 255, 0, 0 )
-    love.graphics.circle( "line", field.course[ currentWaypointIndex - 1 ].x, field.course[ currentWaypointIndex - 1 ].y, 2 )
-  end
-  if field.course[ currentWaypointIndex + 1 ] then
-    love.graphics.setColor( 0, 255, 0 )
-    love.graphics.circle( "line", field.course[ currentWaypointIndex + 1 ].x, field.course[ currentWaypointIndex + 1 ].y, 2 )
-  end
+	love.graphics.push()
+	love.graphics.setLineWidth( lineWidth * 2 )
+	love.graphics.setColor( 255, 255, 255 )
+	if field.course[ currentWaypointIndex ] then
+		love.graphics.circle( "line", field.course[ currentWaypointIndex ].x, field.course[ currentWaypointIndex ].y, 2 )
+	end
+	for i = 1, 20 do
+		if field.course[ currentWaypointIndex - i ] then
+			love.graphics.setColor( 255, 0, 0 )
+			love.graphics.circle( "line", field.course[ currentWaypointIndex - i ].x, field.course[ currentWaypointIndex - i ].y, 1 )
+		end
+		if field.course[ currentWaypointIndex + i ] then
+			love.graphics.setColor( 0, 255, 0 )
+			love.graphics.circle( "line", field.course[ currentWaypointIndex + i ].x, field.course[ currentWaypointIndex + i ].y, 1 )
+		end
+	end
   love.graphics.pop()
 end
 

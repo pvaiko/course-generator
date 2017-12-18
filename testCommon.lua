@@ -19,6 +19,14 @@ function assertFalse( x )
   end
 end
 
+function assertTrue( x )
+	if not x then
+		if course then printPoints( course ) end
+		assert( false )
+	end
+end
+
+
 function point( x, y )
   return { x = x, y = y, trackNumber = 1 }
 end
