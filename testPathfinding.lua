@@ -4,7 +4,6 @@ dofile( 'file.lua' )
 dofile( 'headland.lua' )
 dofile( 'center.lua' )
 dofile( 'geo.lua' )
-dofile( 'bspline.lua' )
 dofile( 'pathfinder.lua' )
 dofile( 'a-star.lua' )
 

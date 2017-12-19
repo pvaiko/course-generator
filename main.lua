@@ -58,7 +58,7 @@ function love.load( arg )
   field.extendTracks = 0
   field.minDistanceBetweenPoints = 0.5
   minSmoothingAngleDeg = 30
-  minHeadlandTurnAngleDeg = 60
+  minHeadlandTurnAngleDeg = 120
   field.doSmooth = true
   field.headlandClockwise = false
   field.roundCorners = false

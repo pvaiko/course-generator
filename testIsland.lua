@@ -41,7 +41,7 @@ assertEquals( #island.nodes , 171 )
 print( '\n*** course with multiple waypoints on the island' )
 -- x | x x x x | x x
 -- 1   2 3 4 5   6 7
-course = { point(-25, 0 ), point( -15, 0 ), point( -5, 0 ), point(5, 0 ), point( 15, 0 ), point( 25, 0 ), point( 35, 0 )}
+course = Polyline:new({ point(-25, 0 ), point( -15, 0 ), point( -5, 0 ), point(5, 0 ), point( 15, 0 ), point( 25, 0 ), point( 35, 0 )})
 island:bypass( course )
 assertEquals( #course, expectedNumberOfWaypoints )
 assertEquals( course[ 2 ].x , -23 )
@@ -55,7 +55,7 @@ assertFalse( courseHasRepeatingWaypoints( course ))
 print( '\n*** course with two waypoints on the island' )
 -- x | x x | x x
 -- 1   2 3   4 5
-course = { point( -25, 0 ), point( -15, 0 ), point( 15, 0 ), point( 25, 0 ), point( 35, 0 ) }
+course = Polyline:new({ point( -25, 0 ), point( -15, 0 ), point( 15, 0 ), point( 25, 0 ), point( 35, 0 ) })
 island:bypass( course )
 assertEquals( #course, expectedNumberOfWaypoints )
 assertEquals( course[ 2 ].x , -23 )
@@ -66,7 +66,7 @@ assertFalse( courseHasRepeatingWaypoints( course ))
 print( '\n*** course with one waypoint on the island' )
 -- x | x | x x
 -- 1   2   3 4
-course = { point( -25, 0 ), point( 0, 0 ), point( 25, 0 ), point( 35, 0 ) }
+course = Polyline:new({ point( -25, 0 ), point( 0, 0 ), point( 25, 0 ), point( 35, 0 ) })
 island:bypass( course )
 assertEquals( #course, expectedNumberOfWaypoints )
 assertEquals( course[ 2 ].x , -23 )
@@ -76,7 +76,7 @@ assertFalse( courseHasRepeatingWaypoints( course ))
 print( '\n*** course reenters the island after one waypoint on the island' )
 -- x | x | x | x x
 -- 1   2   3   4 5 
-course = { point( -25, -10 ), point( -15, -10), point( -5, -10 ), point( 10, -10 ), point( 35, -10 ) }
+course = Polyline:new({ point( -25, -10 ), point( -15, -10), point( -5, -10 ), point( 10, -10 ), point( 35, -10 ) })
 island:bypass( course )
 assertEquals( #course, 50 )
 assertEquals( course[ 2 ].x , -23 )
@@ -87,7 +87,7 @@ assertFalse( courseHasRepeatingWaypoints( course ))
 print( '\n*** course enters then exits the island, but exit also reenters' )
 -- x | x |   | x | x x
 -- 1   2       3   4  
-course = { point( -25, -10 ), point( -15, -10), point( 5, -10 ), point( 25, -10 ), point( 35, -10 ) }
+course = Polyline:new({ point( -25, -10 ), point( -15, -10), point( 5, -10 ), point( 25, -10 ), point( 35, -10 ) })
 island:bypass( course )
 -- x | x |   | x | x x
 -- 1 2 3 4   5 6 7 8 9
@@ -100,7 +100,7 @@ assertFalse( courseHasRepeatingWaypoints( course ))
 print( '\n*** course with no waypoint on the island' )
 -- x |   | x x
 -- 1 |   | 2 3
-course = { point( -25, 0 ), point( 25, 0 ), point( 35, 0 ) }
+course = Polyline:new({ point( -25, 0 ), point( 25, 0 ), point( 35, 0 ) })
 island:bypass( course )
 assertEquals( #course, expectedNumberOfWaypoints )
 assertEquals( course[ 2 ].x , -23 )
