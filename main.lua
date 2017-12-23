@@ -49,10 +49,9 @@ function love.load( arg )
     field.nHeadlandPasses = 3
   end 
   islandNodes = field.islandNodes
-  --grid = generateGridForPolygon( field.boundary, gridSpacing ) 
   field.loadedBoundaryVertices = getVertices( field.boundary )
-  field.vehicle = { location = {x=335, y=145}, heading = 180 }
-  field.vehicle = { location = {x=-33.6, y=-346.1}, heading = 180 }
+  field.vehicle = { location = {x=field.boundary[ 1 ].x, y=field.boundary[ 1 ].y} }
+
   field.overlap = 0
   field.nTracksToSkip = 0
   field.extendTracks = 0
@@ -100,6 +99,7 @@ function love.load( arg )
   love.graphics.setLineWidth( lineWidth )
   love.window.setMode( windowWidth, windowHeight )
   love.window.setTitle( "Course Generator" )
+	generate()
 end
 
 
@@ -378,6 +378,9 @@ function drawCoursePoints( course )
     elseif point.onIsland then
       love.graphics.setPointSize( ps * 1.5 )
       love.graphics.setColor( 255, 255, 255 )
+    elseif point.smoothed then
+	    love.graphics.setPointSize( ps * 1.5 )
+	    love.graphics.setColor( 0, 100, 255 )
     else
       love.graphics.setColor( 100, 100, 0 )
     end

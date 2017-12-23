@@ -30,7 +30,7 @@ local field = savedFields[ 1 ]
 field.width = 5
 field.nHeadlandPasses = 2
 
-local expectedNumberOfWaypoints = 86
+local expectedNumberOfWaypoints = 87
 
 setupIslands( field, 2, 6, 0.5, math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), doSmooth, field.islandNodes )
 
@@ -78,7 +78,7 @@ print( '\n*** course reenters the island after one waypoint on the island' )
 -- 1   2   3   4 5 
 course = Polyline:new({ point( -25, -10 ), point( -15, -10), point( -5, -10 ), point( 10, -10 ), point( 35, -10 ) })
 island:bypass( course )
-assertEquals( #course, 50 )
+assertEquals( #course, 52 )
 assertEquals( course[ 2 ].x , -23 )
 assertEquals( course[ 33 ].y , -10 )
 assertEquals( course[ 42 ].y , -17 )
@@ -91,10 +91,10 @@ course = Polyline:new({ point( -25, -10 ), point( -15, -10), point( 5, -10 ), po
 island:bypass( course )
 -- x | x |   | x | x x
 -- 1 2 3 4   5 6 7 8 9
-assertEquals( #course, 35 )
+assertEquals( #course, 36 )
 assertEquals( course[ 2 ].x , -23 )
 assertEquals( course[ 16 ].y , -23 )
-assertEquals( course[ 32 ].x , 5 )
+assertEquals( course[ 33 ].x , 5 )
 assertFalse( courseHasRepeatingWaypoints( course ))
 
 print( '\n*** course with no waypoint on the island' )
