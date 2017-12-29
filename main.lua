@@ -22,7 +22,7 @@ local drawHeadlandPath = true
 local drawTrack = false
 local drawHelpers = true
 local showSettings = true
-local bypassIslands = true
+local islandBypassMode = Island.BYPASS_MODE_MIN
 local headlandFirst = true
 
 -- pathfinding
@@ -571,7 +571,7 @@ function generate()
                                            field.extendTracks, field.minDistanceBetweenPoints,
                                            math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), field.doSmooth,
                                            field.roundCorners, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ),
-  										                     true, islandNodes, headlandFirst
+  										                     true, islandNodes, headlandFirst, islandBypassMode
                                            )
   if not status then
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
@@ -659,8 +659,11 @@ function love.textinput( t )
     end
   end
   if t == "i" then
-    bypassIslands = not bypassIslands
-    islandNodes = bypassIslands and field.islandNodes or {}
+    islandBypassMode = islandBypassMode + 1
+	  if islandBypassMode > Island.BYPASS_MODE_MAX then
+		  islandBypassMode = Island.BYPASS_MODE_MIN
+	  end
+    islandNodes = ( islandBypassMode ~= Island.BYPASS_MODE_NONE ) and field.islandNodes or {}
     generate()
   end
   if t == "," then
