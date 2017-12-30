@@ -22,12 +22,21 @@ starting corner, the old generator is invoked.
 Using the Standalone Version
 ============================
 
+Since this generator is now part of the Courseplay release, the only point of
+having a standalone version is to provide an efficient development environment 
+for the course generator outside of the game engine. This allows shorter development
+cycles and some automated tests as well.
+
+Standalone mode requires that you embed the Courseplay repository under the
+courseplay folder.
+
+The rest of this guide is outdated and startCourseGenerator.lua is not maintained 
+anymore (it still may work).
+
 ![Generated course](https://cloud.githubusercontent.com/assets/2379521/25396617/c6729b6e-29aa-11e7-92e2-6e26fe4af286.png)
 
-It is a standalone tool, that is, currently you won't be 
-able to use it from the game directly. Instead, it'll load
-a saved field or a fieldwork course previously generated in
-Courseplay, then you make some adjustments and save the
+In standalone mode it'll loada saved field or a fieldwork course previously 
+generated in Courseplay, then you can make some adjustments and save the
 customized course.
 
 Note that if you load fieldwork courses the course must have
