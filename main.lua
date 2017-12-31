@@ -24,6 +24,7 @@ local drawHelpers = true
 local showSettings = true
 local islandBypassMode = Island.BYPASS_MODE_MIN
 local headlandFirst = true
+local nHeadlandPasses = 1
 
 -- pathfinding
 local path = {}
@@ -46,7 +47,6 @@ function love.load( arg )
       end
     end
     field.width = 6
-    field.nHeadlandPasses = 3
   end 
   islandNodes = field.islandNodes
   field.loadedBoundaryVertices = getVertices( field.boundary )
@@ -194,7 +194,7 @@ function drawSettings()
     roundCorners = "sharp"
   end
   love.graphics.print( string.format( "HEADLAND width: %.1f m, overlap %d%% number of passes: %d, direction %s, corners: %s, radius: %.1f",
-           field.width, field.overlap, field.nHeadlandPasses, headlandDirection, roundCorners, field.turningRadius ), 10, 30, 0, 1 )
+           field.width, field.overlap, nHeadlandPasses, headlandDirection, roundCorners, field.turningRadius ), 10, 30, 0, 1 )
   love.graphics.print( string.format( "CENTER skipping %d tracks, extend %d m", 
            field.nTracksToSkip, field.extendTracks ), 10, 50, 0, 1 )
            
@@ -506,7 +506,7 @@ end
 
 function drawIslands( points )
 	love.graphics.setLineWidth( lineWidth )
-	for i, point in ipairs( points ) do
+	for i, point in ipairs( {} ) do
 		local len = 0.4
 		love.graphics.setColor( 000, 100, 200 )
 		if point.visited then len = 1 end
@@ -565,7 +565,7 @@ function generate()
   lines = {}
   helperPolygon = {}
   status = xpcall( generateCourseForField, errorHandler, 
-                                           field, field.width, field.nHeadlandPasses, 
+                                           field, field.width, nHeadlandPasses, 
                                            field.headlandClockwise, field.vehicle.location,
                                            field.overlap, field.nTracksToSkip,
                                            field.extendTracks, field.minDistanceBetweenPoints,
@@ -614,12 +614,12 @@ function love.textinput( t )
     generate()
   end
   if t == "P" then
-    field.nHeadlandPasses = field.nHeadlandPasses + 1
+    nHeadlandPasses = nHeadlandPasses + 1
     generate()
   end
   if t == "p" then
-    if field.nHeadlandPasses > 0 then
-      field.nHeadlandPasses = field.nHeadlandPasses - 1
+    if nHeadlandPasses > 0 then
+      nHeadlandPasses = nHeadlandPasses - 1
       generate()
     end
   end
