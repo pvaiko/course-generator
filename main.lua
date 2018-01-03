@@ -506,7 +506,7 @@ end
 
 function drawIslands( points )
 	love.graphics.setLineWidth( lineWidth )
-	for i, point in ipairs( {} ) do
+	for i, point in ipairs(field.islandNodes ) do
 		local len = 0.4
 		love.graphics.setColor( 000, 100, 200 )
 		if point.visited then len = 1 end
