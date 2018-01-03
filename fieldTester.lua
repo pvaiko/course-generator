@@ -40,7 +40,7 @@ function generateFromAllCorners()
   generate()
 end
 
-function courseGenerator.debug( text )
+function courseGenerator.debug2( text )
   -- disable debug outputs
 end
 
