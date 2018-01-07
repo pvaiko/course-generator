@@ -20,6 +20,7 @@ local drawConnectingTracks = true
 local drawCourse = true
 local drawHeadlandPath = true 
 local drawTrack = false
+local drawBlocks = true
 local drawHelpers = true
 local showSettings = true
 local islandBypassMode = Island.BYPASS_MODE_MIN
@@ -315,6 +316,27 @@ function drawBoundingBox( bb )
   love.graphics.line( bb.minX, bb.minY, bb.maxX, bb.minY, bb.maxX, bb.maxY, bb.minX, bb.maxY, bb.minX, bb.minY )
 end
 
+function drawFieldBlocks( blocks )
+	if blocks then
+		love.graphics.push()	
+		local colorStep = 256 / #blocks
+		local red, green = 0, 255
+		for i, b in ipairs( blocks ) do
+			love.graphics.setColor( red, green, 0, 40 )
+			love.graphics.polygon( 'fill', getVertices( b.polygon ))
+			local bb = b.polygon:getBoundingBox()
+			love.graphics.push()
+			love.graphics.scale( 1, -1 )
+			love.graphics.setColor( red, green, 0, 170 )
+			love.graphics.print( i, ( bb.minX + bb.maxX ) / 2, - ( bb.minY + bb.maxY ) / 2 )
+			love.graphics.pop()
+			red = red + colorStep
+			green = green - colorStep
+		end
+		love.graphics.pop()
+	end
+end
+
 function drawHeadlandTracks()
   for i, t in ipairs( field.headlandTracks ) do
     love.graphics.setColor( 255, 255, 0 )
@@ -336,7 +358,7 @@ function drawPolygon( polygon )
   end
 end
 
-function highlighPoint()
+function highlightPoint()
 	love.graphics.push()
 	love.graphics.setLineWidth( lineWidth * 2 )
 	love.graphics.setColor( 255, 255, 255 )
@@ -357,7 +379,10 @@ function highlighPoint()
 end
 
 function drawCoursePoints( course )
-  highlighPoint()
+  highlightPoint()
+	-- course starts green and turns red towards the end
+	local colorStep = 256 / #course
+	local red, green = 0, 255
   for i, point in ipairs( course ) do
     local ps = love.graphics.getPointSize()
     if point.turnStart then
@@ -378,12 +403,14 @@ function drawCoursePoints( course )
     elseif point.onIsland then
       love.graphics.setPointSize( ps * 1.5 )
       love.graphics.setColor( 255, 255, 255 )
-    elseif point.smoothed then
+    elseif point.smoothed and false then
 	    love.graphics.setPointSize( ps * 1.5 )
 	    love.graphics.setColor( 0, 100, 255 )
     else
-      love.graphics.setColor( 100, 100, 0 )
+      love.graphics.setColor( red, green, 0 )
     end
+	  red = red + colorStep
+	  green = green - colorStep
     love.graphics.points( point.x, point.y )
     love.graphics.setPointSize( ps )
     if drawHelpers then
@@ -492,6 +519,9 @@ function drawField( field )
     drawPathFindingHelpers()
 	  drawIslands( field.islandNodes )  
   end
+	if drawBlocks then
+		drawFieldBlocks( field.blocks )
+	end
   if vectors then
     for i, vec in ipairs( vectors ) do
       love.graphics.circle( "line", vec[ 1 ].x, -vec[ 1 ].y , 3 )
@@ -718,6 +748,9 @@ function love.textinput( t )
   if t == "6" then
     showSettings = not showSettings
   end
+	if t == "7" then
+		drawBlocks= not drawBlocks
+	end
   if t == "=" then
     love.wheelmoved( 0, 2 )
   end

@@ -2,10 +2,14 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="515c9c6a-5ee4-47c9-b655-ab198105a3b2" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/courseplay/course-generator/Genetic.lua" />
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/testGenetic.lua" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/course-generator/Genetic.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/Genetic.lua" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/course-generator/center.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/course-generator/track.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/track.lua" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/include.lua" afterPath="$PROJECT_DIR$/include.lua" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.lua" afterPath="$PROJECT_DIR$/main.lua" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testGenetic.lua" afterPath="$PROJECT_DIR$/testGenetic.lua" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -20,7 +24,7 @@
       <file leaf-file-name="Island.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Island.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="756">
+            <state relative-caret-position="2975">
               <caret line="175" column="8" lean-forward="false" selection-start-line="175" selection-start-column="8" selection-end-line="175" selection-end-column="8" />
               <folding>
                 <marker date="1515009223875" expanded="true" signature="248:420" ph="..." />
@@ -29,21 +33,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="testCommon.lua" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/testCommon.lua">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="102">
-              <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
       <file leaf-file-name="Genetic.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Genetic.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="276">
-              <caret line="83" column="0" lean-forward="false" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
+            <state relative-caret-position="476">
+              <caret line="227" column="74" lean-forward="false" selection-start-line="227" selection-start-column="74" selection-end-line="227" selection-end-column="74" />
               <folding />
             </state>
           </provider>
@@ -52,42 +46,28 @@
       <file leaf-file-name="courseGenerator.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="399">
-              <caret line="28" column="20" lean-forward="false" selection-start-line="28" selection-start-column="20" selection-end-line="28" selection-end-column="20" />
-              <folding>
-                <marker date="1515009223887" expanded="true" signature="935:1095" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="991:994" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1074:1076" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1145:1276" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1200:1203" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1255:1257" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1328:1461" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1383:1386" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1440:1442" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1509:1511" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1576:1577" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1625:1627" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1664:1665" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1713:1715" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1752:1753" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1945:2032" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="1998:2003" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="2014:2017" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="2165:2444" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="2363:2366" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="2413:2415" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="2419:2422" ph="..." />
-                <marker date="1515009223887" expanded="true" signature="2438:2440" ph="..." />
-              </folding>
+            <state relative-caret-position="459">
+              <caret line="27" column="25" lean-forward="false" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="25" />
+              <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="testGenetic.lua" pinned="false" current-in-tab="false">
+      <file leaf-file-name="testGenetic.lua" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/testGenetic.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="513">
-              <caret line="42" column="0" lean-forward="false" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
+            <state relative-caret-position="714">
+              <caret line="110" column="16" lean-forward="false" selection-start-line="110" selection-start-column="16" selection-end-line="110" selection-end-column="16" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="include.lua" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/include.lua">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="3" column="46" lean-forward="false" selection-start-line="3" selection-start-column="46" selection-end-line="3" selection-end-column="46" />
               <folding />
             </state>
           </provider>
@@ -96,29 +76,31 @@
       <file leaf-file-name="main.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="203">
-              <caret line="299" column="27" lean-forward="false" selection-start-line="299" selection-start-column="13" selection-end-line="299" selection-end-column="27" />
+            <state relative-caret-position="5525">
+              <caret line="325" column="62" lean-forward="false" selection-start-line="325" selection-start-column="62" selection-end-line="325" selection-end-column="62" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="2533.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/fields/2533.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="577">
-              <caret line="937" column="0" lean-forward="false" selection-start-line="937" selection-start-column="0" selection-end-line="937" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="track.lua" pinned="false" current-in-tab="true">
+      <file leaf-file-name="track.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/track.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="241">
-              <caret line="316" column="48" lean-forward="true" selection-start-line="316" selection-start-column="48" selection-end-line="316" selection-end-column="48" />
+            <state relative-caret-position="2618">
+              <caret line="154" column="66" lean-forward="false" selection-start-line="154" selection-start-column="66" selection-end-line="154" selection-end-column="66" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="center.lua" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="395">
+              <caret line="909" column="38" lean-forward="false" selection-start-line="909" selection-start-column="38" selection-end-line="909" selection-end-column="38" />
+              <folding>
+                <marker date="1515310479561" expanded="true" signature="30383:30384" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -126,40 +108,9 @@
       <file leaf-file-name="headland.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/headland.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="133">
-              <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-              <folding>
-                <marker date="1515009223900" expanded="true" signature="2210:2556" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="2210:3805" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="2662:3383" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="2703:2704" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="2721:2722" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="2968:3052" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="3056:3377" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="3272:3369" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="3432:3437" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="3489:3492" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="4379:8377" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="5037:7977" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="5177:5693" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="5697:6213" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="6836:7971" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="7001:7127" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="7170:7792" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="7192:7203" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="7294:7303" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="7352:7782" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="7575:7770" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="7819:7828" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="7833:7840" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="7844:7853" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="7956:7963" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="8002:8328" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="8332:8337" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="8370:8373" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="8628:8791" ph="..." />
-                <marker date="1515009223900" expanded="true" signature="8682:8787" ph="..." />
-              </folding>
+            <state relative-caret-position="153">
+              <caret line="9" column="26" lean-forward="true" selection-start-line="9" selection-start-column="26" selection-end-line="9" selection-end-column="26" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -167,16 +118,9 @@
       <file leaf-file-name="geo.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/geo.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="245">
-              <caret line="101" column="18" lean-forward="false" selection-start-line="101" selection-start-column="18" selection-end-line="101" selection-end-column="18" />
-              <folding>
-                <marker date="1515009223893" expanded="true" signature="25865:25866" ph="..." />
-                <marker date="1515009223893" expanded="true" signature="26077:26242" ph="..." />
-                <marker date="1515009223893" expanded="true" signature="26132:26170" ph="..." />
-                <marker date="1515009223893" expanded="true" signature="26204:26207" ph="..." />
-                <marker date="1515009223893" expanded="true" signature="26211:26216" ph="..." />
-                <marker date="1515009223893" expanded="true" signature="26235:26238" ph="..." />
-              </folding>
+            <state relative-caret-position="350">
+              <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -190,38 +134,41 @@
       </list>
     </option>
   </component>
+  <component name="FindBugs-IDEA-Workspace">
+    <toolWindowEditorPreview>false</toolWindowEditorPreview>
+  </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>findinters</find>
-      <find>islands</find>
-      <find>bigIslands</find>
-      <find>angle=96</find>
-      <find>96</find>
-      <find>tracklen</find>
-      <find>nBlocks=0</find>
-      <find>isconn</find>
-      <find>0x077826b0</find>
-      <find>bottomLeftIntersection</find>
-      <find>print</find>
-      <find>field.islands</find>
-      <find>splitCenterIntoBlocks</find>
-      <find>nHeadlandPasses</find>
-      <find>180</find>
-      <find>angle</find>
-      <find>odd</find>
-      <find>randomseed</find>
-      <find>copypoint</find>
-      <find>Polyline</find>
-      <find>PermutationEncodedChromosome</find>
-      <find>ChildOf</find>
       <find>island</find>
       <find>drawIslands</find>
       <find>pos=&quot;6</find>
       <find>headlandTracks</find>
       <find>lowpass</find>
       <find>maxDistanceFromField</find>
-      <find>newEdge</find>
+      <find>Fittness</find>
       <find>area</find>
+      <find>totalFitness</find>
+      <find>crossover</find>
+      <find>copy</find>
+      <find>4</find>
+      <find>100</find>
+      <find>populationSize</find>
+      <find>newEdge</find>
+      <find>field.course</find>
+      <find>highlighPoint</find>
+      <find>blocks</find>
+      <find>rotate</find>
+      <find>closebl</find>
+      <find>green</find>
+      <find>red + colorStep</find>
+      <find>colorStep</find>
+      <find>include</find>
+      <find>BLOCK_CORNER</find>
+      <find>entryPoint</find>
+      <find>block.polygon</find>
+      <find>findBlockSequence</find>
+      <find>distance</find>
+      <find>findblock</find>
     </findStrings>
     <replaceStrings>
       <replace>,</replace>
@@ -243,14 +190,17 @@
       <replace>islandBypassMode</replace>
       <replace>Chromosome</replace>
       <replace>child</replace>
-      <replace>nHeadlandPasses</replace>
       <replace>newClass</replace>
+      <replace>nHeadlandPasses</replace>
+      <replace>populationSize</replace>
+      <replace>courseGenerator.BLOCK_CORNER</replace>
+      <replace>entryCorner</replace>
     </replaceStrings>
   </component>
   <component name="Git.Settings">
     <option name="UPDATE_TYPE" value="REBASE" />
     <option name="ROOT_SYNC" value="DONT_SYNC" />
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/courseplay" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
         <entry key="$PROJECT_DIR$/courseplay" value="2533" />
@@ -281,18 +231,18 @@
         <option value="$PROJECT_DIR$/courseplay/course-generator/pathfinder.lua" />
         <option value="$PROJECT_DIR$/testFields.xml" />
         <option value="$PROJECT_DIR$/fieldTester.lua" />
-        <option value="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/genetic.lua" />
-        <option value="$PROJECT_DIR$/include.lua" />
-        <option value="$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua" />
-        <option value="$PROJECT_DIR$/testGenetic.lua" />
-        <option value="$PROJECT_DIR$/courseplay/course-generator/Genetic.lua" />
-        <option value="$PROJECT_DIR$/main.lua" />
         <option value="$PROJECT_DIR$/fields/2533.xml" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/geo.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/headland.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/Island.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/track.lua" />
+        <option value="$PROJECT_DIR$/main.lua" />
+        <option value="$PROJECT_DIR$/include.lua" />
+        <option value="$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua" />
+        <option value="$PROJECT_DIR$/courseplay/course-generator/Genetic.lua" />
+        <option value="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
+        <option value="$PROJECT_DIR$/testGenetic.lua" />
       </list>
     </option>
   </component>
@@ -553,29 +503,8 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="PackagesPane" />
-      <pane id="Scope">
-        <subPane subId="Project Files">
-          <expand>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="course-generator" type="cbb8eebc:String" user="course-generator" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="course-generator" type="cbb8eebc:String" user="course-generator" />
-              <item name="courseplay" type="cbb8eebc:String" user="courseplay" />
-            </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="course-generator" type="cbb8eebc:String" user="course-generator" />
-              <item name="courseplay" type="cbb8eebc:String" user="courseplay" />
-              <item name="course-generator" type="cbb8eebc:String" user="course-generator" />
-            </path>
-          </expand>
-          <select />
-        </subPane>
-      </pane>
+      <pane id="NBKnowledgePane" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -603,8 +532,29 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scratches" />
-      <pane id="NBKnowledgePane" />
+      <pane id="PackagesPane" />
+      <pane id="Scope">
+        <subPane subId="Project Files">
+          <expand>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="course-generator" type="cbb8eebc:String" user="course-generator" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="course-generator" type="cbb8eebc:String" user="course-generator" />
+              <item name="courseplay" type="cbb8eebc:String" user="courseplay" />
+            </path>
+            <path>
+              <item name="Root" type="cbb8eebc:String" user="Root" />
+              <item name="course-generator" type="cbb8eebc:String" user="course-generator" />
+              <item name="courseplay" type="cbb8eebc:String" user="courseplay" />
+              <item name="course-generator" type="cbb8eebc:String" user="course-generator" />
+            </path>
+          </expand>
+          <select />
+        </subPane>
+      </pane>
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -613,123 +563,6 @@
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
-  </component>
-  <component name="RestoreUpdateTree" date="Moments ago" ActionInfo="_Update">
-    <UpdatedFiles>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Updated from server" />
-        <option name="myStatusName" value="Changed on server" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="CHANGED_ON_SERVER" />
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Updated" />
-          <option name="myStatusName" value="Changed" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="UPDATED" />
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/courseplay/base.lua</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/courseplay/hud.lua</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/courseplay/modDesc.xml</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/courseplay/mode2.lua</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/courseplay/translations/translation_cz.xml</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/courseplay/translations/translation_es.xml</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/courseplay/translations/translation_fr.xml</PATH>
-          <PATH vcs="Git" revision="">$PROJECT_DIR$/courseplay/translations/translation_it.xml</PATH>
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Created" />
-          <option name="myStatusName" value="Created" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="CREATED" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Deleted" />
-          <option name="myStatusName" value="Deleted" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="true" />
-          <option name="myId" value="REMOVED_FROM_REPOSITORY" />
-        </FILE-GROUP>
-        <FILE-GROUP>
-          <option name="myUpdateName" value="Restored" />
-          <option name="myStatusName" value="Will be restored" />
-          <option name="mySupportsDeletion" value="false" />
-          <option name="myCanBeAbsent" value="false" />
-          <option name="myId" value="RESTORED" />
-        </FILE-GROUP>
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Modified" />
-        <option name="myStatusName" value="Modified" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MODIFIED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Skipped" />
-        <option name="myStatusName" value="Skipped" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SKIPPED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with conflicts" />
-        <option name="myStatusName" value="Will be merged with conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_CONFLICTS" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with tree conflicts" />
-        <option name="myStatusName" value="Merged with tree conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_TREE_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged with property conflicts" />
-        <option name="myStatusName" value="Will be merged with property conflicts" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED_WITH_PROPERTY_CONFLICT" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Merged" />
-        <option name="myStatusName" value="Will be merged" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="MERGED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Not in repository" />
-        <option name="myStatusName" value="Not in repository" />
-        <option name="mySupportsDeletion" value="true" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="UNKNOWN" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally added" />
-        <option name="myStatusName" value="Locally added" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_ADDED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Locally removed" />
-        <option name="myStatusName" value="Locally removed" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="LOCALLY_REMOVED" />
-      </FILE-GROUP>
-      <FILE-GROUP>
-        <option name="myUpdateName" value="Switched" />
-        <option name="myStatusName" value="Switched" />
-        <option name="mySupportsDeletion" value="false" />
-        <option name="myCanBeAbsent" value="false" />
-        <option name="myId" value="SWITCHED" />
-      </FILE-GROUP>
-    </UpdatedFiles>
   </component>
   <component name="RunDashboard">
     <option name="ruleStates">
@@ -743,7 +576,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Lua Application.2533">
+  <component name="RunManager" selected="Lua Application.testGenetic.lua">
     <configuration name="2533" type="lua.app" factoryName="Lua Application">
       <option name="program" value="D:\Projects\Private\FS17\course-generator\LOVE\love.exe" />
       <option name="file" value="" />
@@ -1156,15 +989,15 @@
       <item index="4" class="java.lang.String" itemvalue="Lua Application.Rade 18( (Island)" />
       <item index="5" class="java.lang.String" itemvalue="Lua Application.Rade 20 (Island)" />
       <item index="6" class="java.lang.String" itemvalue="Lua Application.Rade 22 (Island)" />
-      <item index="7" class="java.lang.String" itemvalue="Batch.fieldTester" />
-      <item index="8" class="java.lang.String" itemvalue="Batch.Lua console" />
-      <item index="9" class="java.lang.String" itemvalue="Batch.testPolygon" />
-      <item index="10" class="java.lang.String" itemvalue="Batch.testIsland" />
-      <item index="11" class="java.lang.String" itemvalue="Lua Application.2533" />
-      <item index="12" class="java.lang.String" itemvalue="Lua Application.Coldborough 7" />
-      <item index="13" class="java.lang.String" itemvalue="Lua Application.Coldborough 8" />
-      <item index="14" class="java.lang.String" itemvalue="Lua Application.Coldborough 9" />
-      <item index="15" class="java.lang.String" itemvalue="Lua Application.Loesshuegelland 13" />
+      <item index="7" class="java.lang.String" itemvalue="Lua Application.Coldborough 2" />
+      <item index="8" class="java.lang.String" itemvalue="Batch.fieldTester" />
+      <item index="9" class="java.lang.String" itemvalue="Batch.Lua console" />
+      <item index="10" class="java.lang.String" itemvalue="Batch.testPolygon" />
+      <item index="11" class="java.lang.String" itemvalue="Batch.testIsland" />
+      <item index="12" class="java.lang.String" itemvalue="Lua Application.2533" />
+      <item index="13" class="java.lang.String" itemvalue="Lua Application.Coldborough 7" />
+      <item index="14" class="java.lang.String" itemvalue="Lua Application.Coldborough 8" />
+      <item index="15" class="java.lang.String" itemvalue="Lua Application.Coldborough 9" />
       <item index="16" class="java.lang.String" itemvalue="Lua Application.Loesshuegelland 26" />
       <item index="17" class="java.lang.String" itemvalue="Lua Application.Testfield 2" />
       <item index="18" class="java.lang.String" itemvalue="Lua Application.Testfield 1" />
@@ -1360,7 +1193,14 @@
       <option name="project" value="LOCAL" />
       <updated>1515008805377</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Adding some genetic engineering...">
+      <created>1515009297843</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1515009297843</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1374,10 +1214,11 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="56" y="-8" width="1872" height="1096" extended-state="6" />
+    <editor active="true" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="FindBugs-IDEA" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912722" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5184017" sideWeight="0.20220995" order="15" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3154574" sideWeight="0.29558012" order="15" side_tool="true" content_ui="tabs" />
       <window_info id="JRebel Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995737" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="JRebel Executor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
@@ -1387,23 +1228,23 @@
       <window_info id="News Feed" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2498621" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2628812" sideWeight="0.71270716" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3154574" sideWeight="0.7044199" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Notes" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32917964" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="GitLabIntegration" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="LuaCheck" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912722" sideWeight="0.5" order="16" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3447514" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.5184017" sideWeight="0.79779005" order="18" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28121546" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5184017" sideWeight="0.79779005" order="18" side_tool="false" content_ui="tabs" />
       <window_info id="CheckStyle" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32963988" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Jenkins" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10165746" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10165746" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Reviews" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="JRebel" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25236592" sideWeight="0.48729283" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2513144" sideWeight="0.48287293" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Learn" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3294702" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="true" content_ui="tabs" />
       <window_info id="Debug with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="14" side_tool="false" content_ui="tabs" />
@@ -1510,31 +1351,27 @@
     <MESSAGE value="Bigger islands step 2&#10;&#10;Now we split the field into blocks correctly but can't always&#10;connect all the blocks." />
     <MESSAGE value="Bigger islands step 3&#10;&#10;Playing with genetic algorithms to find optimum sequence of blocks" />
     <MESSAGE value="Fix for #2533, ignore very small islands." />
-    <option name="LAST_COMMIT_MESSAGE" value="Fix for #2533, ignore very small islands." />
+    <MESSAGE value="Adding some genetic engineering..." />
+    <option name="LAST_COMMIT_MESSAGE" value="Adding some genetic engineering..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="lua-line">
           <url>file://$PROJECT_DIR$/main.lua</url>
-          <line>62</line>
+          <line>63</line>
           <option name="timeStamp" value="4" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="lua-line">
           <url>file://$PROJECT_DIR$/courseplay/course-generator/Genetic.lua</url>
-          <line>113</line>
-          <option name="timeStamp" value="18" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="lua-line">
-          <url>file://$PROJECT_DIR$/courseplay/course-generator/Genetic.lua</url>
-          <line>100</line>
-          <option name="timeStamp" value="19" />
+          <line>159</line>
+          <option name="timeStamp" value="49" />
         </line-breakpoint>
       </breakpoints>
       <breakpoints-dialog>
         <breakpoints-dialog />
       </breakpoints-dialog>
-      <option name="time" value="20" />
+      <option name="time" value="50" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1547,14 +1384,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="546">
           <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-          <folding>
-            <marker date="1515009223893" expanded="true" signature="25865:25866" ph="..." />
-            <marker date="1515009223893" expanded="true" signature="26077:26242" ph="..." />
-            <marker date="1515009223893" expanded="true" signature="26132:26170" ph="..." />
-            <marker date="1515009223893" expanded="true" signature="26204:26207" ph="..." />
-            <marker date="1515009223893" expanded="true" signature="26211:26216" ph="..." />
-            <marker date="1515009223893" expanded="true" signature="26235:26238" ph="..." />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1772,7 +1602,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="676">
           <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1802,97 +1631,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-147">
-          <caret line="369" column="14" lean-forward="false" selection-start-line="369" selection-start-column="14" selection-end-line="369" selection-end-column="14" />
-          <folding>
-            <marker date="1515009223881" expanded="true" signature="28754:28755" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="28982:29262" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="29039:29045" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="29054:29057" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="29218:29223" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="29255:29258" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="29530:29755" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="29707:29713" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="29725:29728" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="29732:29737" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="29748:29751" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="29821:29860" ph="{ ... }" />
-            <marker date="1515009223881" expanded="true" signature="30147:31490" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="30378:30457" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="30411:30451" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="30556:30557" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="30563:30564" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="30994:31486" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31058:31480" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31096:31281" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31161:31172" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31205:31214" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31218:31230" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31262:31271" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31285:31472" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31352:31363" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31395:31404" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31408:31420" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31453:31462" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31718:32314" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31752:32310" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31908:31915" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="31947:31952" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="32054:32061" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="32093:32099" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="32260:32267" ph="..." />
-            <marker date="1515009223881" expanded="true" signature="32299:32304" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/testIsland.lua">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="133">
           <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="9" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/include.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="170">
-          <caret line="10" column="39" lean-forward="false" selection-start-line="10" selection-start-column="39" selection-end-line="10" selection-end-column="39" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="399">
-          <caret line="28" column="20" lean-forward="false" selection-start-line="28" selection-start-column="20" selection-end-line="28" selection-end-column="20" />
-          <folding>
-            <marker date="1515009223887" expanded="true" signature="935:1095" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="991:994" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1074:1076" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1145:1276" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1200:1203" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1255:1257" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1328:1461" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1383:1386" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1440:1442" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1509:1511" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1576:1577" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1625:1627" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1664:1665" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1713:1715" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1752:1753" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1945:2032" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="1998:2003" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="2014:2017" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="2165:2444" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="2363:2366" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="2413:2415" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="2419:2422" ph="..." />
-            <marker date="1515009223887" expanded="true" signature="2438:2440" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1904,95 +1646,16 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/testGenetic.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="513">
-          <caret line="42" column="0" lean-forward="false" selection-start-line="42" selection-start-column="0" selection-end-line="42" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Genetic.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="276">
-          <caret line="83" column="0" lean-forward="false" selection-start-line="83" selection-start-column="0" selection-end-line="83" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/fields/2533.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="577">
           <caret line="937" column="0" lean-forward="false" selection-start-line="937" selection-start-column="0" selection-end-line="937" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="203">
-          <caret line="299" column="27" lean-forward="false" selection-start-line="299" selection-start-column="13" selection-end-line="299" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/geo.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="245">
-          <caret line="101" column="18" lean-forward="false" selection-start-line="101" selection-start-column="18" selection-end-line="101" selection-end-column="18" />
-          <folding>
-            <marker date="1515009223893" expanded="true" signature="25865:25866" ph="..." />
-            <marker date="1515009223893" expanded="true" signature="26077:26242" ph="..." />
-            <marker date="1515009223893" expanded="true" signature="26132:26170" ph="..." />
-            <marker date="1515009223893" expanded="true" signature="26204:26207" ph="..." />
-            <marker date="1515009223893" expanded="true" signature="26211:26216" ph="..." />
-            <marker date="1515009223893" expanded="true" signature="26235:26238" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/headland.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="133">
-          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
-          <folding>
-            <marker date="1515009223900" expanded="true" signature="2210:2556" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="2210:3805" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="2662:3383" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="2703:2704" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="2721:2722" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="2968:3052" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="3056:3377" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="3272:3369" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="3432:3437" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="3489:3492" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="4379:8377" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="5037:7977" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="5177:5693" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="5697:6213" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="6836:7971" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="7001:7127" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="7170:7792" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="7192:7203" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="7294:7303" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="7352:7782" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="7575:7770" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="7819:7828" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="7833:7840" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="7844:7853" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="7956:7963" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="8002:8328" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="8332:8337" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="8370:8373" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="8628:8791" ph="..." />
-            <marker date="1515009223900" expanded="true" signature="8682:8787" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Island.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="756">
+        <state relative-caret-position="2975">
           <caret line="175" column="8" lean-forward="false" selection-start-line="175" selection-start-column="8" selection-end-line="175" selection-end-column="8" />
           <folding>
             <marker date="1515009223875" expanded="true" signature="248:420" ph="..." />
@@ -2000,10 +1663,76 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/headland.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="153">
+          <caret line="9" column="26" lean-forward="true" selection-start-line="9" selection-start-column="26" selection-end-line="9" selection-end-column="26" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/course-generator/track.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="241">
-          <caret line="316" column="48" lean-forward="true" selection-start-line="316" selection-start-column="48" selection-end-line="316" selection-end-column="48" />
+        <state relative-caret-position="2618">
+          <caret line="154" column="66" lean-forward="false" selection-start-line="154" selection-start-column="66" selection-end-line="154" selection-end-column="66" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="5525">
+          <caret line="325" column="62" lean-forward="false" selection-start-line="325" selection-start-column="62" selection-end-line="325" selection-end-column="62" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/include.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="46" lean-forward="false" selection-start-line="3" selection-start-column="46" selection-end-line="3" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/geo.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="350">
+          <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="459">
+          <caret line="27" column="25" lean-forward="false" selection-start-line="27" selection-start-column="25" selection-end-line="27" selection-end-column="25" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Genetic.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="476">
+          <caret line="227" column="74" lean-forward="false" selection-start-line="227" selection-start-column="74" selection-end-line="227" selection-end-column="74" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="395">
+          <caret line="909" column="38" lean-forward="false" selection-start-line="909" selection-start-column="38" selection-end-line="909" selection-end-column="38" />
+          <folding>
+            <marker date="1515310479561" expanded="true" signature="30383:30384" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/testGenetic.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="714">
+          <caret line="110" column="16" lean-forward="false" selection-start-line="110" selection-start-column="16" selection-end-line="110" selection-end-column="16" />
           <folding />
         </state>
       </provider>
