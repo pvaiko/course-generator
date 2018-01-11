@@ -21,6 +21,7 @@ local drawCourse = true
 local drawHeadlandPath = true 
 local drawTrack = false
 local drawBlocks = true
+local drawGrid = false
 local drawHelpers = true
 local showSettings = true
 local islandBypassMode = Island.BYPASS_MODE_MIN
@@ -141,7 +142,7 @@ function drawPathFindingHelpers()
     love.graphics.setColor( 220, 100, 0 )
     love.graphics.points( getVertices( reversePath.course ))
   end
-  if grid then 
+  if grid and drawGrid then 
     love.graphics.setLineWidth( lineWidth )
     for i, point in ipairs( grid ) do
       local len = 0.3
@@ -751,12 +752,21 @@ function love.textinput( t )
 	if t == "7" then
 		drawBlocks= not drawBlocks
 	end
+	if t == "8" then
+		drawGrid= not drawGrid
+	end
   if t == "=" then
-    love.wheelmoved( 0, 2 )
+	  currentWaypointIndex = currentWaypointIndex + 1
+	  if currentWaypointIndex > #field.course then
+		  currentWaypointIndex = 1 
+	  end
   end
-  if t == "-" then
-    love.wheelmoved( 0, -2 )
-  end
+	if t == "-" then
+		currentWaypointIndex = currentWaypointIndex - 1
+		if currentWaypointIndex < 1 then
+			currentWaypointIndex = #field.course
+		end
+	end
 end
 
 function love.wheelmoved( dx, dy )

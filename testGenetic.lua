@@ -104,9 +104,14 @@ math.randomseed( 1 )
 c = FieldBlockChromosome:new( 4 )
 c:fillWithRandomValues()
 print( c )
-assert( tostring( c ) == '3-1-4-2-/2-2-4-4-' )
+assert( tostring( c ) == '3(4)-1(2)-4(4)-2(2)-' )
 
-c = findBlockSequence(blocks)
+_, c = findBlockSequence(blocks)
+print( 'best', c )
+assert( tostring( c ) == '3-1-4-2-7-6-5-/3-1-1-4-3-1-1- f = 555.0, d = 18.0 m')
 
-assert( tostring( c ) == '2-7-6-5-3-4-1-/2-1-4-4-3-1-1-')
+local oneBlock = { blocks[ 1 ]}
+_, c = findBlockSequence( oneBlock )
+
+
 print( "Done.")
