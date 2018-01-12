@@ -8,7 +8,6 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/course-generator/Genetic.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/Genetic.lua" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/course-generator/center.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testGenetic.lua" afterPath="$PROJECT_DIR$/testGenetic.lua" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -35,8 +34,8 @@
       <file leaf-file-name="Genetic.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Genetic.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="137" column="20" lean-forward="false" selection-start-line="137" selection-start-column="20" selection-end-line="137" selection-end-column="20" />
+            <state relative-caret-position="210">
+              <caret line="232" column="4" lean-forward="true" selection-start-line="232" selection-start-column="4" selection-end-line="232" selection-end-column="4" />
               <folding />
             </state>
           </provider>
@@ -47,16 +46,6 @@
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="-421">
               <caret line="71" column="2" lean-forward="false" selection-start-line="71" selection-start-column="2" selection-end-line="71" selection-end-column="2" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="fieldTester.lua" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/fieldTester.lua">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="264">
-              <caret line="19" column="68" lean-forward="false" selection-start-line="19" selection-start-column="57" selection-end-line="19" selection-end-column="68" />
               <folding />
             </state>
           </provider>
@@ -105,8 +94,8 @@
       <file leaf-file-name="center.lua" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="239">
-              <caret line="800" column="26" lean-forward="false" selection-start-line="800" selection-start-column="26" selection-end-line="800" selection-end-column="26" />
+            <state relative-caret-position="193">
+              <caret line="848" column="37" lean-forward="false" selection-start-line="848" selection-start-column="37" selection-end-line="848" selection-end-column="37" />
               <folding />
             </state>
           </provider>
@@ -136,7 +125,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>splitCenter</find>
       <find>islandid</find>
       <find>calculateFitness</find>
       <find>tracksWithWaypoints</find>
@@ -150,7 +138,6 @@
       <find>isClockwise</find>
       <find>linkParallelTracks</find>
       <find>print</find>
-      <find>getDistanceBetweenPointsOnHeadland</find>
       <find>return</find>
       <find>***</find>
       <find>getNoNil</find>
@@ -166,6 +153,8 @@
       <find>tournamen</find>
       <find>headlandClockwise</find>
       <find>islandNodes</find>
+      <find>mutate</find>
+      <find>getDistanceBetweenPointsOnHeadland</find>
     </findStrings>
     <replaceStrings>
       <replace>,</replace>
@@ -237,9 +226,9 @@
         <option value="$PROJECT_DIR$/include.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua" />
         <option value="$PROJECT_DIR$/main.lua" />
+        <option value="$PROJECT_DIR$/testGenetic.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/Genetic.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
-        <option value="$PROJECT_DIR$/testGenetic.lua" />
       </list>
     </option>
   </component>
@@ -675,7 +664,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Lua Application.testGenetic.lua">
+  <component name="RunManager" selected="Lua Application.Coldborough 7">
     <configuration name="2533" type="lua.app" factoryName="Lua Application">
       <option name="program" value="D:\Projects\Private\FS17\course-generator\LOVE\love.exe" />
       <option name="file" value="" />
@@ -1321,7 +1310,14 @@
       <option name="project" value="LOCAL" />
       <updated>1515713909567</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="Refactored new generation breeding &#10;&#10;Much better convergence now, more consistent results.">
+      <created>1515763198587</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1515763198587</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1356,7 +1352,7 @@
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="GitLabIntegration" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="LuaCheck" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912722" sideWeight="0.5" order="16" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4071823" sideWeight="0.49779007" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4270718" sideWeight="0.49779007" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5184017" sideWeight="0.79779005" order="18" side_tool="false" content_ui="tabs" />
       <window_info id="CheckStyle" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32963988" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
@@ -1475,7 +1471,8 @@
     <MESSAGE value="Adding some genetic engineering..." />
     <MESSAGE value="Genetic fun" />
     <MESSAGE value="Genetic fun continues" />
-    <option name="LAST_COMMIT_MESSAGE" value="Genetic fun continues" />
+    <MESSAGE value="Refactored new generation breeding &#10;&#10;Much better convergence now, more consistent results." />
+    <option name="LAST_COMMIT_MESSAGE" value="Refactored new generation breeding &#10;&#10;Much better convergence now, more consistent results." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1833,14 +1830,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Genetic.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="137" column="20" lean-forward="false" selection-start-line="137" selection-start-column="20" selection-end-line="137" selection-end-column="20" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/testGenetic.lua">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-421">
@@ -1849,10 +1838,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Genetic.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="210">
+          <caret line="232" column="4" lean-forward="true" selection-start-line="232" selection-start-column="4" selection-end-line="232" selection-end-column="4" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="239">
-          <caret line="800" column="26" lean-forward="false" selection-start-line="800" selection-start-column="26" selection-end-line="800" selection-end-column="26" />
+        <state relative-caret-position="193">
+          <caret line="848" column="37" lean-forward="false" selection-start-line="848" selection-start-column="37" selection-end-line="848" selection-end-column="37" />
           <folding />
         </state>
       </provider>
