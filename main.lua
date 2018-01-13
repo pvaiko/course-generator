@@ -59,7 +59,7 @@ function love.load( arg )
   field.extendTracks = 0
   field.minDistanceBetweenPoints = 0.5
   minSmoothingAngleDeg = 30
-  minHeadlandTurnAngleDeg = 120
+  minHeadlandTurnAngleDeg = 85
   field.doSmooth = true
   field.headlandClockwise = false
   field.roundCorners = false
@@ -226,8 +226,10 @@ function drawSettings()
         end
       end
       local pass = cWp.passNumber or 'n/a'
-      local track = cWp.trackNumber or 'n/a'        
-        love.graphics.print(string.format("pass = %s, track = %s, r = %s", tostring( pass), tostring( track ), radius ),
+      local track = cWp.trackNumber or 'n/a' 
+	    local origTrack = cWp.originalTrackNumber or 'n/a'
+	    local adjacentToIsland = cWp.adjacentToIsland and 'yes' or 'no'
+        love.graphics.print(string.format("pass = %s, track = %s (%s), r = %s, adj = %s", tostring( pass), tostring( track ), tostring( origTrack ), radius, adjacentToIsland ),
           windowWidth - 300, windowHeight - 20, 0, 1)
 
       end
