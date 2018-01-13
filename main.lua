@@ -228,7 +228,7 @@ function drawSettings()
       local pass = cWp.passNumber or 'n/a'
       local track = cWp.trackNumber or 'n/a' 
 	    local origTrack = cWp.originalTrackNumber or 'n/a'
-	    local adjacentToIsland = cWp.adjacentToIsland and 'yes' or 'no'
+	    local adjacentToIsland = cWp.adjacentIslands and #cWp.adjacentIslands or 'no'
         love.graphics.print(string.format("pass = %s, track = %s (%s), r = %s, adj = %s", tostring( pass), tostring( track ), tostring( origTrack ), radius, adjacentToIsland ),
           windowWidth - 300, windowHeight - 20, 0, 1)
 
@@ -597,15 +597,26 @@ function generate()
   marks = {}
   lines = {}
   helperPolygon = {}
-  status = xpcall( generateCourseForField, errorHandler, 
-                                           field, field.width, nHeadlandPasses, 
-                                           field.headlandClockwise, field.vehicle.location,
-                                           field.overlap, field.nTracksToSkip,
-                                           field.extendTracks, field.minDistanceBetweenPoints,
-                                           math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), field.doSmooth,
-                                           field.roundCorners, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ),
-  										                     true, islandNodes, headlandFirst, islandBypassMode
-                                           )
+  --status = xpcall( generateCourseForField, errorHandler, 
+  --                                         field, field.width, nHeadlandPasses, 
+  --                                         field.headlandClockwise, field.vehicle.location,
+  --                                         field.overlap, field.nTracksToSkip,
+  --                                         field.extendTracks, field.minDistanceBetweenPoints,
+  --                                         math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), field.doSmooth,
+  --                                         field.roundCorners, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ),
+  --										                     true, islandNodes, headlandFirst, islandBypassMode
+  --                                         )
+	status = true
+	generateCourseForField(
+	field, field.width, nHeadlandPasses,
+	field.headlandClockwise, field.vehicle.location,
+	field.overlap, field.nTracksToSkip,
+	field.extendTracks, field.minDistanceBetweenPoints,
+	math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), field.doSmooth,
+	field.roundCorners, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ),
+	true, islandNodes, headlandFirst, islandBypassMode
+	)
+
   if not status then
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
   end
