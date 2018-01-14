@@ -18,7 +18,7 @@ local currentWaypointIndex = 1
  
 local drawConnectingTracks = true
 local drawCourse = true
-local drawHeadlandPath = true 
+local showHeadlandPath = true 
 local drawTrack = false
 local drawBlocks = true
 local drawGrid = false
@@ -433,6 +433,22 @@ function drawCoursePoints( course )
   end
 end
 
+-- draw connected headland passes with width
+function drawHeadlandPath( object ) 
+  if showHeadlandPath and object.headlandPath then
+    if object.headlandPath and #object.headlandPath > 0 then
+      if showWidth then
+        love.graphics.setLineWidth( object.width )
+        love.graphics.setColor( 100, 200, 100, 100 )
+      else
+        love.graphics.setLineWidth( lineWidth * 6 )
+        love.graphics.setColor( 00, 200, 00 )
+      end
+      love.graphics.line( getVertices( object.headlandPath ))
+      love.graphics.setLineWidth( lineWidth )
+    end
+  end
+end
 
 function drawField( field )
   if field.loadedBoundaryVertices then
@@ -451,21 +467,8 @@ function drawField( field )
     love.graphics.polygon('line', field.calculatedBoundaryVertices)
   end
 
-  -- draw connected headland passes with width
-  if drawHeadlandPath then
-    if field.headlandPath and #field.headlandPath > 0 then
-      if showWidth then
-        love.graphics.setLineWidth( field.width )
-        love.graphics.setColor( 100, 200, 100, 100 )
-      else
-        love.graphics.setLineWidth( lineWidth * 6 )
-        love.graphics.setColor( 00, 200, 00 )
-      end
-      love.graphics.line( getVertices( field.headlandPath ))
-      love.graphics.setLineWidth( lineWidth )
-    end
-  end
-
+  drawHeadlandPath( field )
+  
   -- draw entire course
   if drawCourse then
     if field.course and #field.course > 1 then
@@ -561,6 +564,7 @@ function drawIslands( points )
         love.graphics.setLineWidth( lineWidth )
         love.graphics.line( getVertices( headland ))
       end
+      drawHeadlandPath( island )
     end
   end
 end
@@ -748,7 +752,7 @@ function love.textinput( t )
     drawCourse = not drawCourse
   end
   if t == "2" then
-    drawHeadlandPath = not drawHeadlandPath
+    showHeadlandPath = not showHeadlandPath
   end
   if t == "3" then
     drawConnectingTracks = not drawConnectingTracks

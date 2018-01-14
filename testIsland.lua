@@ -32,7 +32,7 @@ field.nHeadlandPasses = 2
 
 local expectedNumberOfWaypoints = 87
 
-setupIslands( field, 2, 6, 0.5, math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), doSmooth, field.islandNodes )
+setupIslands( field, 2, 6, 10, 0.5, math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), doSmooth, field.islandNodes )
 
 assertEquals( #field.islands , 1 )
 local island = field.islands[ 1 ]
