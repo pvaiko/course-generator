@@ -14,6 +14,9 @@ local minSmoothingAngleDeg = 30
 local minHeadlandTurnAngleDeg = 60
 local doSmooth = true
 
+-- force bypass on any size of island
+Island.maxRowsToBypassIsland = 500
+
 local function courseHasRepeatingWaypoints( course )
   for i = 1, #course - 1 do
     if course[ i ].x == course[ i + 1 ].x and course[ i + 1 ].y == course[ i ].y then
@@ -30,7 +33,7 @@ local field = savedFields[ 1 ]
 field.width = 5
 field.nHeadlandPasses = 2
 
-local expectedNumberOfWaypoints = 87
+local expectedNumberOfWaypoints = 52
 
 setupIslands( field, 2, 6, 10, 0.5, math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), doSmooth, field.islandNodes )
 

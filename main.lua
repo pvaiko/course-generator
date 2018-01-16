@@ -381,6 +381,15 @@ function highlightPoint()
   love.graphics.pop()
 end
 
+function drawPointAsArrow( point ) 
+	local triangle = { - 1, 0, 1, 0, 0, 2 }
+	love.graphics.push()
+	love.graphics.translate( point.x, point.y )
+	love.graphics.rotate( point.nextEdge.angle - math.pi / 2 )
+	love.graphics.polygon( 'fill', triangle )
+	love.graphics.pop()
+end
+
 function drawCoursePoints( course )
   highlightPoint()
 	-- course starts green and turns red towards the end
@@ -414,7 +423,8 @@ function drawCoursePoints( course )
     end
 	  red = red + colorStep
 	  green = green - colorStep
-    love.graphics.points( point.x, point.y )
+    drawPointAsArrow( point )
+	  --love.graphics.points( point.x, point.y )
     love.graphics.setPointSize( ps )
     if drawHelpers then
       love.graphics.push()
