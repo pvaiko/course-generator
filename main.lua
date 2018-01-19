@@ -215,7 +215,10 @@ function drawSettings()
     --print( currentWaypointIndex )
     local cWp = field.course[ currentWaypointIndex ]
     if cWp then
-      love.graphics.print(string.format("ix = %d, x = %.1f y = %.1f", currentWaypointIndex, cWp.x, cWp.y),
+	    local rev = cWp.rev and 'rev' or 'fwd'
+	    local turn = cWp.turnStart and 'start' or ( cWp.turnEnd and 'end' or '')
+      love.graphics.print(string.format("ix=%d x=%.1f y=%.1f %.0f°>%.0f° %s %s", currentWaypointIndex, cWp.x, cWp.y, 
+        math.deg( cWp.prevEdge.angle ), math.deg( cWp.nextEdge.angle ), turn, rev ),
         windowWidth - 300, windowHeight - 40, 0, 1)
       local radius = 'n/a'
       if cWp.radius then
@@ -229,7 +232,7 @@ function drawSettings()
       local track = cWp.trackNumber or 'n/a' 
 	    local origTrack = cWp.originalTrackNumber or 'n/a'
 	    local adjacentToIsland = cWp.adjacentIslands and #cWp.adjacentIslands or 'no'
-        love.graphics.print(string.format("pass = %s, track = %s (%s), r = %s, adj = %s", tostring( pass), tostring( track ), tostring( origTrack ), radius, adjacentToIsland ),
+        love.graphics.print(string.format("pass=%s track =%s(%s) r=%s adj=%s", tostring( pass), tostring( track ), tostring( origTrack ), radius, adjacentToIsland ),
           windowWidth - 300, windowHeight - 20, 0, 1)
 
       end
@@ -386,7 +389,11 @@ function drawPointAsArrow( point )
 	love.graphics.push()
 	love.graphics.translate( point.x, point.y )
 	love.graphics.rotate( point.nextEdge.angle - math.pi / 2 )
-	love.graphics.polygon( 'fill', triangle )
+	if not point.turnStart and not point.turnEnd then
+		love.graphics.polygon( 'line', triangle )
+	else
+		love.graphics.polygon( 'fill', triangle )
+	end
 	love.graphics.pop()
 end
 
