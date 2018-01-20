@@ -26,7 +26,7 @@ local drawHelpers = true
 local showSettings = true
 local islandBypassMode = Island.BYPASS_MODE_MIN
 local headlandFirst = true
-local nHeadlandPasses = 1
+local nHeadlandPasses = 3
 
 -- pathfinding
 local path = {}
