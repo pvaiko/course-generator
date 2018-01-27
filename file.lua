@@ -134,7 +134,6 @@ function loadSavedFields( fileName )
 	end
 	num, cx, cz = string.match( line, '<islandNode(%d+).+pos="([%d%.-]+) +([%d%.-]+)"' )
 	if num then
-    print( num, tonumber( cx ), cz, -tonumber( cz ))
 	  table.insert( savedFields[ ix ].islandNodes, { x=tonumber( cx ), y=-tonumber( cz )})
 	end
   end

@@ -27,6 +27,7 @@ local showSettings = true
 local islandBypassMode = Island.BYPASS_MODE_MIN
 local headlandFirst = true
 local nHeadlandPasses = 3
+local centerSettings = { useBestAngle = true, trackAngle = 0 }
 
 -- pathfinding
 local path = {}
@@ -206,8 +207,16 @@ function drawSettings()
   love.graphics.print( string.format( "min point distance: %.2f m, corner smoothing: %s, min. smoothing angle: %d, min. headland turn angle = %d", 
     field.minDistanceBetweenPoints, smoothingStatus, minSmoothingAngleDeg, minHeadlandTurnAngleDeg ), 10, 70, 0, 1 )
   if field.bestAngle then
+	  local angle
+	  if centerSettings.useBestAngle then
+		  angle = string.format( '%d (best)', field.bestAngle )
+	  elseif centerSettings.useLongestEdgeAngle then
+		  angle = string.format( '%d (longest edge)', field.bestAngle )
+	  else
+		  angle = string.format( '%d (%s)', field.bestAngle, courseGenerator.getCompassDirection( field.bestAngle ))
+	  end
     love.graphics.setColor( 200, 200, 00 )
-    love.graphics.print( string.format( "Options: best angle: %d has %d tracks", field.bestAngle, field.nTracks ), 10, 90, 0, 1 )
+    love.graphics.print( string.format( "Options: angle: %s has %d tracks", angle, field.nTracks ), 10, 90, 0, 1 )
   end
   -- Info on waypoint under mouse cursor
   if field.course then
@@ -238,7 +247,7 @@ function drawSettings()
       end
   end
   -- help text
-  local y = windowHeight - 340
+  local y = windowHeight - 360
   love.graphics.setColor( 240, 240, 240 )
   love.graphics.print( "KEYS", 10, y, 0, 1 )
   y = y + 20
@@ -271,9 +280,11 @@ function drawSettings()
   y = y + 20
   love.graphics.print( "r - reverse course", 10, y, 0, 1 )
   y = y + 20
-  love.graphics.print( "a/A - tracks to skip between alternating tracks", 10, y, 0, 1 )
+	love.graphics.print( "q - toggle up/down row angle mode", 10, y, 0, 1 )
+	y = y + 20
+  love.graphics.print( "a/A - change up/down row angle", 10, y, 0, 1 )
   y = y + 20
-  love.graphics.print( "i - toggle bypass islands", 10, y, 0, 1 )
+  love.graphics.print( "i - toggle island bypass mode", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "g - generate course", 10, y, 0, 1 )
   y = y + 20
@@ -618,15 +629,16 @@ function generate()
   marks = {}
   lines = {}
   helperPolygon = {}
-  --status = xpcall( generateCourseForField, errorHandler, 
-  --                                         field, field.width, nHeadlandPasses, 
-  --                                         field.headlandClockwise, field.vehicle.location,
-  --                                         field.overlap, field.nTracksToSkip,
-  --                                         field.extendTracks, field.minDistanceBetweenPoints,
-  --                                         math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), field.doSmooth,
-  --                                         field.roundCorners, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ),
-  --										                     true, islandNodes, headlandFirst, islandBypassMode
-  --                                         )
+  status, ok = xpcall( generateCourseForField, errorHandler, 
+                                           field, field.width, nHeadlandPasses, 
+                                           field.headlandClockwise, field.vehicle.location,
+                                           field.overlap, field.nTracksToSkip,
+                                           field.extendTracks, field.minDistanceBetweenPoints,
+                                           math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), field.doSmooth,
+                                           field.roundCorners, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ),
+  										                     true, islandNodes, headlandFirst, islandBypassMode, centerSettings
+                                           )
+--[[
 	status = true
 	generateCourseForField(
 	field, field.width, nHeadlandPasses,
@@ -635,11 +647,14 @@ function generate()
 	field.extendTracks, field.minDistanceBetweenPoints,
 	math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), field.doSmooth,
 	field.roundCorners, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ),
-	true, islandNodes, headlandFirst, islandBypassMode
+	true, islandNodes, headlandFirst, islandBypassMode, centerSettings
 	)
+]]
 
   if not status then
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
+	elseif not ok then
+	  love.window.showMessageBox( "Warning", "Generated course may not be ok.", { "Ok" }, "warning" )
   end
   io.stdout:flush()
 end
@@ -711,17 +726,26 @@ function love.textinput( t )
     headlandFirst = not headlandFirst
     generate()
   end
+	if t == "q" then
+		if centerSettings.useBestAngle then
+			centerSettings.useBestAngle = nil
+			centerSettings.useLongestEdgeAngle = true
+		elseif centerSettings.useLongestEdgeAngle then
+			centerSettings.useBestAngle = nil
+			centerSettings.useLongestEdgeAngle = nil
+		else
+			centerSettings.useBestAngle = true
+			centerSettings.useLongestEdgeAngle = nil
+		end
+		generate()
+	end
   if t == "A" then
-    if field.nTracksToSkip < 5 then
-      field.nTracksToSkip = field.nTracksToSkip + 1
+	  centerSettings.trackAngle = centerSettings.trackAngle + math.pi / 16
       generate()
-    end
   end
   if t == "a" then
-    if field.nTracksToSkip > 0 then
-      field.nTracksToSkip = field.nTracksToSkip - 1
+		centerSettings.trackAngle = centerSettings.trackAngle - math.pi / 16
       generate()
-    end
   end
   if t == "i" then
     islandBypassMode = islandBypassMode + 1
