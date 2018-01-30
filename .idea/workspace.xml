@@ -1,30 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="BookmarkManager">
-    <bookmark url="file://$PROJECT_DIR$/courseplay/course-generator/center.lua" line="147" />
+    <bookmark url="file://$PROJECT_DIR$/courseplay/course-generator/center.lua" line="143" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="515c9c6a-5ee4-47c9-b655-ab198105a3b2" name="Default" comment="">
+    <list default="true" id="515c9c6a-5ee4-47c9-b655-ab198105a3b2" name="Default" comment="UI settings">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/course-generator/center.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/course-generator/cp.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/cp.lua" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/course-generator/track.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/track.lua" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_br.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_br.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_cs.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_cs.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_cz.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_cz.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_de.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_de.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_en.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_en.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_es.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_es.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_fr.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_fr.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_hu.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_hu.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_it.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_it.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_jp.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_jp.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_nl.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_nl.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_pl.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_pl.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_pt.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_pt.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_ru.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_ru.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/translations/translation_sl.xml" afterPath="$PROJECT_DIR$/courseplay/translations/translation_sl.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.lua" afterPath="$PROJECT_DIR$/main.lua" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -39,102 +22,53 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="translation_es.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_es.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="593">
-              <caret line="189" column="0" lean-forward="false" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="translation_fr.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_fr.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="593">
-              <caret line="193" column="0" lean-forward="false" selection-start-line="193" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="translation_hu.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_hu.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="270">
-              <caret line="168" column="76" lean-forward="true" selection-start-line="168" selection-start-column="76" selection-end-line="168" selection-end-column="76" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="translation_it.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_it.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="593">
-              <caret line="193" column="0" lean-forward="false" selection-start-line="193" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="translation_jp.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_jp.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="593">
-              <caret line="193" column="0" lean-forward="false" selection-start-line="193" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="translation_pl.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_pl.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="593">
-              <caret line="193" column="0" lean-forward="false" selection-start-line="193" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="translation_pt.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_pt.xml">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="593">
-              <caret line="189" column="0" lean-forward="false" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="cp.lua" pinned="false" current-in-tab="true">
+      <file leaf-file-name="cp.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/cp.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="790">
-              <caret line="107" column="79" lean-forward="false" selection-start-line="107" selection-start-column="79" selection-end-line="107" selection-end-column="79" />
+            <state relative-caret-position="506">
+              <caret line="128" column="48" lean-forward="false" selection-start-line="128" selection-start-column="48" selection-end-line="128" selection-end-column="48" />
+              <folding>
+                <marker date="1517349452322" expanded="true" signature="1172:5183" ph="..." />
+                <marker date="1517349452322" expanded="true" signature="3287:3576" ph="..." />
+                <marker date="1517349452322" expanded="true" signature="3531:3532" ph="..." />
+                <marker date="1517349452322" expanded="true" signature="3549:3550" ph="..." />
+                <marker date="1517349452322" expanded="true" signature="3596:3903" ph="..." />
+                <marker date="1517349452322" expanded="true" signature="3871:3872" ph="..." />
+                <marker date="1517349452322" expanded="true" signature="3889:3890" ph="..." />
+                <marker date="1517349452322" expanded="true" signature="4141:4231" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="center.lua" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="246">
+              <caret line="580" column="76" lean-forward="false" selection-start-line="580" selection-start-column="65" selection-end-line="580" selection-end-column="76" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="translation_ru.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_ru.xml">
+      <file leaf-file-name="geo.lua" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/courseplay/course-generator/geo.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="593">
-              <caret line="193" column="0" lean-forward="false" selection-start-line="193" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
+            <state relative-caret-position="266">
+              <caret line="514" column="9" lean-forward="false" selection-start-line="514" selection-start-column="9" selection-end-line="514" selection-end-column="9" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="translation_sl.xml" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_sl.xml">
+      <file leaf-file-name="main.lua" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/main.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="201">
-              <caret line="171" column="28" lean-forward="false" selection-start-line="171" selection-start-column="28" selection-end-line="171" selection-end-column="28" />
-              <folding />
+            <state relative-caret-position="442">
+              <caret line="26" column="50" lean-forward="false" selection-start-line="26" selection-start-column="50" selection-end-line="26" selection-end-column="50" />
+              <folding>
+                <marker date="1517338905267" expanded="true" signature="26593:27280" ph="..." />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -153,11 +87,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>inthemiddle</find>
-      <find>getHeadlandPath</find>
-      <find>turn.lua</find>
-      <find>generate</find>
-      <find>splitCenterIntoBlocks</find>
       <find>nBlocks</find>
       <find>field.bestAngle</find>
       <find>nTracks</find>
@@ -167,7 +96,6 @@
       <find>bestdir1</find>
       <find>track angle</find>
       <find>normalize</find>
-      <find>print</find>
       <find>no bypass</find>
       <find>xpcall</find>
       <find>direction</find>
@@ -183,6 +111,12 @@
       <find>skip</find>
       <find>bestdir2</find>
       <find>direction_5</find>
+      <find>split</find>
+      <find>intersections</find>
+      <find>onIsland</find>
+      <find>findIntersections</find>
+      <find>islandId</find>
+      <find>print</find>
     </findStrings>
     <replaceStrings>
       <replace>,</replace>
@@ -221,7 +155,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/courseplay" />
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$/courseplay" value="2533" />
+        <entry key="$PROJECT_DIR$/courseplay" value="master" />
       </map>
     </option>
   </component>
@@ -259,9 +193,7 @@
         <option value="$PROJECT_DIR$/fieldTester.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/geo.lua" />
         <option value="$PROJECT_DIR$/file.lua" />
-        <option value="$PROJECT_DIR$/main.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/track.lua" />
-        <option value="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua" />
         <option value="$PROJECT_DIR$/courseplay/translations/translation_en.xml" />
         <option value="$PROJECT_DIR$/courseplay/translations/translation_br.xml" />
@@ -279,6 +211,8 @@
         <option value="$PROJECT_DIR$/courseplay/translations/translation_ru.xml" />
         <option value="$PROJECT_DIR$/courseplay/translations/translation_sl.xml" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/cp.lua" />
+        <option value="$PROJECT_DIR$/main.lua" />
+        <option value="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
       </list>
     </option>
   </component>
@@ -640,8 +574,10 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
+      <pane id="NBKnowledgePane" />
       <pane id="PackagesPane" />
+      <pane id="Scope" />
+      <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -670,13 +606,11 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="NBKnowledgePane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="last_opened_file_path" value="$PROJECT_DIR$/LOVE/love.exe" />
-    <property name="settings.editor.selected.configurable" value="Errors" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
     <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
@@ -1426,7 +1360,14 @@
       <option name="project" value="LOCAL" />
       <updated>1517058953627</updated>
     </task>
-    <option name="localTasksCounter" value="40" />
+    <task id="LOCAL-00040" summary="UI settings">
+      <created>1517098936751</created>
+      <option name="number" value="00040" />
+      <option name="presentableId" value="LOCAL-00040" />
+      <option name="project" value="LOCAL" />
+      <updated>1517098936751</updated>
+    </task>
+    <option name="localTasksCounter" value="41" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1454,20 +1395,20 @@
       <window_info id="News Feed" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2498621" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.12933753" sideWeight="0.5430939" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Notes" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12815127" sideWeight="0.5430939" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32917964" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="GitLabIntegration" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="LuaCheck" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912722" sideWeight="0.5" order="16" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.08618785" sideWeight="0.49779007" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3558011" sideWeight="0.49779007" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5184017" sideWeight="0.79779005" order="18" side_tool="false" content_ui="tabs" />
       <window_info id="CheckStyle" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32963988" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Jenkins" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.18895027" sideWeight="0.4958932" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.18895027" sideWeight="0.4958932" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Reviews" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="JRebel" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
       <window_info id="Learn" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3294702" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
@@ -1557,7 +1498,6 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
     <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
-    <MESSAGE value="Some clean-up. &#10;&#10;Still has issues when there are turn waypoints on the island.&#10;But maybe we don't even want to fix that..." />
     <MESSAGE value="The Big Polygon Refactoring" />
     <MESSAGE value="Better field tester" />
     <MESSAGE value="Polyline/Polygon refactoring&#10;&#10;In preparation for saving the radius" />
@@ -1582,7 +1522,8 @@
     <MESSAGE value="This may be a good enough compromise" />
     <MESSAGE value="Release Candidate 1" />
     <MESSAGE value="Manual selection in standalone mode complete" />
-    <option name="LAST_COMMIT_MESSAGE" value="Manual selection in standalone mode complete" />
+    <MESSAGE value="UI settings" />
+    <option name="LAST_COMMIT_MESSAGE" value="UI settings" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1796,7 +1737,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="10931">
           <caret line="643" column="12" lean-forward="false" selection-start-line="643" selection-start-column="12" selection-end-line="643" selection-end-column="12" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1804,25 +1744,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="20230">
           <caret line="1190" column="163" lean-forward="false" selection-start-line="1190" selection-start-column="158" selection-end-line="1190" selection-end-column="163" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/geo.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4760">
-          <caret line="280" column="0" lean-forward="false" selection-start-line="280" selection-start-column="0" selection-end-line="280" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="513">
-          <caret line="643" column="38" lean-forward="true" selection-start-line="643" selection-start-column="38" selection-end-line="643" selection-end-column="38" />
-          <folding>
-            <marker date="1517058881985" expanded="true" signature="26590:27277" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1830,21 +1751,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="168">
           <caret line="171" column="78" lean-forward="false" selection-start-line="171" selection-start-column="78" selection-end-line="171" selection-end-column="78" />
-          <folding>
-            <marker date="1517097474992" expanded="true" signature="4102:4103" ph="..." />
-            <marker date="1517097474992" expanded="true" signature="4102:4239" ph="..." />
-            <marker date="1517097474992" expanded="true" signature="13992:13994" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="192">
-          <caret line="170" column="71" lean-forward="true" selection-start-line="170" selection-start-column="71" selection-end-line="170" selection-end-column="71" />
-          <folding>
-            <marker date="1517097591892" expanded="true" signature="11415:11513" ph="..." />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1906,71 +1812,71 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_es.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="593">
-          <caret line="189" column="0" lean-forward="false" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
+        <state relative-caret-position="3213">
+          <caret line="191" column="0" lean-forward="false" selection-start-line="191" selection-start-column="0" selection-end-line="191" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_fr.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="593">
-          <caret line="193" column="0" lean-forward="false" selection-start-line="193" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
+        <state relative-caret-position="3281">
+          <caret line="195" column="0" lean-forward="false" selection-start-line="195" selection-start-column="0" selection-end-line="195" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_hu.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="270">
-          <caret line="168" column="76" lean-forward="true" selection-start-line="168" selection-start-column="76" selection-end-line="168" selection-end-column="76" />
+        <state relative-caret-position="2856">
+          <caret line="168" column="76" lean-forward="false" selection-start-line="168" selection-start-column="76" selection-end-line="168" selection-end-column="76" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_it.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="593">
-          <caret line="193" column="0" lean-forward="false" selection-start-line="193" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
+        <state relative-caret-position="3281">
+          <caret line="195" column="0" lean-forward="false" selection-start-line="195" selection-start-column="0" selection-end-line="195" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_jp.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="593">
-          <caret line="193" column="0" lean-forward="false" selection-start-line="193" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
+        <state relative-caret-position="3281">
+          <caret line="195" column="0" lean-forward="false" selection-start-line="195" selection-start-column="0" selection-end-line="195" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_pl.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="593">
-          <caret line="193" column="0" lean-forward="false" selection-start-line="193" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
+        <state relative-caret-position="3281">
+          <caret line="195" column="0" lean-forward="false" selection-start-line="195" selection-start-column="0" selection-end-line="195" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_pt.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="593">
-          <caret line="189" column="0" lean-forward="false" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
+        <state relative-caret-position="3213">
+          <caret line="191" column="0" lean-forward="false" selection-start-line="191" selection-start-column="0" selection-end-line="191" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_ru.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="593">
-          <caret line="193" column="0" lean-forward="false" selection-start-line="193" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
+        <state relative-caret-position="3281">
+          <caret line="196" column="0" lean-forward="false" selection-start-line="196" selection-start-column="0" selection-end-line="196" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_sl.xml">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="201">
+        <state relative-caret-position="2907">
           <caret line="171" column="28" lean-forward="false" selection-start-line="171" selection-start-column="28" selection-end-line="171" selection-end-column="28" />
           <folding />
         </state>
@@ -1978,8 +1884,43 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/course-generator/cp.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="790">
-          <caret line="107" column="79" lean-forward="false" selection-start-line="107" selection-start-column="79" selection-end-line="107" selection-end-column="79" />
+        <state relative-caret-position="506">
+          <caret line="128" column="48" lean-forward="false" selection-start-line="128" selection-start-column="48" selection-end-line="128" selection-end-column="48" />
+          <folding>
+            <marker date="1517349452322" expanded="true" signature="1172:5183" ph="..." />
+            <marker date="1517349452322" expanded="true" signature="3287:3576" ph="..." />
+            <marker date="1517349452322" expanded="true" signature="3531:3532" ph="..." />
+            <marker date="1517349452322" expanded="true" signature="3549:3550" ph="..." />
+            <marker date="1517349452322" expanded="true" signature="3596:3903" ph="..." />
+            <marker date="1517349452322" expanded="true" signature="3871:3872" ph="..." />
+            <marker date="1517349452322" expanded="true" signature="3889:3890" ph="..." />
+            <marker date="1517349452322" expanded="true" signature="4141:4231" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/geo.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="266">
+          <caret line="514" column="9" lean-forward="false" selection-start-line="514" selection-start-column="9" selection-end-line="514" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="26" column="50" lean-forward="false" selection-start-line="26" selection-start-column="50" selection-end-line="26" selection-end-column="50" />
+          <folding>
+            <marker date="1517338905267" expanded="true" signature="26593:27280" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="246">
+          <caret line="580" column="76" lean-forward="false" selection-start-line="580" selection-start-column="65" selection-end-line="580" selection-end-column="76" />
           <folding />
         </state>
       </provider>

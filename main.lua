@@ -24,7 +24,7 @@ local drawBlocks = true
 local drawGrid = false
 local drawHelpers = true
 local showSettings = true
-local islandBypassMode = Island.BYPASS_MODE_MIN
+local islandBypassMode = Island.BYPASS_MODE_CIRCLE
 local headlandFirst = true
 local nHeadlandPasses = 3
 local centerSettings = { useBestAngle = true, trackAngle = 0 }
