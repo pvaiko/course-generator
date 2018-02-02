@@ -4,9 +4,10 @@
     <bookmark url="file://$PROJECT_DIR$/courseplay/course-generator/center.lua" line="143" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="515c9c6a-5ee4-47c9-b655-ab198105a3b2" name="Default" comment="UI settings">
+    <list default="true" id="515c9c6a-5ee4-47c9-b655-ab198105a3b2" name="Default" comment="Fixing long turns&#10;Don't let the turn start and end waypoints end up too far from each other&#10;because then all the distance must be covered in the slow turn maneuver.">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/course-generator/center.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/courseplay/course-generator/geo.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/geo.lua" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.lua" afterPath="$PROJECT_DIR$/main.lua" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
@@ -25,18 +26,9 @@
       <file leaf-file-name="cp.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/cp.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="506">
-              <caret line="128" column="48" lean-forward="false" selection-start-line="128" selection-start-column="48" selection-end-line="128" selection-end-column="48" />
-              <folding>
-                <marker date="1517349452322" expanded="true" signature="1172:5183" ph="..." />
-                <marker date="1517349452322" expanded="true" signature="3287:3576" ph="..." />
-                <marker date="1517349452322" expanded="true" signature="3531:3532" ph="..." />
-                <marker date="1517349452322" expanded="true" signature="3549:3550" ph="..." />
-                <marker date="1517349452322" expanded="true" signature="3596:3903" ph="..." />
-                <marker date="1517349452322" expanded="true" signature="3871:3872" ph="..." />
-                <marker date="1517349452322" expanded="true" signature="3889:3890" ph="..." />
-                <marker date="1517349452322" expanded="true" signature="4141:4231" ph="..." />
-              </folding>
+            <state relative-caret-position="2261">
+              <caret line="133" column="48" lean-forward="false" selection-start-line="133" selection-start-column="48" selection-end-line="133" selection-end-column="48" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -44,8 +36,28 @@
       <file leaf-file-name="center.lua" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="246">
-              <caret line="580" column="76" lean-forward="false" selection-start-line="580" selection-start-column="65" selection-end-line="580" selection-end-column="76" />
+            <state relative-caret-position="294">
+              <caret line="707" column="12" lean-forward="true" selection-start-line="707" selection-start-column="12" selection-end-line="707" selection-end-column="12" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Island.lua" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Island.lua">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="8687">
+              <caret line="511" column="0" lean-forward="false" selection-start-line="511" selection-start-column="0" selection-end-line="511" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="courseGenerator.lua" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="605">
+              <caret line="47" column="0" lean-forward="false" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -54,8 +66,8 @@
       <file leaf-file-name="geo.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/geo.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="266">
-              <caret line="514" column="9" lean-forward="false" selection-start-line="514" selection-start-column="9" selection-end-line="514" selection-end-column="9" />
+            <state relative-caret-position="601">
+              <caret line="547" column="30" lean-forward="false" selection-start-line="547" selection-start-column="30" selection-end-line="547" selection-end-column="30" />
               <folding />
             </state>
           </provider>
@@ -64,11 +76,21 @@
       <file leaf-file-name="main.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="26" column="50" lean-forward="false" selection-start-line="26" selection-start-column="50" selection-end-line="26" selection-end-column="50" />
+            <state relative-caret-position="12614">
+              <caret line="742" column="27" lean-forward="false" selection-start-line="742" selection-start-column="27" selection-end-line="742" selection-end-column="27" />
               <folding>
-                <marker date="1517338905267" expanded="true" signature="26593:27280" ph="..." />
+                <marker date="1517353386866" expanded="true" signature="26582:27269" ph="..." />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="track.lua" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/courseplay/course-generator/track.lua">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="595">
+              <caret line="226" column="0" lean-forward="false" selection-start-line="226" selection-start-column="0" selection-end-line="226" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -87,14 +109,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>nBlocks</find>
-      <find>field.bestAngle</find>
-      <find>nTracks</find>
-      <find>/ 6</find>
-      <find>bestdirection</find>
-      <find>bestDirection</find>
-      <find>bestdir1</find>
-      <find>track angle</find>
       <find>normalize</find>
       <find>no bypass</find>
       <find>xpcall</find>
@@ -104,7 +118,6 @@
       <find>iconSprite</find>
       <find>field.width</find>
       <find>headlandClockwise</find>
-      <find>centerSettings</find>
       <find>useLongestEdgeAngle</find>
       <find>trackAngle</find>
       <find>best</find>
@@ -117,6 +130,15 @@
       <find>findIntersections</find>
       <find>islandId</find>
       <find>print</find>
+      <find>compass</find>
+      <find>centerSettings</find>
+      <find>angle</find>
+      <find>frontof</find>
+      <find>getpointinthe</find>
+      <find>turnStart</find>
+      <find>addpolarVe</find>
+      <find>fix</find>
+      <find>originalTrackNumber</find>
     </findStrings>
     <replaceStrings>
       <replace>,</replace>
@@ -191,10 +213,8 @@
         <option value="$PROJECT_DIR$/courseplay/course-generator/Island.lua" />
         <option value="$PROJECT_DIR$/courseplay/turn.lua" />
         <option value="$PROJECT_DIR$/fieldTester.lua" />
-        <option value="$PROJECT_DIR$/courseplay/course-generator/geo.lua" />
         <option value="$PROJECT_DIR$/file.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/track.lua" />
-        <option value="$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua" />
         <option value="$PROJECT_DIR$/courseplay/translations/translation_en.xml" />
         <option value="$PROJECT_DIR$/courseplay/translations/translation_br.xml" />
         <option value="$PROJECT_DIR$/courseplay/translations/translation_nl.xml" />
@@ -211,7 +231,9 @@
         <option value="$PROJECT_DIR$/courseplay/translations/translation_ru.xml" />
         <option value="$PROJECT_DIR$/courseplay/translations/translation_sl.xml" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/cp.lua" />
+        <option value="$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua" />
         <option value="$PROJECT_DIR$/main.lua" />
+        <option value="$PROJECT_DIR$/courseplay/course-generator/geo.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
       </list>
     </option>
@@ -574,9 +596,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="NBKnowledgePane" />
       <pane id="PackagesPane" />
-      <pane id="Scope" />
       <pane id="Scratches" />
       <pane id="ProjectPane">
         <subPane>
@@ -599,8 +621,7 @@
             <path>
               <item name="course-generator" type="b2602c69:ProjectViewProjectNode" />
               <item name="course-generator" type="462c0819:PsiDirectoryNode" />
-              <item name="courseplay" type="462c0819:PsiDirectoryNode" />
-              <item name="translations" type="462c0819:PsiDirectoryNode" />
+              <item name="fields" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -627,7 +648,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Lua Application.On the Hills 29 (Island)">
+  <component name="RunManager" selected="Lua Application.On the Hills 42 (Island)">
     <configuration name="2533" type="lua.app" factoryName="Lua Application">
       <option name="program" value="$PROJECT_DIR$/../course-generator\LOVE\love.exe" />
       <option name="file" value="" />
@@ -711,6 +732,13 @@
       <method>
         <option name="Make" enabled="false" />
       </method>
+    </configuration>
+    <configuration name="Goldcrest 23" type="lua.app" factoryName="Lua Application">
+      <option name="program" value="$PROJECT_DIR$/../course-generator\LOVE\love.exe" />
+      <option name="file" value="" />
+      <option name="workingDir" value="$PROJECT_DIR$/" />
+      <option name="debuggerType" value="1" />
+      <option name="params" value=". fromFile fields/Goldcrest.xml 23" />
     </configuration>
     <configuration name="Loesshuegelland 13" type="#com.sylvanaar.idea.Lua.run.LuaConfigurationType" factoryName="Lua Script">
       <option name="INTERPRETER_OPTIONS" value=". fromFields fields/Loesshuegelland.xml 13" />
@@ -1039,7 +1067,7 @@
       <option name="SCRIPT_NAME" value="test.lua" />
       <option name="PARAMETERS" value="" />
     </configuration>
-    <list size="24">
+    <list size="25">
       <item index="0" class="java.lang.String" itemvalue="Lua Application.On the Hills 29 (Island)" />
       <item index="1" class="java.lang.String" itemvalue="Lua Application.On the Hills 38 (Island)" />
       <item index="2" class="java.lang.String" itemvalue="Lua Application.On the Hills 42 (Island)" />
@@ -1052,18 +1080,19 @@
       <item index="9" class="java.lang.String" itemvalue="Batch.testPolygon" />
       <item index="10" class="java.lang.String" itemvalue="Batch.testIsland" />
       <item index="11" class="java.lang.String" itemvalue="Lua Application.Coldborough 2" />
-      <item index="12" class="java.lang.String" itemvalue="Lua Application.Coldborough 4" />
-      <item index="13" class="java.lang.String" itemvalue="Lua Application.2533" />
-      <item index="14" class="java.lang.String" itemvalue="Lua Application.Coldborough 7" />
-      <item index="15" class="java.lang.String" itemvalue="Lua Application.Coldborough 8" />
-      <item index="16" class="java.lang.String" itemvalue="Lua Application.Coldborough 9" />
-      <item index="17" class="java.lang.String" itemvalue="Lua Application.Loesshuegelland 26" />
-      <item index="18" class="java.lang.String" itemvalue="Lua Application.Testfield 2" />
-      <item index="19" class="java.lang.String" itemvalue="Lua Application.Testfield 1" />
-      <item index="20" class="java.lang.String" itemvalue="Lua Application.Testfield 3" />
-      <item index="21" class="java.lang.String" itemvalue="Lua Application.testIsland.lua" />
-      <item index="22" class="java.lang.String" itemvalue="Lua Application.testPolygon.lua" />
-      <item index="23" class="java.lang.String" itemvalue="Lua Application.testGenetic.lua" />
+      <item index="12" class="java.lang.String" itemvalue="Lua Application.Goldcrest 23" />
+      <item index="13" class="java.lang.String" itemvalue="Lua Application.Coldborough 4" />
+      <item index="14" class="java.lang.String" itemvalue="Lua Application.2533" />
+      <item index="15" class="java.lang.String" itemvalue="Lua Application.Coldborough 7" />
+      <item index="16" class="java.lang.String" itemvalue="Lua Application.Coldborough 8" />
+      <item index="17" class="java.lang.String" itemvalue="Lua Application.Coldborough 9" />
+      <item index="18" class="java.lang.String" itemvalue="Lua Application.Loesshuegelland 26" />
+      <item index="19" class="java.lang.String" itemvalue="Lua Application.Testfield 2" />
+      <item index="20" class="java.lang.String" itemvalue="Lua Application.Testfield 1" />
+      <item index="21" class="java.lang.String" itemvalue="Lua Application.Testfield 3" />
+      <item index="22" class="java.lang.String" itemvalue="Lua Application.testIsland.lua" />
+      <item index="23" class="java.lang.String" itemvalue="Lua Application.testPolygon.lua" />
+      <item index="24" class="java.lang.String" itemvalue="Lua Application.testGenetic.lua" />
     </list>
     <recent_temporary>
       <list size="3">
@@ -1367,7 +1396,14 @@
       <option name="project" value="LOCAL" />
       <updated>1517098936751</updated>
     </task>
-    <option name="localTasksCounter" value="41" />
+    <task id="LOCAL-00041" summary="Handle most cases where the island headlands overlap the outer headlands">
+      <created>1517349576522</created>
+      <option name="number" value="00041" />
+      <option name="presentableId" value="LOCAL-00041" />
+      <option name="project" value="LOCAL" />
+      <updated>1517349576522</updated>
+    </task>
+    <option name="localTasksCounter" value="42" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1395,15 +1431,15 @@
       <window_info id="News Feed" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2498621" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.62815124" sideWeight="0.5430939" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Notes" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.12815127" sideWeight="0.5430939" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32917964" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="GitLabIntegration" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="LuaCheck" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912722" sideWeight="0.5" order="16" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3558011" sideWeight="0.49779007" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.5184017" sideWeight="0.79779005" order="18" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3558011" sideWeight="0.49779007" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19622245" sideWeight="0.79779005" order="18" side_tool="false" content_ui="tabs" />
       <window_info id="CheckStyle" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32963988" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Jenkins" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
@@ -1498,7 +1534,6 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
     <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
-    <MESSAGE value="The Big Polygon Refactoring" />
     <MESSAGE value="Better field tester" />
     <MESSAGE value="Polyline/Polygon refactoring&#10;&#10;In preparation for saving the radius" />
     <MESSAGE value="Smoother return to normal path after the island&#10;&#10;Was too jerky with the tight turn offset in drive.lua" />
@@ -1523,7 +1558,8 @@
     <MESSAGE value="Release Candidate 1" />
     <MESSAGE value="Manual selection in standalone mode complete" />
     <MESSAGE value="UI settings" />
-    <option name="LAST_COMMIT_MESSAGE" value="UI settings" />
+    <MESSAGE value="Handle most cases where the island headlands overlap the outer headlands" />
+    <option name="LAST_COMMIT_MESSAGE" value="Handle most cases where the island headlands overlap the outer headlands" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1686,7 +1722,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3162">
           <caret line="186" column="5" lean-forward="false" selection-start-line="186" selection-start-column="5" selection-end-line="186" selection-end-column="5" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1718,18 +1753,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Island.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="867">
-          <caret line="325" column="68" lean-forward="false" selection-start-line="325" selection-start-column="68" selection-end-line="325" selection-end-column="68" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/file.lua">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2074">
           <caret line="122" column="14" lean-forward="false" selection-start-line="122" selection-start-column="14" selection-end-line="122" selection-end-column="14" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1747,26 +1774,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/track.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="168">
-          <caret line="171" column="78" lean-forward="false" selection-start-line="171" selection-start-column="78" selection-end-line="171" selection-end-column="78" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="425">
-          <caret line="25" column="62" lean-forward="false" selection-start-line="25" selection-start-column="62" selection-end-line="25" selection-end-column="62" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/translations/translation_en.xml">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="461">
           <caret line="193" column="0" lean-forward="true" selection-start-line="176" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1774,7 +1785,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="661">
           <caret line="193" column="0" lean-forward="false" selection-start-line="193" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1782,7 +1792,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="593">
           <caret line="189" column="0" lean-forward="false" selection-start-line="189" selection-start-column="0" selection-end-line="189" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1790,7 +1799,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="304">
           <caret line="171" column="0" lean-forward="true" selection-start-line="171" selection-start-column="0" selection-end-line="171" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1798,7 +1806,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="593">
           <caret line="193" column="0" lean-forward="false" selection-start-line="193" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1806,7 +1813,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="593">
           <caret line="193" column="0" lean-forward="false" selection-start-line="193" selection-start-column="0" selection-end-line="193" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1814,7 +1820,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3213">
           <caret line="191" column="0" lean-forward="false" selection-start-line="191" selection-start-column="0" selection-end-line="191" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1822,7 +1827,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3281">
           <caret line="195" column="0" lean-forward="false" selection-start-line="195" selection-start-column="0" selection-end-line="195" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1830,7 +1834,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2856">
           <caret line="168" column="76" lean-forward="false" selection-start-line="168" selection-start-column="76" selection-end-line="168" selection-end-column="76" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1838,7 +1841,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3281">
           <caret line="195" column="0" lean-forward="false" selection-start-line="195" selection-start-column="0" selection-end-line="195" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1846,7 +1848,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3281">
           <caret line="195" column="0" lean-forward="false" selection-start-line="195" selection-start-column="0" selection-end-line="195" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1854,7 +1855,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3281">
           <caret line="195" column="0" lean-forward="false" selection-start-line="195" selection-start-column="0" selection-end-line="195" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1862,7 +1862,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3213">
           <caret line="191" column="0" lean-forward="false" selection-start-line="191" selection-start-column="0" selection-end-line="191" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1870,7 +1869,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="3281">
           <caret line="196" column="0" lean-forward="false" selection-start-line="196" selection-start-column="0" selection-end-line="196" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -1878,49 +1876,63 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2907">
           <caret line="171" column="28" lean-forward="false" selection-start-line="171" selection-start-column="28" selection-end-line="171" selection-end-column="28" />
-          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/course-generator/cp.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="506">
-          <caret line="128" column="48" lean-forward="false" selection-start-line="128" selection-start-column="48" selection-end-line="128" selection-end-column="48" />
-          <folding>
-            <marker date="1517349452322" expanded="true" signature="1172:5183" ph="..." />
-            <marker date="1517349452322" expanded="true" signature="3287:3576" ph="..." />
-            <marker date="1517349452322" expanded="true" signature="3531:3532" ph="..." />
-            <marker date="1517349452322" expanded="true" signature="3549:3550" ph="..." />
-            <marker date="1517349452322" expanded="true" signature="3596:3903" ph="..." />
-            <marker date="1517349452322" expanded="true" signature="3871:3872" ph="..." />
-            <marker date="1517349452322" expanded="true" signature="3889:3890" ph="..." />
-            <marker date="1517349452322" expanded="true" signature="4141:4231" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/geo.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="266">
-          <caret line="514" column="9" lean-forward="false" selection-start-line="514" selection-start-column="9" selection-end-line="514" selection-end-column="9" />
+        <state relative-caret-position="2261">
+          <caret line="133" column="48" lean-forward="false" selection-start-line="133" selection-start-column="48" selection-end-line="133" selection-end-column="48" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="50" lean-forward="false" selection-start-line="26" selection-start-column="50" selection-end-line="26" selection-end-column="50" />
+        <state relative-caret-position="12614">
+          <caret line="742" column="27" lean-forward="false" selection-start-line="742" selection-start-column="27" selection-end-line="742" selection-end-column="27" />
           <folding>
-            <marker date="1517338905267" expanded="true" signature="26593:27280" ph="..." />
+            <marker date="1517353386866" expanded="true" signature="26582:27269" ph="..." />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Island.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="8687">
+          <caret line="511" column="0" lean-forward="false" selection-start-line="511" selection-start-column="0" selection-end-line="511" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/geo.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="601">
+          <caret line="547" column="30" lean-forward="false" selection-start-line="547" selection-start-column="30" selection-end-line="547" selection-end-column="30" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/track.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="595">
+          <caret line="226" column="0" lean-forward="false" selection-start-line="226" selection-start-column="0" selection-end-line="226" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="605">
+          <caret line="47" column="0" lean-forward="false" selection-start-line="47" selection-start-column="0" selection-end-line="47" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="246">
-          <caret line="580" column="76" lean-forward="false" selection-start-line="580" selection-start-column="65" selection-end-line="580" selection-end-column="76" />
+        <state relative-caret-position="294">
+          <caret line="707" column="12" lean-forward="true" selection-start-line="707" selection-start-column="12" selection-end-line="707" selection-end-column="12" />
           <folding />
         </state>
       </provider>

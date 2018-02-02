@@ -27,7 +27,7 @@ local showSettings = true
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
 local headlandFirst = true
 local nHeadlandPasses = 3
-local centerSettings = { useBestAngle = true, trackAngle = 0 }
+local centerSettings = { useBestAngle = true, rowAngle = 0 }
 
 -- pathfinding
 local path = {}
@@ -213,7 +213,7 @@ function drawSettings()
 	  elseif centerSettings.useLongestEdgeAngle then
 		  angle = string.format( '%d (longest edge)', field.bestAngle )
 	  else
-		  angle = string.format( '%d (%s)', field.bestAngle, courseGenerator.getCompassDirection( field.bestAngle ))
+		  angle = string.format( '%d (%s)', field.bestAngle, courseGenerator.getCompassAngleDeg( field.bestAngle ))
 	  end
     love.graphics.setColor( 200, 200, 00 )
     love.graphics.print( string.format( "Options: angle: %s has %d tracks", angle, field.nTracks ), 10, 90, 0, 1 )
@@ -740,11 +740,11 @@ function love.textinput( t )
 		generate()
 	end
   if t == "A" then
-	  centerSettings.trackAngle = centerSettings.trackAngle + math.pi / 16
+	  centerSettings.rowAngle = centerSettings.rowAngle + math.pi / 16
       generate()
   end
   if t == "a" then
-		centerSettings.trackAngle = centerSettings.trackAngle - math.pi / 16
+		centerSettings.rowAngle = centerSettings.rowAngle - math.pi / 16
       generate()
   end
   if t == "i" then
