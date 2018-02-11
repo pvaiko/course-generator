@@ -17,8 +17,9 @@ function printParameters()
   print( "fromInside = ", tostring( fromInside ))
   print( "turnRadius = ", turnRadius )
   print( "minHeadlandTurnAngleDeg =", minHeadlandTurnAngleDeg )
-  print( "#idlandNodes = ", field.islandNodes and #field.islandNodes or 0 )
+  print( "#islandNodes = ", field.islandNodes and #field.islandNodes or 0 )
   print( "headlandFirst = ", tostring( headlandFirst ))
+  print( "islandBypassMode = ", tostring( islandBypassMode ))
 end
 
 function generate()
@@ -27,7 +28,8 @@ function generate()
                              headlandStartLocation, overlapPercent, 
                              nTracksToSkip, extendTracks,
                              minDistanceBetweenPoints, math.rad( minSmoothAngleDeg ), math.rad( maxSmoothAngleDeg ), doSmooth, fromInside,
-                             turnRadius, math.rad( minHeadlandTurnAngleDeg ), returnToFirst, field.islandNodes, headlandFirst )
+                             turnRadius, math.rad( minHeadlandTurnAngleDeg ), returnToFirst, field.islandNodes, headlandFirst,
+                             islandBypassMode, centerSettings )
   end
 
 function generateFromAllCorners()
@@ -62,6 +64,9 @@ function resetParameter()
   returnToFirst = true
   islandNodes = {}
   headlandFirst = true
+  islandBypassMode = Island.BYPASS_MODE_CIRCLE;
+  centerSettings = {}
+  centerSettings.useBestAngle = true
 end
 
 -----------------------------------------------------------------------------

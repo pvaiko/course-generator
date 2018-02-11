@@ -240,8 +240,9 @@ function drawSettings()
       local pass = cWp.passNumber or 'n/a'
       local track = cWp.trackNumber or 'n/a' 
 	    local origTrack = cWp.originalTrackNumber or 'n/a'
+	    local ridgeMarker = cWp.ridgeMarker or 'n/a'
 	    local adjacentToIsland = cWp.adjacentIslands and #cWp.adjacentIslands or 'no'
-        love.graphics.print(string.format("pass=%s track =%s(%s) r=%s adj=%s", tostring( pass), tostring( track ), tostring( origTrack ), radius, adjacentToIsland ),
+        love.graphics.print(string.format("pass=%s track =%s(%s) r=%s adj=%s rm=%s", tostring( pass), tostring( track ), tostring( origTrack ), radius, adjacentToIsland, tostring( ridgeMarker ) ),
           windowWidth - 300, windowHeight - 20, 0, 1)
 
       end
