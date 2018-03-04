@@ -4,10 +4,10 @@ marks = {}
 
 function printParameters()
   print( "implementWidth = ", implementWidth )
-  print( "nHeadlandPasses = ", nHeadlandPasses )
-  print( "headlandClockwise = ", tostring( headlandClockwise ))
-  print( "headlandStartLocation = ", headlandStartLocation.x, headlandStartLocation.y )
-  print( "overlapPercent = ", overlapPercent )
+  print( "headlandSettings.nPasses = ", headlandSettings.nPasses )
+  print( "headlandSettings.isClockwise = ", tostring( headlandSettings.isClockwise ))
+  print( "headlandSettings.startLocation = ", headlandSettings.startLocation.x, headlandSettings.startLocation.y )
+  print( "headlandSettings.overlapPercent = ", headlandSettings.overlapPercent )
   print( "nTracksToSkip = ", nTracksToSkip )
   print( "extendTracks = ", extendTracks )
   print( "minDistanceBetweenPoints = ", minDistanceBetweenPoints )
@@ -16,29 +16,28 @@ function printParameters()
   print( "doSmooth = ", tostring( doSmooth ))
   print( "fromInside = ", tostring( fromInside ))
   print( "turnRadius = ", turnRadius )
-  print( "minHeadlandTurnAngleDeg =", minHeadlandTurnAngleDeg )
+  print( "headlandSettings.minHeadlandTurnAngleDeg =", headlandSettings.minHeadlandTurnAngleDeg )
   print( "#islandNodes = ", field.islandNodes and #field.islandNodes or 0 )
-  print( "headlandFirst = ", tostring( headlandFirst ))
+  print( "headlandSettings.headlandFirst = ", tostring( headlandSettings.headlandFirst ))
   print( "islandBypassMode = ", tostring( islandBypassMode ))
 end
 
 function generate()
  local status, err = xpcall( generateCourseForField, function() print( err, debug.traceback()) printParameters() end,
-                             field, implementWidth, nHeadlandPasses, headlandClockwise, 
-                             headlandStartLocation, overlapPercent, 
+                             field, implementWidth, headlandSettings,
                              nTracksToSkip, extendTracks,
                              minDistanceBetweenPoints, math.rad( minSmoothAngleDeg ), math.rad( maxSmoothAngleDeg ), doSmooth, fromInside,
-                             turnRadius, math.rad( minHeadlandTurnAngleDeg ), returnToFirst, field.islandNodes, headlandFirst,
+                             turnRadius, returnToFirst, field.islandNodes,
                              islandBypassMode, centerSettings )
   end
 
 function generateFromAllCorners()
   generate()
-  headlandStartLocation = { x = bb.maxX, y = bb.minY }
+	headlandSettings.startLocation = { x = bb.maxX, y = bb.minY }
   generate()
-  headlandStartLocation = { x = bb.maxX, y = bb.maxY }
+	headlandSettings.startLocation = { x = bb.maxX, y = bb.maxY }
   generate()
-  headlandStartLocation = { x = bb.minX, y = bb.maxY }
+	headlandSettings.startLocation = { x = bb.minX, y = bb.maxY }
   generate()
 end
 
@@ -47,11 +46,14 @@ function courseGenerator.debug2( text )
 end
 
 function resetParameter()
-  implementWidth = 6
-  nHeadlandPasses = 4
-  headlandClockwise = true
-  headlandStartLocation = {}
-  overlapPercent = 0
+  headlandSettings = {}
+	implementWidth = 6
+	headlandSettings.nPasses = 4
+	headlandSettings.isClockwise = true
+	headlandSettings.startLocation = {}
+  headlandSettings.overlapPercent = 0
+	headlandSettings.minHeadlandTurnAngleDeg = 60
+	headlandSettings.headlandFirst = true
   nTracksToSkip = 0
   extendTracks = 0
   minDistanceBetweenPoints = 0.5
@@ -60,10 +62,8 @@ function resetParameter()
   doSmooth = true
   fromInside = false
   turnRadius = 6
-  minHeadlandTurnAngleDeg = 60
   returnToFirst = true
   islandNodes = {}
-  headlandFirst = true
   islandBypassMode = Island.BYPASS_MODE_CIRCLE;
   centerSettings = {}
   centerSettings.useBestAngle = true
@@ -80,24 +80,24 @@ print( "#####################################################################" )
 print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
 field.boundary = Polygon:new( field.boundary )
 bb =  field.boundary:getBoundingBox()
-headlandStartLocation = { x = bb.minX, y = bb.minY }
-nHeadlandPasses = 20; generate()
+headlandSettings.startLocation = { x = bb.minX, y = bb.minY }
+headlandSettings.nPasses = 20; generate()
 assert( #field.course > 100 )
-assert( #field.headlandTracks == 12 )
+assert( #field.headlandTracks == 11, "headlandTracks " .. tostring(#field.headlandTracks))
 
-nHeadlandPasses = 0; generate()
+headlandSettings.nPasses = 0; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 0 )
 
-nHeadlandPasses = 4; generate()
+headlandSettings.nPasses = 4; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 4 )
 
-headlandClockwise = false; generate()
+headlandSettings.isClockwise = false; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 4 )
 
-headlandFirst = false; generate()
+headlandSettings.headlandFirst = false; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 4 )
 
@@ -113,8 +113,8 @@ print( "#####################################################################" )
 print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
 
 bb =  field.boundary:getBoundingBox()
-headlandStartLocation = { x = bb.minX, y = bb.minY }
-nHeadlandPasses = 3; generate()
+headlandSettings.startLocation = { x = bb.minX, y = bb.minY }
+headlandSettings.nPasses = 3; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 3 )
 --
@@ -130,21 +130,21 @@ print( "#####################################################################" )
 print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
 
 bb =  field.boundary:getBoundingBox()
-headlandStartLocation = { x = bb.minX, y = bb.minY }
+headlandSettings.startLocation = { x = bb.minX, y = bb.minY }
 implementWidth = 3.5
-nHeadlandPasses = 0; generate()
+headlandSettings.nPasses = 0; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 0 )
 
-nHeadlandPasses = 4; generate()
+headlandSettings.nPasses = 4; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 4 )
 
-nHeadlandPasses = 12; generate()
+headlandSettings.nPasses = 12; generate()
 assert( #field.course > 100 )
-assert( #field.headlandTracks == 11 )
+assert( #field.headlandTracks == 10 )
 
-nHeadlandPasses = 4; fromInside = true; generate()
+headlandSettings.nPasses = 4; fromInside = true; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 4 )
 
@@ -160,17 +160,17 @@ print( "#####################################################################" )
 print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
 
 bb =  field.boundary:getBoundingBox()
-headlandStartLocation = { x = bb.minX, y = bb.minY }
-nHeadlandPasses = 4; generate()
+headlandSettings.startLocation = { x = bb.minX, y = bb.minY }
+headlandSettings.nPasses = 4; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 4 )
 
-nHeadlandPasses = 0; generate()
+headlandSettings.nPasses = 0; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 0 )
 
-nHeadlandPasses = 200; generate()
+headlandSettings.nPasses = 200; generate()
 assert( #field.course > 100 )
-assert( #field.headlandTracks == 44 )
+assert( #field.headlandTracks == 43 )
 
 

@@ -4,7 +4,7 @@ local field = {}
 marks = {}
 local lines = {}
 local helperPolygon = {}
-
+local headlandSettings = {}
 local leftMouseKeyPressedAt = {}
 local leftMouseKeyPressed = false
 local pointSize = 1
@@ -25,8 +25,9 @@ local drawGrid = false
 local drawHelpers = true
 local showSettings = true
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
-local headlandFirst = true
-local nHeadlandPasses = 3
+headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
+headlandSettings.headlandFirst = true
+headlandSettings.nPasses = 3
 local centerSettings = { useBestAngle = true, rowAngle = 0 }
 
 -- pathfinding
@@ -49,20 +50,20 @@ function love.load( arg )
         field = f
       end
     end
-    field.width = 6
+    field.width = 4
   end 
   islandNodes = field.islandNodes
   field.loadedBoundaryVertices = getVertices( field.boundary )
-  field.vehicle = { location = {x=field.boundary[ 1 ].x, y=field.boundary[ 1 ].y} }
+  headlandSettings.startLocation = {x=field.boundary[ 1 ].x, y=field.boundary[ 1 ].y}
 
-  field.overlap = 0
+  headlandSettings.overlapPercent = 0
   field.nTracksToSkip = 0
   field.extendTracks = 0
   field.minDistanceBetweenPoints = 0.5
   minSmoothingAngleDeg = 30
-  minHeadlandTurnAngleDeg = 85
+  headlandSettings.minHeadlandTurnAngleDeg = 85
   field.doSmooth = true
-  field.headlandClockwise = false
+  headlandSettings.isClockwise = false
   field.roundCorners = false
   field.turningRadius = 5
   if arg[ 2 ] == "fromCourse" then
@@ -70,9 +71,9 @@ function love.load( arg )
     -- generation, that is, the field.boundary is actually
     -- a headland pass of a course
     -- calculate the boundary from the headland track
-    field.boundary = calculateHeadlandTrack( field.boundary, field.width / 2,
+    field.boundary = calculateHeadlandTrack( field.boundary, courseGenerator.HEADLAND_MODE_NORMAL, field.width / 2,
                                              field.minDistanceBetweenPoints, math.rad( minSmoothingAngleDeg), 0, 
-                                             field.doSmooth, false, field.turningRadius ) 
+                                             field.doSmooth, false, field.turningRadius, nil, nil )
   end
   field.boundary = Polygon:new( field.boundary )
   field.boundingBox = field.boundary:getBoundingBox()
@@ -185,7 +186,7 @@ function drawSettings()
   love.graphics.print( string.format( "file: %s", arg[ 3 ]), 10, 10, 0, 1 )
   love.graphics.setColor( 00, 200, 00 )
   local headlandDirection, roundCorners
-  if field.headlandClockwise then
+  if headlandSettings.isClockwise then
     headlandDirection = "clockwise"
   else
     headlandDirection = "counterclockwise"
@@ -197,7 +198,7 @@ function drawSettings()
     roundCorners = "sharp"
   end
   love.graphics.print( string.format( "HEADLAND width: %.1f m, overlap %d%% number of passes: %d, direction %s, corners: %s, radius: %.1f",
-           field.width, field.overlap, nHeadlandPasses, headlandDirection, roundCorners, field.turningRadius ), 10, 30, 0, 1 )
+           field.width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, field.turningRadius ), 10, 30, 0, 1 )
   love.graphics.print( string.format( "CENTER skipping %d tracks, extend %d m", 
            field.nTracksToSkip, field.extendTracks ), 10, 50, 0, 1 )
            
@@ -205,7 +206,7 @@ function drawSettings()
   if field.doSmooth then smoothingStatus = "on" else smoothingStatus = "off" end
   
   love.graphics.print( string.format( "min point distance: %.2f m, corner smoothing: %s, min. smoothing angle: %d, min. headland turn angle = %d", 
-    field.minDistanceBetweenPoints, smoothingStatus, minSmoothingAngleDeg, minHeadlandTurnAngleDeg ), 10, 70, 0, 1 )
+    field.minDistanceBetweenPoints, smoothingStatus, minSmoothingAngleDeg, headlandSettings.minHeadlandTurnAngleDeg ), 10, 70, 0, 1 )
   if field.bestAngle then
 	  local angle
 	  if centerSettings.useBestAngle then
@@ -259,7 +260,7 @@ function drawSettings()
   y = y + 20
   love.graphics.print( "d - toggle round headland corners", 10,y, 0, 1 )
   y = y + 20
-  love.graphics.print( "h - show headland pass width", 10, y, 0, 1 )
+  love.graphics.print( "h - toggle headland mode", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "w/W - -/+ work width", 10, y, 0, 1 )
   y = y + 20
@@ -631,26 +632,12 @@ function generate()
   lines = {}
   helperPolygon = {}
   status, ok = xpcall( generateCourseForField, errorHandler, 
-                                           field, field.width, nHeadlandPasses, 
-                                           field.headlandClockwise, field.vehicle.location,
-                                           field.overlap, field.nTracksToSkip,
+                                           field, field.width, headlandSettings, field.nTracksToSkip,
                                            field.extendTracks, field.minDistanceBetweenPoints,
-                                           math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), field.doSmooth,
-                                           field.roundCorners, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ),
-  										                     true, islandNodes, headlandFirst, islandBypassMode, centerSettings
+                                           math.rad( minSmoothingAngleDeg ), math.rad( headlandSettings.minHeadlandTurnAngleDeg ), field.doSmooth,
+                                           field.roundCorners, field.turningRadius,
+  										                     true, islandNodes, islandBypassMode, centerSettings
                                            )
---[[
-	status = true
-	generateCourseForField(
-	field, field.width, nHeadlandPasses,
-	field.headlandClockwise, field.vehicle.location,
-	field.overlap, field.nTracksToSkip,
-	field.extendTracks, field.minDistanceBetweenPoints,
-	math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), field.doSmooth,
-	field.roundCorners, field.turningRadius, math.rad( minHeadlandTurnAngleDeg ),
-	true, islandNodes, headlandFirst, islandBypassMode, centerSettings
-	)
-]]
 
   if not status then
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )
@@ -687,25 +674,25 @@ function love.textinput( t )
     generate()
   end
   if t == "o" then
-    field.overlap = field.overlap - 5 
+    headlandSettings.overlapPercent = headlandSettings.overlapPercent - 5 
     generate()
   end
   if t == "O" then
-    field.overlap = field.overlap + 5 
+    headlandSettings.overlapPercent = headlandSettings.overlapPercent + 5 
     generate()
   end
   if t == "P" then
-    nHeadlandPasses = nHeadlandPasses + 1
+    headlandSettings.nPasses = headlandSettings.nPasses + 1
     generate()
   end
   if t == "p" then
-    if nHeadlandPasses > 0 then
-      nHeadlandPasses = nHeadlandPasses - 1
+    if headlandSettings.nPasses > 0 then
+      headlandSettings.nPasses = headlandSettings.nPasses - 1
       generate()
     end
   end
   if t == "c" then
-    field.headlandClockwise = not field.headlandClockwise
+    headlandSettings.isClockwise = not headlandSettings.isClockwise
     generate()
   end
   if t == "d" then
@@ -721,10 +708,15 @@ function love.textinput( t )
     generate()
   end
   if t == "h" then
-    showWidth = not showWidth
+	  if headlandSettings.mode == courseGenerator.HEADLAND_MODE_NORMAL then
+		  headlandSettings.mode = courseGenerator.HEADLAND_MODE_LONG_FIELD
+	  else
+		  headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
+	  end
+	  generate()
   end
   if t == "r" then
-    headlandFirst = not headlandFirst
+    headlandSettings.headlandFirst = not headlandSettings.headlandFirst
     generate()
   end
 	if t == "q" then
@@ -777,13 +769,13 @@ function love.textinput( t )
     generate()
   end
   if t == "k" then
-    if minHeadlandTurnAngleDeg > 5 then
-      minHeadlandTurnAngleDeg = minHeadlandTurnAngleDeg - 5
+    if headlandSettings.minHeadlandTurnAngleDeg > 5 then
+      headlandSettings.minHeadlandTurnAngleDeg = headlandSettings.minHeadlandTurnAngleDeg - 5
       generate()
     end
   end
   if t == "K" then
-    minHeadlandTurnAngleDeg = minHeadlandTurnAngleDeg + 5
+    headlandSettings.minHeadlandTurnAngleDeg = headlandSettings.minHeadlandTurnAngleDeg + 5
     generate()
   end
   if t == "m" then
@@ -851,8 +843,8 @@ function love.mousepressed(x, y, button, istouch)
    end
    if button == 2 then
      cix, ciy = love2real( x, y )
-     field.vehicle.location.x = cix
-     field.vehicle.location.y = ciy
+     headlandSettings.startLocation.x = cix
+     headlandSettings.startLocation.y = ciy
      generate()
      path.to = {}
      path.to.x, path.to.y = love2real( x, y )
