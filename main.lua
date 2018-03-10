@@ -27,7 +27,7 @@ local showSettings = true
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
 headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 headlandSettings.headlandFirst = true
-headlandSettings.nPasses = 3
+headlandSettings.nPasses = 1
 local centerSettings = { useBestAngle = true, rowAngle = 0 }
 
 -- pathfinding
@@ -64,7 +64,7 @@ function love.load( arg )
   headlandSettings.minHeadlandTurnAngleDeg = 85
   field.doSmooth = true
   headlandSettings.isClockwise = false
-  field.roundCorners = false
+  field.roundCorners = true
   field.turningRadius = 5
   if arg[ 2 ] == "fromCourse" then
     -- use the outermost headland path as the basis of the 
