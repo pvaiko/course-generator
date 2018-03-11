@@ -36,6 +36,8 @@ assert( #points == 14 )
 points = findArcBetweenEdges( e1, e2, 5 )
 assert( points == nil )
 
+p1 = { x = 0, }
+
 
 local pt = { 1, 2, 3, 4, 5 }
 pt = reorderTracksForAlternateFieldwork( pt, 0 )
