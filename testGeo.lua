@@ -11,20 +11,40 @@ assert( eq( reverseAngle( math.rad( 270 )), math.rad( 90 )))
 assert( eq( reverseAngle( math.rad( -90 )), math.rad( 90 )))
 
 e1 = { from = { x=1, y=0 }, to = { x=2, y=0 }, dx=1, dy=0, length = 1, angle = 0 }
+p1 = {x=2, y=0, prevEdge = e1 }
+
 e2 = { from = { x=3, y=1 }, to = { x=3, y=2 }, dx=0, dy=1, length = 1, angle = math.rad( 90 )}
+p2 = { x=3, y=1, nextEdge = e2 }
+
 is = getIntersectionOfExtendedEdges( e1, e2, 10 )
 assert( is.x == 3 )
 assert( is.y == 0 )
 points = findArcBetweenEdges( e1, e2, 1 )
 assert( #points == 10 )
 
+r = getTurningRadiusBetweenTwoPoints( p1, p2, 4 )
+assert( eq( r, 1 ))
+
 e2 = { from = { x=3, y=3 }, to = { x=3, y=4 }, dx=0, dy=1, length = 1, angle = math.rad( 90 )}
+p2 = { x=3, y=4, nextEdge = e2 }
 is = getIntersectionOfExtendedEdges( e1, e2, 10 )
 assert( is.x == 3 )
 assert( is.y == 0 )
-
 is = getIntersectionOfExtendedEdges( e1, e2, 1 )
 assert( is == nil )
+r = getTurningRadiusBetweenTwoPoints( p1, p2, 4 )
+assert( eq( r, 1 ))
+
+e2 = { from = { x=3, y=3 }, to = { x=3, y=4 }, dx=0, dy=1, length = 1, angle = math.rad( 45 )}
+p2 = { x=3, y=4, nextEdge = e2 }
+r = getTurningRadiusBetweenTwoPoints( p1, p2, 4 )
+print( r )
+
+e2 = { from = { x=4, y=3 }, to = { x=4, y=4 }, dx=0, dy=1, length = 1, angle = math.rad( 90 )}
+p2 = { x=4, y=4, nextEdge = e2 }
+r = getTurningRadiusBetweenTwoPoints( p1, p2, 4 )
+assert( eq( r, 2 ))
+
 
 e1 = { from = { x=1, y=0 }, to = { x=2, y=0 }, dx=1, dy=0, length = 1, angle = 0 }
 e2 = { from = { x=3, y=10 }, to = { x=0, y=13 }, dx=-3, dy=3, length = math.sqrt( 2 ) * 3, angle = math.rad( 135 )}
@@ -210,55 +230,3 @@ t2 = { intersections={{ x=2 }, { x=3 }}}
 assert( overlaps( t1, t2 ))
 assert( overlaps( t2, t1 ))
 
-nonConvexField = createRectangularPolygon( 0, 0, 200, 100, 5 )
--- so far it is convex, now make it non-convex
-for i, point in ipairs( nonConvexField ) do
-  if point.y == 0 and point.x >= 50 and point.x <= 150 then
-    point.y = 50
-  end
-end
-marks = {}
-lines = {}
-field = {}
-field.boundary = Polygon:new( nonConvexField )
-field.boundary:calculateData()
-field.vehicle = { location = {x=-5, y=5}, heading = 0 }
-field.nHeadlandPasses = 2
-field.width = 3
-minHeadlandTurnAngle = math.rad( 60 )
-generateCourseForField( field, 2, 3, true, field.vehicle.location, 0, 0, 0, 0.5, math.rad( 30 ), math.rad( 60), false, true, 5, minHeadlandTurnAngle )
-writeCourseToFile( field, "CoursePlay_Courses\\test\\course0101.xml" )
-
-testDir = "CoursePlay_Courses\\test\\"
-managerFileName="courseManager.xml"
-
--- course creation based on existing courses
-for selected = 1, 14 do 
-  os.execute( "copy " .. testDir .. managerFileName .. " " .. testDir .. managerFileName .. ".orig" )
-  managerFile = io.open( testDir .. managerFileName, "r" )
-  savedCourses, nextFreeId, nextFreeSequence = getSavedCourses( managerFile )
-  managerFile:close()
-  oldCourse = savedCourses[ selected ]
-  print( oldCourse.id, oldCourse.fileName )
-  newCourse = { id=nextFreeId, 
-                name= "(test) " .. oldCourse.name,
-                parent=oldCourse.parent,
-                fileName=string.format( "courseStorage%04d.xml", nextFreeSequence ),
-                sequence=nextFreeSequence }
-  copyCourse( testDir, oldCourse, newCourse, managerFileName ) 
-  addCourseToManagerFile( testDir, managerFileName, newCourse)
-  -- reread managerfile
-  managerFile = io.open( testDir .. managerFileName, "r" )
-  savedCourses, nextFreeId, nextFreeSequence = getSavedCourses( managerFile )
-  managerFile:close()
-  assert( #savedCourses == 15 )
-  createdCourse = savedCourses[ 15 ]
-  assert( createdCourse.id == newCourse.id and 
-          createdCourse.fileName == newCourse.fileName and 
-          createdCourse.sequence == newCourse.sequence and 
-          createdCourse.parent == newCourse.parent )
-  -- delete copied course file and restore the manager file
-  os.execute( "del " .. testDir .. createdCourse.fileName )
-  os.execute( "move " .. testDir .. managerFileName .. ".orig " .. testDir .. managerFileName  )
-
-end

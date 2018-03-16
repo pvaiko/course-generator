@@ -65,7 +65,7 @@ function love.load( arg )
   field.doSmooth = true
   headlandSettings.isClockwise = false
   field.roundCorners = true
-  field.turningRadius = 5
+  field.turningRadius = 13.0
   if arg[ 2 ] == "fromCourse" then
     -- use the outermost headland path as the basis of the 
     -- generation, that is, the field.boundary is actually
@@ -805,6 +805,9 @@ function love.textinput( t )
 	end
 	if t == "8" then
 		drawGrid= not drawGrid
+	end
+	if t == "9" then
+		showWidth = not showWidth
 	end
   if t == "=" then
 	  currentWaypointIndex = currentWaypointIndex + 1
