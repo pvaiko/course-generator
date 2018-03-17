@@ -31,8 +31,11 @@ function generate()
                              islandBypassMode, centerSettings )
   end
 
-function generateFromAllCorners()
-  generate()
+function generatePermutations()
+	generate()
+	fromInside = true
+	generate()
+	fromInside = false
 	headlandSettings.startLocation = { x = bb.maxX, y = bb.minY }
   generate()
 	headlandSettings.startLocation = { x = bb.maxX, y = bb.maxY }
