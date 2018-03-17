@@ -65,7 +65,7 @@ function love.load( arg )
   field.doSmooth = true
   headlandSettings.isClockwise = false
   field.roundCorners = true
-  field.turningRadius = 13.0
+  field.turningRadius = 6
   if arg[ 2 ] == "fromCourse" then
     -- use the outermost headland path as the basis of the 
     -- generation, that is, the field.boundary is actually
@@ -709,7 +709,7 @@ function love.textinput( t )
   end
   if t == "h" then
 	  if headlandSettings.mode == courseGenerator.HEADLAND_MODE_NORMAL then
-		  headlandSettings.mode = courseGenerator.HEADLAND_MODE_LONG_FIELD
+		  headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 	  else
 		  headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 	  end
