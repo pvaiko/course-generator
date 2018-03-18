@@ -8,9 +8,6 @@
   <component name="ChangeListManager">
     <list default="true" id="515c9c6a-5ee4-47c9-b655-ab198105a3b2" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/courseplay/course-generator/geo.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/geo.lua" />
-      <change beforePath="$PROJECT_DIR$/courseplay/course-generator/track.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/track.lua" />
-      <change beforePath="$PROJECT_DIR$/main.lua" afterPath="$PROJECT_DIR$/main.lua" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -1235,14 +1232,7 @@
       <workItem from="1521155934229" duration="1130000" />
       <workItem from="1521201505363" duration="3494000" />
       <workItem from="1521211824734" duration="79000" />
-      <workItem from="1521287384918" duration="5892000" />
-    </task>
-    <task id="LOCAL-00001" summary="Refactoring: embed nest courseplay repo in an ignored subdir.">
-      <created>1511107172313</created>
-      <option name="number" value="00001" />
-      <option name="presentableId" value="LOCAL-00001" />
-      <option name="project" value="LOCAL" />
-      <updated>1511107172313</updated>
+      <workItem from="1521287384918" duration="6502000" />
     </task>
     <task id="LOCAL-00002" summary="Create island polygons from nodes">
       <created>1511227044307</created>
@@ -1580,11 +1570,18 @@
       <option name="project" value="LOCAL" />
       <updated>1521292396976</updated>
     </task>
-    <option name="localTasksCounter" value="50" />
+    <task id="LOCAL-00050" summary="Set turn radius in headland corners.">
+      <created>1521293293251</created>
+      <option name="number" value="00050" />
+      <option name="presentableId" value="LOCAL-00050" />
+      <option name="project" value="LOCAL" />
+      <updated>1521293293252</updated>
+    </task>
+    <option name="localTasksCounter" value="51" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="96422000" />
+    <option name="totallyTimeSpent" value="97032000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
