@@ -24,11 +24,18 @@ local drawBlocks = true
 local drawGrid = false
 local drawHelpers = true
 local showSettings = true
+
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
 headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 headlandSettings.headlandFirst = true
-headlandSettings.nPasses = 1
+headlandSettings.nPasses = 2
 local centerSettings = { useBestAngle = true, rowAngle = 0 }
+
+local turningRadius = 6
+local nTracksToSkip = 0
+local extendTracks = 0
+local minDistanceBetweenPoints = 0.5
+local minSmoothingAngleDeg = 30
 
 -- pathfinding
 local path = {}
@@ -57,23 +64,18 @@ function love.load( arg )
   headlandSettings.startLocation = {x=field.boundary[ 1 ].x, y=field.boundary[ 1 ].y}
 
   headlandSettings.overlapPercent = 0
-  field.nTracksToSkip = 0
-  field.extendTracks = 0
-  field.minDistanceBetweenPoints = 0.5
-  minSmoothingAngleDeg = 30
   headlandSettings.minHeadlandTurnAngleDeg = 85
   field.doSmooth = true
   headlandSettings.isClockwise = false
-  field.roundCorners = true
-  field.turningRadius = 6
+  field.roundCorners = false
   if arg[ 2 ] == "fromCourse" then
     -- use the outermost headland path as the basis of the 
     -- generation, that is, the field.boundary is actually
     -- a headland pass of a course
     -- calculate the boundary from the headland track
     field.boundary = calculateHeadlandTrack( field.boundary, courseGenerator.HEADLAND_MODE_NORMAL, field.width / 2,
-                                             field.minDistanceBetweenPoints, math.rad( minSmoothingAngleDeg), 0, 
-                                             field.doSmooth, false, field.turningRadius, nil, nil )
+                                             minDistanceBetweenPoints, math.rad( minSmoothingAngleDeg), 0,
+                                             field.doSmooth, false, turningRadius, nil, nil )
   end
   field.boundary = Polygon:new( field.boundary )
   field.boundingBox = field.boundary:getBoundingBox()
@@ -198,15 +200,15 @@ function drawSettings()
     roundCorners = "sharp"
   end
   love.graphics.print( string.format( "HEADLAND width: %.1f m, overlap %d%% number of passes: %d, direction %s, corners: %s, radius: %.1f",
-           field.width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, field.turningRadius ), 10, 30, 0, 1 )
+           field.width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, turningRadius ), 10, 30, 0, 1 )
   love.graphics.print( string.format( "CENTER skipping %d tracks, extend %d m", 
-           field.nTracksToSkip, field.extendTracks ), 10, 50, 0, 1 )
+           nTracksToSkip, extendTracks ), 10, 50, 0, 1 )
            
   local smoothingStatus 
   if field.doSmooth then smoothingStatus = "on" else smoothingStatus = "off" end
   
   love.graphics.print( string.format( "min point distance: %.2f m, corner smoothing: %s, min. smoothing angle: %d, min. headland turn angle = %d", 
-    field.minDistanceBetweenPoints, smoothingStatus, minSmoothingAngleDeg, headlandSettings.minHeadlandTurnAngleDeg ), 10, 70, 0, 1 )
+    minDistanceBetweenPoints, smoothingStatus, minSmoothingAngleDeg, headlandSettings.minHeadlandTurnAngleDeg ), 10, 70, 0, 1 )
   if field.bestAngle then
 	  local angle
 	  if centerSettings.useBestAngle then
@@ -632,10 +634,10 @@ function generate()
   lines = {}
   helperPolygon = {}
   status, ok = xpcall( generateCourseForField, errorHandler, 
-                                           field, field.width, headlandSettings, field.nTracksToSkip,
-                                           field.extendTracks, field.minDistanceBetweenPoints,
+                                           field, field.width, headlandSettings, nTracksToSkip,
+                                           extendTracks, minDistanceBetweenPoints,
                                            math.rad( minSmoothingAngleDeg ), math.rad( headlandSettings.minHeadlandTurnAngleDeg ), field.doSmooth,
-                                           field.roundCorners, field.turningRadius,
+                                           field.roundCorners, turningRadius,
   										                     true, islandNodes, islandBypassMode, centerSettings
                                            )
 
@@ -666,11 +668,11 @@ function love.textinput( t )
     generate()
   end
   if t == "X" then
-    field.extendTracks = field.extendTracks + 1
+    extendTracks = extendTracks + 1
     generate()
   end
   if t == "x" then
-    field.extendTracks = field.extendTracks - 1
+    extendTracks = extendTracks - 1
     generate()
   end
   if t == "o" then
@@ -700,11 +702,11 @@ function love.textinput( t )
     generate()
   end
   if t == "t" then
-    field.turningRadius = field.turningRadius - 0.5
+    turningRadius = turningRadius - 0.5
     generate()
   end
   if t == "T" then
-    field.turningRadius = field.turningRadius + 0.5
+    turningRadius = turningRadius + 0.5
     generate()
   end
   if t == "h" then
@@ -749,13 +751,13 @@ function love.textinput( t )
     generate()
   end
   if t == "," then
-    if field.minDistanceBetweenPoints > 0.25 then
-      field.minDistanceBetweenPoints = field.minDistanceBetweenPoints - 0.25
+    if minDistanceBetweenPoints > 0.25 then
+      minDistanceBetweenPoints = minDistanceBetweenPoints - 0.25
       generate()
     end
   end
   if t == "<" then
-    field.minDistanceBetweenPoints = field.minDistanceBetweenPoints + 0.25
+    minDistanceBetweenPoints = minDistanceBetweenPoints + 0.25
     generate()
   end
   if t == "." then

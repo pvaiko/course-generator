@@ -8,7 +8,8 @@
   <component name="ChangeListManager">
     <list default="true" id="515c9c6a-5ee4-47c9-b655-ab198105a3b2" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change beforePath="$PROJECT_DIR$/courseplay/course-generator/center.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
+      <change beforePath="$PROJECT_DIR$/courseplay/course-generator/Island.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/Island.lua" />
+      <change beforePath="$PROJECT_DIR$/main.lua" afterPath="$PROJECT_DIR$/main.lua" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -33,11 +34,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Island.lua" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Island.lua" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Island.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="260">
-              <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
+            <state relative-caret-position="308">
+              <caret line="479" column="37" lean-forward="true" selection-start-line="479" selection-start-column="37" selection-end-line="479" selection-end-column="37" />
               <folding />
             </state>
           </provider>
@@ -106,18 +107,18 @@
       <file leaf-file-name="main.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="229">
-              <caret line="67" column="25" lean-forward="false" selection-start-line="67" selection-start-column="25" selection-end-line="67" selection-end-column="25" />
+            <state relative-caret-position="468">
+              <caret line="60" column="0" lean-forward="false" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="center.lua" pinned="false" current-in-tab="true">
+      <file leaf-file-name="center.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="83">
-              <caret line="182" column="81" lean-forward="true" selection-start-line="182" selection-start-column="81" selection-end-line="182" selection-end-column="81" />
+            <state relative-caret-position="48">
+              <caret line="96" column="6" lean-forward="false" selection-start-line="96" selection-start-column="6" selection-end-line="96" selection-end-column="6" />
               <folding />
             </state>
           </provider>
@@ -137,13 +138,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>roundco</find>
-      <find>addturns</find>
-      <find>roundcorners</find>
-      <find>Tried</find>
-      <find>markfor</find>
-      <find>nheadlan</find>
-      <find>targe</find>
       <find>turnRadius</find>
       <find>3</find>
       <find>r=11</find>
@@ -164,15 +158,18 @@
       <find>radius</find>
       <find>added</find>
       <find>removeMarkedPoints</find>
-      <find>print</find>
       <find>headlandSettings</find>
       <find>entrypoint</find>
+      <find>print</find>
+      <find>delta.*point.*head</find>
+      <find>getHeadlandPath</find>
+      <find>field.turningRadius</find>
+      <find>field.nTracksToSkip</find>
+      <find>field.extendTracks</find>
+      <find>field.minDistanceBetweenPoints</find>
+      <find>newWp</find>
     </findStrings>
     <replaceStrings>
-      <replace>, expectedNumberOfWaypoints</replace>
-      <replace>assertEquals</replace>
-      <replace>p</replace>
-      <replace>point(</replace>
       <replace>printPoints</replace>
       <replace>polygon:calculateData()</replace>
       <replace>self</replace>
@@ -199,6 +196,10 @@
       <replace>headlandSettings.overlapPercent</replace>
       <replace>headlandSettings.headlandFirst</replace>
       <replace>headlandSettings.minHeadlandTurnAngle</replace>
+      <replace>turningRadius</replace>
+      <replace>nTracksToSkip</replace>
+      <replace>extendTracks</replace>
+      <replace>minDistanceBetweenPoints</replace>
     </replaceStrings>
     <dirStrings>
       <dir>D:\Projects\Private\FS17\course-generator</dir>
@@ -265,12 +266,12 @@
         <option value="$PROJECT_DIR$/fieldTester.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/headland.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/pathfinder.lua" />
-        <option value="$PROJECT_DIR$/courseplay/course-generator/Island.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/Genetic.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/track.lua" />
-        <option value="$PROJECT_DIR$/main.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/geo.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
+        <option value="$PROJECT_DIR$/main.lua" />
+        <option value="$PROJECT_DIR$/courseplay/course-generator/Island.lua" />
       </list>
     </option>
   </component>
@@ -1233,14 +1234,7 @@
       <workItem from="1521155934229" duration="1130000" />
       <workItem from="1521201505363" duration="3494000" />
       <workItem from="1521211824734" duration="79000" />
-      <workItem from="1521287384918" duration="8473000" />
-    </task>
-    <task id="LOCAL-00002" summary="Create island polygons from nodes">
-      <created>1511227044307</created>
-      <option name="number" value="00002" />
-      <option name="presentableId" value="LOCAL-00002" />
-      <option name="project" value="LOCAL" />
-      <updated>1511227044307</updated>
+      <workItem from="1521287384918" duration="13459000" />
     </task>
     <task id="LOCAL-00003" summary="Headland around islands">
       <created>1511293289074</created>
@@ -1578,11 +1572,18 @@
       <option name="project" value="LOCAL" />
       <updated>1521293293252</updated>
     </task>
-    <option name="localTasksCounter" value="51" />
+    <task id="LOCAL-00051" summary="#2635 fixed starting position when no headland.&#10;&#10;Trying to make @pops64 happy...">
+      <created>1521376306058</created>
+      <option name="number" value="00051" />
+      <option name="presentableId" value="LOCAL-00051" />
+      <option name="project" value="LOCAL" />
+      <updated>1521376306058</updated>
+    </task>
+    <option name="localTasksCounter" value="52" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="99003000" />
+    <option name="totallyTimeSpent" value="103989000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -1607,13 +1608,14 @@
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32995737" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="LuaCheck" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912722" sideWeight="0.5" order="16" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24120083" sideWeight="0.79779005" order="18" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3064182" sideWeight="0.49779007" order="19" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.10766046" sideWeight="0.49779007" order="19" side_tool="false" content_ui="tabs" />
       <window_info id="Mongo Explorer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32983425" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="11" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16648707" sideWeight="0.4958932" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2513144" sideWeight="0.48287293" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1281768" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2498621" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -1639,7 +1641,6 @@
       <window_info id="Run with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="12" side_tool="false" content_ui="tabs" />
       <window_info id="Reviews" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="13" side_tool="false" content_ui="tabs" />
       <window_info id="JRebel" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2513144" sideWeight="0.48287293" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Learn" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3294702" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Debug with VisualVM" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32912722" sideWeight="0.49779007" order="14" side_tool="false" content_ui="tabs" />
     </layout>
@@ -1736,7 +1737,6 @@
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
     <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="true" />
-    <MESSAGE value="Handle bigger islands.&#10;&#10;Nothing really new here just leveraging the non-convex field capabilities." />
     <MESSAGE value="Bigger islands step 2&#10;&#10;Now we split the field into blocks correctly but can't always&#10;connect all the blocks." />
     <MESSAGE value="Bigger islands step 3&#10;&#10;Playing with genetic algorithms to find optimum sequence of blocks" />
     <MESSAGE value="Fix for #2533, ignore very small islands." />
@@ -1761,7 +1761,8 @@
     <MESSAGE value="work in progress" />
     <MESSAGE value="First acceptable version" />
     <MESSAGE value="Set turn radius in headland corners." />
-    <option name="LAST_COMMIT_MESSAGE" value="Set turn radius in headland corners." />
+    <MESSAGE value="#2635 fixed starting position when no headland.&#10;&#10;Trying to make @pops64 happy..." />
+    <option name="LAST_COMMIT_MESSAGE" value="#2635 fixed starting position when no headland.&#10;&#10;Trying to make @pops64 happy..." />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -2094,14 +2095,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Island.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="260">
-          <caret line="13" column="0" lean-forward="false" selection-start-line="13" selection-start-column="0" selection-end-line="13" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Genetic.lua">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="260">
@@ -2142,18 +2135,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.lua">
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="229">
-          <caret line="67" column="25" lean-forward="false" selection-start-line="67" selection-start-column="25" selection-end-line="67" selection-end-column="25" />
+        <state relative-caret-position="48">
+          <caret line="96" column="6" lean-forward="false" selection-start-line="96" selection-start-column="6" selection-end-line="96" selection-end-column="6" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
+    <entry file="file://$PROJECT_DIR$/main.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="83">
-          <caret line="182" column="81" lean-forward="true" selection-start-line="182" selection-start-column="81" selection-end-line="182" selection-end-column="81" />
+        <state relative-caret-position="468">
+          <caret line="60" column="0" lean-forward="false" selection-start-line="60" selection-start-column="0" selection-end-line="60" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/Island.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="308">
+          <caret line="479" column="37" lean-forward="true" selection-start-line="479" selection-start-column="37" selection-end-line="479" selection-end-column="37" />
           <folding />
         </state>
       </provider>
