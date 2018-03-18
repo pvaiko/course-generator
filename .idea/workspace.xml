@@ -8,6 +8,7 @@
   <component name="ChangeListManager">
     <list default="true" id="515c9c6a-5ee4-47c9-b655-ab198105a3b2" name="Default" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change beforePath="$PROJECT_DIR$/courseplay/course-generator/center.lua" afterPath="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -52,11 +53,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="geo.lua" pinned="false" current-in-tab="true">
+      <file leaf-file-name="geo.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/geo.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="418">
-              <caret line="324" column="65" lean-forward="true" selection-start-line="324" selection-start-column="65" selection-end-line="324" selection-end-column="65" />
+            <state relative-caret-position="242">
+              <caret line="316" column="21" lean-forward="false" selection-start-line="316" selection-start-column="21" selection-end-line="316" selection-end-column="21" />
               <folding />
             </state>
           </provider>
@@ -75,8 +76,8 @@
       <file leaf-file-name="track.lua" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/track.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="131" column="60" lean-forward="false" selection-start-line="131" selection-start-column="44" selection-end-line="131" selection-end-column="60" />
+            <state relative-caret-position="164">
+              <caret line="180" column="81" lean-forward="false" selection-start-line="180" selection-start-column="81" selection-end-line="180" selection-end-column="81" />
               <folding />
             </state>
           </provider>
@@ -112,11 +113,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="center.lua" pinned="false" current-in-tab="false">
+      <file leaf-file-name="center.lua" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="200">
-              <caret line="10" column="14" lean-forward="false" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
+            <state relative-caret-position="83">
+              <caret line="182" column="81" lean-forward="true" selection-start-line="182" selection-start-column="81" selection-end-line="182" selection-end-column="81" />
               <folding />
             </state>
           </provider>
@@ -136,7 +137,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>roundCorners</find>
       <find>roundco</find>
       <find>addturns</find>
       <find>roundcorners</find>
@@ -160,12 +160,13 @@
       <find>roundCorners2</find>
       <find>getTurnData</find>
       <find>delta</find>
-      <find>headlandSettings</find>
       <find>long</find>
       <find>radius</find>
       <find>added</find>
       <find>removeMarkedPoints</find>
       <find>print</find>
+      <find>headlandSettings</find>
+      <find>entrypoint</find>
     </findStrings>
     <replaceStrings>
       <replace>, expectedNumberOfWaypoints</replace>
@@ -260,7 +261,6 @@
         <option value="$PROJECT_DIR$/courseplay/course-generator/a-star.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/courseGenerator.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/cp.lua" />
-        <option value="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
         <option value="$PROJECT_DIR$/testGeo.lua" />
         <option value="$PROJECT_DIR$/fieldTester.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/headland.lua" />
@@ -270,6 +270,7 @@
         <option value="$PROJECT_DIR$/courseplay/course-generator/track.lua" />
         <option value="$PROJECT_DIR$/main.lua" />
         <option value="$PROJECT_DIR$/courseplay/course-generator/geo.lua" />
+        <option value="$PROJECT_DIR$/courseplay/course-generator/center.lua" />
       </list>
     </option>
   </component>
@@ -686,7 +687,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Lua Application.Goldcrest 22">
+  <component name="RunManager" selected="Lua Application.fieldTester">
     <configuration default="true" type="Applet" factoryName="Applet">
       <option name="HTML_USED" value="false" />
       <option name="WIDTH" value="400" />
@@ -1232,7 +1233,7 @@
       <workItem from="1521155934229" duration="1130000" />
       <workItem from="1521201505363" duration="3494000" />
       <workItem from="1521211824734" duration="79000" />
-      <workItem from="1521287384918" duration="6502000" />
+      <workItem from="1521287384918" duration="8473000" />
     </task>
     <task id="LOCAL-00002" summary="Create island polygons from nodes">
       <created>1511227044307</created>
@@ -1581,7 +1582,7 @@
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="97032000" />
+    <option name="totallyTimeSpent" value="99003000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -2109,14 +2110,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="200">
-          <caret line="10" column="14" lean-forward="false" selection-start-line="10" selection-start-column="14" selection-end-line="10" selection-end-column="14" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/course-generator/pathfinder.lua">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="420">
@@ -2133,10 +2126,18 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/geo.lua">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="242">
+          <caret line="316" column="21" lean-forward="false" selection-start-line="316" selection-start-column="21" selection-end-line="316" selection-end-column="21" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/courseplay/course-generator/track.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="131" column="60" lean-forward="false" selection-start-line="131" selection-start-column="44" selection-end-line="131" selection-end-column="60" />
+        <state relative-caret-position="164">
+          <caret line="180" column="81" lean-forward="false" selection-start-line="180" selection-start-column="81" selection-end-line="180" selection-end-column="81" />
           <folding />
         </state>
       </provider>
@@ -2149,10 +2150,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/geo.lua">
+    <entry file="file://$PROJECT_DIR$/courseplay/course-generator/center.lua">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="324" column="65" lean-forward="true" selection-start-line="324" selection-start-column="65" selection-end-line="324" selection-end-column="65" />
+        <state relative-caret-position="83">
+          <caret line="182" column="81" lean-forward="true" selection-start-line="182" selection-start-column="81" selection-end-line="182" selection-end-column="81" />
           <folding />
         </state>
       </provider>
