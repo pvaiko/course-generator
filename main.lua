@@ -29,10 +29,9 @@ local islandBypassMode = Island.BYPASS_MODE_CIRCLE
 headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 headlandSettings.headlandFirst = true
 headlandSettings.nPasses = 2
-local centerSettings = { useBestAngle = true, rowAngle = 0 }
+local centerSettings = { useBestAngle = true, rowAngle = 0, nRowsToSkip = 0 }
 
 local turningRadius = 6
-local nTracksToSkip = 0
 local extendTracks = 0
 local minDistanceBetweenPoints = 0.5
 local minSmoothingAngleDeg = 30
@@ -202,7 +201,7 @@ function drawSettings()
   love.graphics.print( string.format( "HEADLAND width: %.1f m, overlap %d%% number of passes: %d, direction %s, corners: %s, radius: %.1f",
            field.width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, turningRadius ), 10, 30, 0, 1 )
   love.graphics.print( string.format( "CENTER skipping %d tracks, extend %d m", 
-           nTracksToSkip, extendTracks ), 10, 50, 0, 1 )
+           centerSettings.nRowsToSkip, extendTracks ), 10, 50, 0, 1 )
            
   local smoothingStatus 
   if field.doSmooth then smoothingStatus = "on" else smoothingStatus = "off" end
@@ -251,7 +250,7 @@ function drawSettings()
       end
   end
   -- help text
-  local y = windowHeight - 360
+  local y = windowHeight - 380
   love.graphics.setColor( 240, 240, 240 )
   love.graphics.print( "KEYS", 10, y, 0, 1 )
   y = y + 20
@@ -287,6 +286,8 @@ function drawSettings()
 	love.graphics.print( "q - toggle up/down row angle mode", 10, y, 0, 1 )
 	y = y + 20
   love.graphics.print( "a/A - change up/down row angle", 10, y, 0, 1 )
+	y = y + 20
+	love.graphics.print( "j/J - -/+ up/down rows to skip", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "i - toggle island bypass mode", 10, y, 0, 1 )
   y = y + 20
@@ -634,7 +635,7 @@ function generate()
   lines = {}
   helperPolygon = {}
   status, ok = xpcall( generateCourseForField, errorHandler, 
-                                           field, field.width, headlandSettings, nTracksToSkip,
+                                           field, field.width, headlandSettings,
                                            extendTracks, minDistanceBetweenPoints,
                                            math.rad( minSmoothingAngleDeg ), math.rad( headlandSettings.minHeadlandTurnAngleDeg ), field.doSmooth,
                                            field.roundCorners, turningRadius,
@@ -742,6 +743,16 @@ function love.textinput( t )
 		centerSettings.rowAngle = centerSettings.rowAngle - math.pi / 16
       generate()
   end
+	if t == "J" then
+		centerSettings.nRowsToSkip = centerSettings.nRowsToSkip + 1
+		generate()
+	end
+	if t == "j" then
+		if centerSettings.nRowsToSkip > 0 then
+			centerSettings.nRowsToSkip = centerSettings.nRowsToSkip - 1
+			generate()
+		end
+	end
   if t == "i" then
     islandBypassMode = islandBypassMode + 1
 	  if islandBypassMode > Island.BYPASS_MODE_MAX then

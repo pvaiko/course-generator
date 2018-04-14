@@ -1,5 +1,11 @@
 dofile( 'include.lua' )
 
+for corner = 1, 4 do
+	for nRows = 1, 100 do
+		assert( getBlockExitCorner( corner, nRows, 0 ) == getBlockExitCorner2( corner, nRows, 0 ))
+	end
+end
+
 function eq( a, b )
   local epsilon = 0.00001
   return a < ( b + epsilon ) and a > ( b - epsilon )

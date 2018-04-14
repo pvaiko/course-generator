@@ -8,7 +8,7 @@ function printParameters()
   print( "headlandSettings.isClockwise = ", tostring( headlandSettings.isClockwise ))
   print( "headlandSettings.startLocation = ", headlandSettings.startLocation.x, headlandSettings.startLocation.y )
   print( "headlandSettings.overlapPercent = ", headlandSettings.overlapPercent )
-  print( "nTracksToSkip = ", nTracksToSkip )
+  print( "nRowsToSkip = ", centerSettings.nRowsToSkip )
   print( "extendTracks = ", extendTracks )
   print( "minDistanceBetweenPoints = ", minDistanceBetweenPoints )
   print( "minSmoothAngleDeg = ", minSmoothAngleDeg )
@@ -24,24 +24,27 @@ end
 
 function generate()
  local status, err = xpcall( generateCourseForField, function() print( err, debug.traceback()) printParameters() end,
-                             field, implementWidth, headlandSettings,
-                             nTracksToSkip, extendTracks,
+                             field, implementWidth, headlandSettings, extendTracks,
                              minDistanceBetweenPoints, math.rad( minSmoothAngleDeg ), math.rad( maxSmoothAngleDeg ), doSmooth, fromInside,
                              turnRadius, returnToFirst, field.islandNodes,
                              islandBypassMode, centerSettings )
   end
 
 function generatePermutations()
-	generate()
-	fromInside = true
-	generate()
-	fromInside = false
-	headlandSettings.startLocation = { x = bb.maxX, y = bb.minY }
-  generate()
-	headlandSettings.startLocation = { x = bb.maxX, y = bb.maxY }
-  generate()
-	headlandSettings.startLocation = { x = bb.minX, y = bb.maxY }
-  generate()
+	for i = 0, 1 do
+		centerSettings.nRowsToSkip = i
+		generate()
+		fromInside = true
+		generate()
+		fromInside = false
+		headlandSettings.startLocation = { x = bb.maxX, y = bb.minY }
+		generate()
+		headlandSettings.startLocation = { x = bb.maxX, y = bb.maxY }
+		generate()
+		headlandSettings.startLocation = { x = bb.minX, y = bb.maxY }
+		generate()
+	end
+	centerSettings.nRowsToSkip = 0
 end
 
 function courseGenerator.debug2( text )
@@ -57,7 +60,6 @@ function resetParameter()
   headlandSettings.overlapPercent = 0
 	headlandSettings.minHeadlandTurnAngleDeg = 60
 	headlandSettings.headlandFirst = true
-  nTracksToSkip = 0
   extendTracks = 0
   minDistanceBetweenPoints = 0.5
   minSmoothAngleDeg = 30
@@ -70,6 +72,7 @@ function resetParameter()
   islandBypassMode = Island.BYPASS_MODE_CIRCLE;
   centerSettings = {}
   centerSettings.useBestAngle = true
+	centerSettings.nRowsToSkip = 0
 end
 
 -----------------------------------------------------------------------------
@@ -95,6 +98,7 @@ assert( #field.headlandTracks == 0 )
 headlandSettings.nPasses = 4; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 4 )
+generatePermutations()
 
 headlandSettings.isClockwise = false; generate()
 assert( #field.course > 100 )
@@ -142,7 +146,7 @@ assert( #field.headlandTracks == 0 )
 headlandSettings.nPasses = 4; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 4 )
-
+generatePermutations()
 headlandSettings.nPasses = 12; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 10 )
@@ -150,6 +154,7 @@ assert( #field.headlandTracks == 10 )
 headlandSettings.nPasses = 4; fromInside = true; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 4 )
+
 
 -----------------------------------------------------------------------------
 resetParameter()
@@ -167,6 +172,7 @@ headlandSettings.startLocation = { x = bb.minX, y = bb.minY }
 headlandSettings.nPasses = 4; generate()
 assert( #field.course > 100 )
 assert( #field.headlandTracks == 4 )
+generatePermutations()
 
 headlandSettings.nPasses = 0; generate()
 assert( #field.course > 100 )
