@@ -1,5 +1,7 @@
 dofile( 'include.lua' )
 
+print(math.deg(getDeltaAngle(math.rad(-2.1), math.rad(-2.4))))
+
 for corner = 1, 4 do
 	for nRows = 1, 100 do
 		assert( getBlockExitCorner( corner, nRows, 0 ) == getBlockExitCorner2( corner, nRows, 0 ))

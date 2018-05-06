@@ -1,5 +1,4 @@
 local courseGeneratorPath = 'courseplay/course-generator/'
-
 dofile( courseGeneratorPath .. 'Island.lua' )
 dofile( courseGeneratorPath .. 'Genetic.lua' )
 dofile( courseGeneratorPath .. 'courseGenerator.lua' )

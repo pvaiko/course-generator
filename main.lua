@@ -28,7 +28,7 @@ local showSettings = true
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
 headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 headlandSettings.headlandFirst = true
-headlandSettings.nPasses = 2
+headlandSettings.nPasses = 1
 local centerSettings = { useBestAngle = true, rowAngle = 0, nRowsToSkip = 0 }
 
 local turningRadius = 6
@@ -66,7 +66,7 @@ function love.load( arg )
   headlandSettings.minHeadlandTurnAngleDeg = 85
   field.doSmooth = true
   headlandSettings.isClockwise = false
-  field.roundCorners = false
+  field.roundCorners = true
   if arg[ 2 ] == "fromCourse" then
     -- use the outermost headland path as the basis of the 
     -- generation, that is, the field.boundary is actually
@@ -647,7 +647,18 @@ function generate()
 	elseif not ok then
 	  love.window.showMessageBox( "Warning", "Generated course may not be ok.", { "Ok" }, "warning" )
   end
-  io.stdout:flush()
+		for i = 2, #field.course - 1 do
+			local cp, pp, np = field.course[ i ], field.course[ i - 1 ], field.course[ i + 1 ]
+			local dA = math.abs( getDeltaAngle( pp.nextEdge.angle, pp.prevEdge.angle ))+
+				math.abs( getDeltaAngle( cp.prevEdge.angle, cp.nextEdge.angle ))
+			-- the direction changes a lot over two points, this is a glitch
+			if dA > math.rad(270) and not pp.reverse then
+				print( i )
+				cp.text = "GLITCH"
+			end
+		end
+
+	io.stdout:flush()
 end
 
 function love.textinput( t )

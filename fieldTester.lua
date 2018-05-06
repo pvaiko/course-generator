@@ -28,7 +28,13 @@ function generate()
                              minDistanceBetweenPoints, math.rad( minSmoothAngleDeg ), math.rad( maxSmoothAngleDeg ), doSmooth, fromInside,
                              turnRadius, returnToFirst, field.islandNodes,
                              islandBypassMode, centerSettings )
-  end
+	if headlandSettings.nPasses < 10 then
+		countGlitches(field.course,0)
+	else
+		-- allow a few glitches with many headlands
+		countGlitches(field.course,5)
+	end
+end
 
 function generatePermutations()
 	for i = 0, 1 do
@@ -46,6 +52,24 @@ function generatePermutations()
 	end
 	centerSettings.nRowsToSkip = 0
 end
+
+function countGlitches( course, limit )
+	local nGlitches = 0
+	for i = 2, #course - 1 do
+		local cp, pp, np = course[ i ], course[ i - 1 ], course[ i + 1 ]
+		local dA = math.abs( getDeltaAngle( pp.nextEdge.angle, pp.prevEdge.angle ))+
+			math.abs( getDeltaAngle( cp.prevEdge.angle, cp.nextEdge.angle ))
+		-- the direction changes a lot over two points, this is a glitch
+		if dA > math.rad(270) and not pp.reverse then
+			nGlitches = nGlitches + 1
+		end
+	end
+	if nGlitches > limit then
+		print( "Glitches found: " .. tostring( nGlitches ) .. " limit was " .. tostring(limit))
+		assert( false )
+	end
+end
+
 
 function courseGenerator.debug2( text )
   -- disable debug outputs
