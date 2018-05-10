@@ -400,8 +400,16 @@ function highlightPoint()
   love.graphics.pop()
 end
 
-function drawPointAsArrow( point ) 
-	local triangle = { - 1, 0, 1, 0, 0, 2 }
+function drawPointAsArrow( point )
+	local left, right = -0.8, 0.8
+	if point.ridgeMarker then
+		if point.ridgeMarker == 1 then
+			right = 0
+		else
+			left = 0
+		end
+	end
+	local triangle = { left, 0, right, 0, 0, 1.6 }
 	love.graphics.push()
 	love.graphics.translate( point.x, point.y )
 	love.graphics.rotate( point.nextEdge.angle - math.pi / 2 )
