@@ -4,6 +4,7 @@ marks = {}
 
 function printParameters()
   print( "implementWidth = ", implementWidth )
+  print( "headlandSettings.mode = ", headlandSettings.mode )
   print( "headlandSettings.nPasses = ", headlandSettings.nPasses )
   print( "headlandSettings.isClockwise = ", tostring( headlandSettings.isClockwise ))
   print( "headlandSettings.startLocation = ", headlandSettings.startLocation.x, headlandSettings.startLocation.y )
@@ -16,10 +17,16 @@ function printParameters()
   print( "doSmooth = ", tostring( doSmooth ))
   print( "fromInside = ", tostring( fromInside ))
   print( "turnRadius = ", turnRadius )
+	print( "returnToFirst = ", tostring( returnToFirst ))
   print( "headlandSettings.minHeadlandTurnAngleDeg =", headlandSettings.minHeadlandTurnAngleDeg )
   print( "#islandNodes = ", field.islandNodes and #field.islandNodes or 0 )
   print( "headlandSettings.headlandFirst = ", tostring( headlandSettings.headlandFirst ))
   print( "islandBypassMode = ", tostring( islandBypassMode ))
+end
+
+function assertAndShowSettings( condition, ... )
+	if not condition then printParameters() end
+	assert(condition, ...)
 end
 
 function generate()
@@ -62,11 +69,12 @@ function countGlitches( course, limit )
 		-- the direction changes a lot over two points, this is a glitch
 		if dA > math.rad(270) and not pp.reverse then
 			nGlitches = nGlitches + 1
+			print(string.format("Glitch at wp %d, x=%.1f y=%.1f", i, cp.x, cp.y))
 		end
 	end
 	if nGlitches > limit then
 		print( "Glitches found: " .. tostring( nGlitches ) .. " limit was " .. tostring(limit))
-		assert( false )
+		assertAndShowSettings( false )
 	end
 end
 
@@ -78,6 +86,7 @@ end
 function resetParameter()
   headlandSettings = {}
 	implementWidth = 6
+	headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 	headlandSettings.nPasses = 4
 	headlandSettings.isClockwise = true
 	headlandSettings.startLocation = {}
@@ -112,25 +121,25 @@ field.boundary = Polygon:new( field.boundary )
 bb =  field.boundary:getBoundingBox()
 headlandSettings.startLocation = { x = bb.minX, y = bb.minY }
 headlandSettings.nPasses = 20; generate()
-assert( #field.course > 100 )
-assert( #field.headlandTracks == 11, "headlandTracks " .. tostring(#field.headlandTracks))
+assertAndShowSettings( #field.course > 100 )
+assertAndShowSettings( #field.headlandTracks == 11, "headlandTracks " .. tostring(#field.headlandTracks))
 
 headlandSettings.nPasses = 0; generate()
-assert( #field.course > 100 )
-assert( #field.headlandTracks == 0 )
+assertAndShowSettings( #field.course > 100 )
+assertAndShowSettings( #field.headlandTracks == 0 )
 
 headlandSettings.nPasses = 4; generate()
-assert( #field.course > 100 )
-assert( #field.headlandTracks == 4 )
+assertAndShowSettings( #field.course > 100 )
+assertAndShowSettings( #field.headlandTracks == 4 )
 generatePermutations()
 
 headlandSettings.isClockwise = false; generate()
-assert( #field.course > 100 )
-assert( #field.headlandTracks == 4 )
+assertAndShowSettings( #field.course > 100 )
+assertAndShowSettings( #field.headlandTracks == 4 )
 
 headlandSettings.headlandFirst = false; generate()
-assert( #field.course > 100 )
-assert( #field.headlandTracks == 4 )
+assertAndShowSettings( #field.course > 100 )
+assertAndShowSettings( #field.headlandTracks == 4 )
 
 -----------------------------------------------------------------------------
 resetParameter()
@@ -146,8 +155,8 @@ print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
 bb =  field.boundary:getBoundingBox()
 headlandSettings.startLocation = { x = bb.minX, y = bb.minY }
 headlandSettings.nPasses = 3; generate()
-assert( #field.course > 100 )
-assert( #field.headlandTracks == 3 )
+assertAndShowSettings( #field.course > 100 )
+assertAndShowSettings( #field.headlandTracks == 3 )
 --
 -----------------------------------------------------------------------------
 resetParameter()
@@ -164,20 +173,20 @@ bb =  field.boundary:getBoundingBox()
 headlandSettings.startLocation = { x = bb.minX, y = bb.minY }
 implementWidth = 3.5
 headlandSettings.nPasses = 0; generate()
-assert( #field.course > 100 )
-assert( #field.headlandTracks == 0 )
+assertAndShowSettings( #field.course > 100 )
+assertAndShowSettings( #field.headlandTracks == 0 )
 
 headlandSettings.nPasses = 4; generate()
-assert( #field.course > 100 )
-assert( #field.headlandTracks == 4 )
+assertAndShowSettings( #field.course > 100 )
+assertAndShowSettings( #field.headlandTracks == 4 )
 generatePermutations()
 headlandSettings.nPasses = 12; generate()
-assert( #field.course > 100 )
-assert( #field.headlandTracks == 10 )
+assertAndShowSettings( #field.course > 100 )
+assertAndShowSettings( #field.headlandTracks == 10 )
 
 headlandSettings.nPasses = 4; fromInside = true; generate()
-assert( #field.course > 100 )
-assert( #field.headlandTracks == 4 )
+assertAndShowSettings( #field.course > 100 )
+assertAndShowSettings( #field.headlandTracks == 4 )
 
 
 -----------------------------------------------------------------------------
@@ -194,16 +203,16 @@ print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
 bb =  field.boundary:getBoundingBox()
 headlandSettings.startLocation = { x = bb.minX, y = bb.minY }
 headlandSettings.nPasses = 4; generate()
-assert( #field.course > 100 )
-assert( #field.headlandTracks == 4 )
+assertAndShowSettings( #field.course > 100 )
+assertAndShowSettings( #field.headlandTracks == 4 )
 generatePermutations()
 
 headlandSettings.nPasses = 0; generate()
-assert( #field.course > 100 )
-assert( #field.headlandTracks == 0 )
+assertAndShowSettings( #field.course > 100 )
+assertAndShowSettings( #field.headlandTracks == 0 )
 
 headlandSettings.nPasses = 200; generate()
-assert( #field.course > 100 )
-assert( #field.headlandTracks == 43 )
+assertAndShowSettings( #field.course > 100 )
+assertAndShowSettings( #field.headlandTracks == 43 )
 
 

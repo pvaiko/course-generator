@@ -28,7 +28,7 @@ local showSettings = true
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
 headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 headlandSettings.headlandFirst = true
-headlandSettings.nPasses = 1
+headlandSettings.nPasses = 3
 local centerSettings = { useBestAngle = true, rowAngle = 0, nRowsToSkip = 0 }
 
 local turningRadius = 6
@@ -56,14 +56,14 @@ function love.load( arg )
         field = f
       end
     end
-    field.width = 4
+    field.width = 6
   end 
   islandNodes = field.islandNodes
   field.loadedBoundaryVertices = getVertices( field.boundary )
   headlandSettings.startLocation = {x=field.boundary[ 1 ].x, y=field.boundary[ 1 ].y}
 
   headlandSettings.overlapPercent = 0
-  headlandSettings.minHeadlandTurnAngleDeg = 85
+  headlandSettings.minHeadlandTurnAngleDeg = 60
   field.doSmooth = true
   headlandSettings.isClockwise = false
   field.roundCorners = true
@@ -661,8 +661,9 @@ function generate()
 				math.abs( getDeltaAngle( cp.prevEdge.angle, cp.nextEdge.angle ))
 			-- the direction changes a lot over two points, this is a glitch
 			if dA > math.rad(270) and not pp.reverse then
-				print( i )
+				print( 'THERE IS A GLITCH AT POINT ', i )
 				cp.text = "GLITCH"
+				table.insert(marks, {x = cp.x, y = cp.y})
 			end
 		end
 
@@ -730,13 +731,19 @@ function love.textinput( t )
     generate()
   end
   if t == "h" then
-	  if headlandSettings.mode == courseGenerator.HEADLAND_MODE_NORMAL then
-		  headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
-	  else
-		  headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
+	  headlandSettings.mode = headlandSettings.mode + 1
+	  if headlandSettings.mode > courseGenerator.HEADLAND_MODE_MAX then
+		  headlandSettings.mode = courseGenerator.HEADLAND_MODE_MIN
 	  end
 	  generate()
   end
+	if t == "H" then
+		headlandSettings.mode = headlandSettings.mode - 1
+		if headlandSettings.mode < courseGenerator.HEADLAND_MODE_MIN then
+			headlandSettings.mode = courseGenerator.HEADLAND_MODE_MAX
+		end
+		generate()
+	end
   if t == "r" then
     headlandSettings.headlandFirst = not headlandSettings.headlandFirst
     generate()
