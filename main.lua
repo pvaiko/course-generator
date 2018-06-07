@@ -31,10 +31,10 @@ headlandSettings.headlandFirst = true
 headlandSettings.nPasses = 3
 local centerSettings = { useBestAngle = true, rowAngle = 0, nRowsToSkip = 0 }
 
-local turningRadius = 6
+local turningRadius = 4.5
 local extendTracks = 0
 local minDistanceBetweenPoints = 0.5
-local minSmoothingAngleDeg = 30
+local minSmoothingAngleDeg = 25
 
 -- pathfinding
 local path = {}
@@ -62,8 +62,8 @@ function love.load( arg )
   field.loadedBoundaryVertices = getVertices( field.boundary )
   headlandSettings.startLocation = {x=field.boundary[ 1 ].x, y=field.boundary[ 1 ].y}
 
-  headlandSettings.overlapPercent = 0
-  headlandSettings.minHeadlandTurnAngleDeg = 60
+  headlandSettings.overlapPercent = 7
+  headlandSettings.minHeadlandTurnAngleDeg = 150
   field.doSmooth = true
   headlandSettings.isClockwise = false
   field.roundCorners = true
@@ -508,7 +508,8 @@ function drawField( field )
     love.graphics.polygon('line', field.calculatedBoundaryVertices)
   end
 
-  drawHeadlandPath( field )
+  --drawHeadlandPath( field )
+	drawHeadlandTracks()
   
   -- draw entire course
   if drawCourse then
@@ -697,11 +698,11 @@ function love.textinput( t )
     generate()
   end
   if t == "o" then
-    headlandSettings.overlapPercent = headlandSettings.overlapPercent - 5 
+    headlandSettings.overlapPercent = headlandSettings.overlapPercent - 1 
     generate()
   end
   if t == "O" then
-    headlandSettings.overlapPercent = headlandSettings.overlapPercent + 5 
+    headlandSettings.overlapPercent = headlandSettings.overlapPercent + 1 
     generate()
   end
   if t == "P" then
