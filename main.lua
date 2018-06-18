@@ -26,9 +26,11 @@ local drawHelpers = true
 local showSettings = true
 
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
-headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
+headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
+--headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
+--headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
-headlandSettings.nPasses = 3
+headlandSettings.nPasses = 1
 local centerSettings = { useBestAngle = true, rowAngle = 0, nRowsToSkip = 0 }
 
 local turningRadius = 4.5
@@ -72,7 +74,7 @@ function love.load( arg )
     -- generation, that is, the field.boundary is actually
     -- a headland pass of a course
     -- calculate the boundary from the headland track
-    field.boundary = calculateHeadlandTrack( field.boundary, courseGenerator.HEADLAND_MODE_NORMAL, field.width / 2,
+    field.boundary = calculateHeadlandTrack( field.boundary, courseGenerator.HEADLAND_MODE_NORMAL, field.boundary.isClockwise,field.width / 2,
                                              minDistanceBetweenPoints, math.rad( minSmoothingAngleDeg), 0,
                                              field.doSmooth, false, turningRadius, nil, nil )
   end
@@ -198,8 +200,8 @@ function drawSettings()
   else
     roundCorners = "sharp"
   end
-  love.graphics.print( string.format( "HEADLAND width: %.1f m, overlap %d%% number of passes: %d, direction %s, corners: %s, radius: %.1f",
-           field.width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, turningRadius ), 10, 30, 0, 1 )
+  love.graphics.print( string.format( "HEADLAND %s, width: %.1f m, overlap %d%% number of passes: %d, direction %s, corners: %s, radius: %.1f",
+           courseGenerator.headlandModeTexts[headlandSettings.mode], field.width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, turningRadius ), 10, 30, 0, 1 )
   love.graphics.print( string.format( "CENTER skipping %d tracks, extend %d m", 
            centerSettings.nRowsToSkip, extendTracks ), 10, 50, 0, 1 )
            

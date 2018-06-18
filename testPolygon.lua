@@ -62,6 +62,13 @@ assertEquals( lastI, 1 )
 
 polyline:calculateData()
 
+n = 0
+for i, edge in polyline:edgeIterator() do
+	n = n + 1
+end
+-- one less edges than vertices if it is a line
+assertEquals(n, 3)
+
 polyline[ 3 ].turnStart = true
 polyline[ 4 ].turnEnd = true
 
@@ -91,10 +98,19 @@ assertEquals( lastI, 4 )
 for i, p in polygon:iterator( 4, 1 ) do
   n = n + 1
   lastI = i
-  print( i )
 end
 assertEquals( n, 6 )
 assertEquals( lastI, 1 )
+
+polygon:calculateData()
+
+n = 0
+for i, edge in polygon:edgeIterator() do
+	n = n + 1
+end
+-- same number of edges as vertices if it is a polygon
+assertEquals(n, 4)
+
 
 polygon[ 0 ].x = 0
 assertEquals( polygon[ 0 ].x, 0 )
@@ -109,8 +125,7 @@ assert( #polygon == 5 )
 assertEquals( polygon[ 1 ].x, -1 )
 assertEquals( polygon[ 5 ].x, 5 )
 assertEquals( polygon[ 6 ].x, -1 )
-polygon:calculateData()
-
+print(polygon)
 local polygon = Polygon:new( { point( 1, 0 ), point( 2, 0 ), point( 3, 0 ), point( 4, 0 ) })
 local p2 = Polygon:copy(polygon)
 assertEquals( polygon[ 1 ].x, 1 )
