@@ -60,6 +60,56 @@ end
 assertEquals( n, 4 )
 assertEquals( lastI, 1 )
 
+local p1 = Polyline:new( { point( 1, 0 ), point( 2, 0 ), point( 3.5, 0 ), point( 4, 0 ) })
+local p2 = Polyline:new( { point( 3, 3 ), point( 3, 2 ), point( 3, 1 ), point( 3, -1 ) })
+p1:appendLine(p2, 2)
+assertEquals(p1[1].x, 1)
+assertEquals(p1[1].y, 0)
+
+assertEquals(p1[2].x, 2)
+assertEquals(p1[2].y, 0)
+
+assertEquals(p1[3].x, 3)
+assertEquals(p1[3].y, 0)
+
+assertEquals(p1[4].x, 3)
+assertEquals(p1[4].y, 1)
+
+assertEquals(p1[5].x, 3)
+assertEquals(p1[5].y, 2)
+
+assertEquals(p1[6].x, 3)
+assertEquals(p1[6].y, 3)
+
+local p1 = Polyline:new( { point( 1, 0 ), point( 2, 0 ), point( 2.5, 0 ), point( 2.7, 0 ) })
+local p2 = Polyline:new( { point( 3, 3 ), point( 3, 2 ), point( 3, 1 ), point( 3, -1 ) })
+p1:appendLine(p2,2)
+print(p1)
+assertEquals(p1[1].x, 1)
+assertEquals(p1[1].y, 0)
+
+assertEquals(p1[2].x, 2)
+assertEquals(p1[2].y, 0)
+
+assertEquals(p1[3].x, 2.5)
+assertEquals(p1[3].y, 0)
+
+assertEquals(p1[4].x, 2.7)
+assertEquals(p1[4].y, 0)
+
+assertEquals(p1[5].x, 3)
+assertEquals(p1[5].y, 0)
+
+assertEquals(p1[6].x, 3)
+assertEquals(p1[6].y, 1)
+
+assertEquals(p1[7].x, 3)
+assertEquals(p1[7].y, 2)
+
+assertEquals(p1[8].x, 3)
+assertEquals(p1[8].y, 3)
+
+
 polyline:calculateData()
 
 n = 0

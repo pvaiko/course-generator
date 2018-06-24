@@ -30,7 +30,7 @@ headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
-headlandSettings.nPasses = 1
+headlandSettings.nPasses = 3
 local centerSettings = { useBestAngle = true, rowAngle = 0, nRowsToSkip = 0 }
 
 local turningRadius = 4.5
