@@ -21,13 +21,13 @@ local drawCourse = true
 local showHeadlandPath = true 
 local drawTrack = false
 local drawBlocks = true
-local drawGrid = false
+local drawGrid = true
 local drawHelpers = true
 local showSettings = true
 
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
-headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
---headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
+-- headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
+headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
 headlandSettings.nPasses = 3
@@ -896,8 +896,8 @@ function love.mousepressed(x, y, button, istouch)
      if path.from then
        print( string.format( "Finding path between %.2f, %.2f and %.2f, %.2f", path.from.x, path.from.y, path.to.x, path.to.y ))
        local now = os.clock()
-       path.course, grid = pathFinder.findPath( path.from, path.to , field.boundary, nil, nil, nil )-- pathFinder.addFruitDistanceFromBoundary )
-       reversePath.course, grid = pathFinder.findPath( path.to, path.from, field.boundary, nil, nil, nil )--pathFinder.addFruitDistanceFromBoundary )
+       path.course, grid = pathFinder.findPath( path.from, path.to , field.boundary, nil, nil, pathFinder.addFruitDistanceFromBoundary )
+       reversePath.course, grid = pathFinder.findPath( path.to, path.from, field.boundary, nil, nil, pathFinder.addFruitDistanceFromBoundary )
        print( string.format( "Pathfinding ran for %.2f seconds", os.clock() - now ))
        io.stdout:flush()
        if path.course ~= nil then path.course = path.course end

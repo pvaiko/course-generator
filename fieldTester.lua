@@ -110,6 +110,37 @@ end
 
 -----------------------------------------------------------------------------
 resetParameter()
+fieldFile = "fields/Goldcrest.xml"
+savedFields = loadSavedFields( fieldFile )
+
+fieldNumber = 12
+field = savedFields[ fieldNumber ]
+print( "#####################################################################" )
+print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
+field.boundary = Polygon:new( field.boundary )
+bb =  field.boundary:getBoundingBox()
+headlandSettings.startLocation = { x = bb.minX, y = bb.minY }
+headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
+headlandSettings.nPasses = 2; generate()
+assertAndShowSettings( #field.course > 100 )
+headlandSettings.nPasses = 3; generate()
+assertAndShowSettings( #field.course > 100 )
+
+fieldNumber = 9
+field = savedFields[ fieldNumber ]
+print( "#####################################################################" )
+print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))
+field.boundary = Polygon:new( field.boundary )
+bb =  field.boundary:getBoundingBox()
+headlandSettings.startLocation = { x = bb.minX, y = bb.minY }
+headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
+headlandSettings.nPasses = 2; generate()
+assertAndShowSettings( #field.course > 100 )
+headlandSettings.nPasses = 3; generate()
+assertAndShowSettings( #field.course > 100 )
+
+-----------------------------------------------------------------------------
+resetParameter()
 fieldFile = "fields/coldborough.xml"
 savedFields = loadSavedFields( fieldFile )
 
