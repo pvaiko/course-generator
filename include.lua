@@ -8,5 +8,8 @@ dofile( courseGeneratorPath .. 'center.lua' )
 dofile( courseGeneratorPath .. 'geo.lua' )
 dofile( courseGeneratorPath .. 'a-star.lua' )
 dofile( courseGeneratorPath .. 'pathfinder.lua' )
+dofile('courseplay/CpObject.lua')
+dofile('courseplay/Waypoint.lua')
 
+dofile( 'Vehicle.lua' )
 dofile( 'file.lua' )

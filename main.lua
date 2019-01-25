@@ -31,7 +31,7 @@ headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
 headlandSettings.nPasses = 3
-local centerSettings = { useBestAngle = true, rowAngle = 0, nRowsToSkip = 0 }
+local centerSettings = { mode = courseGenerator.CENTER_MODE_CIRCULAR, useBestAngle = true, rowAngle = 0, nRowsToSkip = 0 }
 
 local turningRadius = 4.5
 local extendTracks = 0
@@ -43,6 +43,7 @@ local path = {}
 local reversePath = {}
 local gridSpacing = 4.07
 local islandNodes = {}
+local vehicle
 
 function love.load( arg )
   if arg[#arg] == "-debug" then require("mobdebug").start() end
@@ -59,10 +60,14 @@ function love.load( arg )
       end
     end
     field.width = 6
-  end 
+  end
+
   islandNodes = field.islandNodes
   field.loadedBoundaryVertices = getVertices( field.boundary )
   headlandSettings.startLocation = {x=field.boundary[ 1 ].x, y=field.boundary[ 1 ].y}
+
+	love.keyboard.setKeyRepeat(true)
+	vehicle = Vehicle(headlandSettings.startLocation.x, -headlandSettings.startLocation.y, 0)
 
   headlandSettings.overlapPercent = 7
   headlandSettings.minHeadlandTurnAngleDeg = 150
@@ -202,8 +207,8 @@ function drawSettings()
   end
   love.graphics.print( string.format( "HEADLAND %s, width: %.1f m, overlap %d%% number of passes: %d, direction %s, corners: %s, radius: %.1f",
            courseGenerator.headlandModeTexts[headlandSettings.mode], field.width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, turningRadius ), 10, 30, 0, 1 )
-  love.graphics.print( string.format( "CENTER skipping %d tracks, extend %d m", 
-           centerSettings.nRowsToSkip, extendTracks ), 10, 50, 0, 1 )
+  love.graphics.print( string.format( "CENTER mode: %s, skipping %d tracks, extend %d m",
+           courseGenerator.centerModeTexts[centerSettings.mode], centerSettings.nRowsToSkip, extendTracks ), 10, 50, 0, 1 )
            
   local smoothingStatus 
   if field.doSmooth then smoothingStatus = "on" else smoothingStatus = "off" end
@@ -251,6 +256,12 @@ function drawSettings()
 
       end
   end
+
+	love.graphics.print(string.format("v=%.1f x=%.1f y=%.1f h=%.0f° sa=%.1f° r=%.1f",
+		vehicle.speed, vehicle.position.x, -vehicle.position.z, math.deg(vehicle.position.yRotation),
+		math.deg(vehicle.steeringAngle), vehicle.turningRadius),
+		windowWidth - 300, windowHeight - 60, 0, 1)
+
   -- help text
   local y = windowHeight - 380
   love.graphics.setColor( 240, 240, 240 )
@@ -290,6 +301,8 @@ function drawSettings()
   love.graphics.print( "a/A - change up/down row angle", 10, y, 0, 1 )
 	y = y + 20
 	love.graphics.print( "j/J - -/+ up/down rows to skip", 10, y, 0, 1 )
+  y = y + 20
+	love.graphics.print( "l - toggle center mode", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "i - toggle island bypass mode", 10, y, 0, 1 )
   y = y + 20
@@ -633,6 +646,7 @@ function love.draw()
   if showSettings then
     drawSettings()
   end
+	vehicle:draw()
 end
 
 function errorHandler( err )
@@ -672,86 +686,91 @@ function generate()
 
 	io.stdout:flush()
 end
+function love.keypressed(key, scancode, isrepeat)
+	if key == 'up' then
+		vehicle:accelerate()
+	elseif key == 'down' then
+		vehicle:deccelerate()
+	elseif key == 'left' then
+		vehicle:turnLeft()
+	elseif key == 'right' then
+		vehicle:turnRight()
+	end
+end
 
-function love.textinput( t )
-  if t == "g" then
+function love.textinput(key)
+	if key == "g" then
     gridSpacing = gridSpacing - 0.5
-  end
-  if t == "G" then
-    gridSpacing = gridSpacing + 0.5
-  end
-  if t == "s" then
-    saveFile()
-  end
-  if t == "W" then
-    field.width = field.width + 0.1
-    generate()
-  end
-  if t == "w" then
-    field.width = field.width - 0.1
-    generate()
-  end
-  if t == "X" then
-    extendTracks = extendTracks + 1
-    generate()
-  end
-  if t == "x" then
-    extendTracks = extendTracks - 1
-    generate()
-  end
-  if t == "o" then
-    headlandSettings.overlapPercent = headlandSettings.overlapPercent - 1 
-    generate()
-  end
-  if t == "O" then
-    headlandSettings.overlapPercent = headlandSettings.overlapPercent + 1 
-    generate()
-  end
-  if t == "P" then
-    headlandSettings.nPasses = headlandSettings.nPasses + 1
-    generate()
-  end
-  if t == "p" then
+	elseif key == "G" then
+		gridSpacing = gridSpacing + 0.5
+	elseif key == "s" then
+		saveFile()
+	elseif key == "W" then
+		field.width = field.width + 0.1
+		generate()
+	elseif key == "w" then
+		field.width = field.width - 0.1
+		generate()
+	elseif key == "X" then
+		extendTracks = extendTracks + 1
+		generate()
+	elseif key == "x" then
+		extendTracks = extendTracks - 1
+		generate()
+	elseif key == "o" then
+		headlandSettings.overlapPercent = headlandSettings.overlapPercent - 1
+		generate()
+	elseif key == "O" then
+		headlandSettings.overlapPercent = headlandSettings.overlapPercent + 1
+		generate()
+	elseif key == "P" then
+		headlandSettings.nPasses = headlandSettings.nPasses + 1
+		generate()
+  elseif key == "p" then
     if headlandSettings.nPasses > 0 then
       headlandSettings.nPasses = headlandSettings.nPasses - 1
       generate()
     end
-  end
-  if t == "c" then
+  elseif key == "c" then
     headlandSettings.isClockwise = not headlandSettings.isClockwise
     generate()
-  end
-  if t == "d" then
+  elseif key == "d" then
     field.roundCorners = not field.roundCorners
     generate()
-  end
-  if t == "t" then
+  elseif key == "t" then
     turningRadius = turningRadius - 0.5
     generate()
-  end
-  if t == "T" then
+  elseif key == "T" then
     turningRadius = turningRadius + 0.5
     generate()
-  end
-  if t == "h" then
+  elseif key == "h" then
 	  headlandSettings.mode = headlandSettings.mode + 1
 	  if headlandSettings.mode > courseGenerator.HEADLAND_MODE_MAX then
 		  headlandSettings.mode = courseGenerator.HEADLAND_MODE_MIN
 	  end
 	  generate()
-  end
-	if t == "H" then
+	elseif key == "H" then
 		headlandSettings.mode = headlandSettings.mode - 1
 		if headlandSettings.mode < courseGenerator.HEADLAND_MODE_MIN then
 			headlandSettings.mode = courseGenerator.HEADLAND_MODE_MAX
 		end
 		generate()
-	end
-  if t == "r" then
+	elseif key == "l" then
+		centerSettings.mode = centerSettings.mode + 1
+		if centerSettings.mode > courseGenerator.CENTER_MODE_MAX then
+			centerSettings.mode = courseGenerator.CENTER_MODE_MIN
+		end
+		generate()
+	elseif key == "L" then
+		centerSettings.mode = centerSettings.mode - 1
+		if centerSettings.mode < courseGenerator.CENTER_MODE_MIN then
+			centerSettings.mode = courseGenerator.CENTER_MODE_MAX
+		end
+		generate()
+  elseif key == "r" then
     headlandSettings.headlandFirst = not headlandSettings.headlandFirst
     generate()
-  end
-	if t == "q" then
+  elseif key == "q" then
 		if centerSettings.useBestAngle then
 			centerSettings.useBestAngle = nil
 			centerSettings.useLongestEdgeAngle = true
@@ -763,104 +782,90 @@ function love.textinput( t )
 			centerSettings.useLongestEdgeAngle = nil
 		end
 		generate()
-	end
-  if t == "A" then
+	elseif key == "A" then
 	  centerSettings.rowAngle = centerSettings.rowAngle + math.pi / 16
       generate()
-  end
-  if t == "a" then
+  elseif key == "a" then
 		centerSettings.rowAngle = centerSettings.rowAngle - math.pi / 16
       generate()
-  end
-	if t == "J" then
+  elseif key == "J" then
 		centerSettings.nRowsToSkip = centerSettings.nRowsToSkip + 1
 		generate()
-	end
-	if t == "j" then
+	elseif key == "j" then
 		if centerSettings.nRowsToSkip > 0 then
 			centerSettings.nRowsToSkip = centerSettings.nRowsToSkip - 1
 			generate()
 		end
-	end
-  if t == "i" then
+	elseif key == "i" then
     islandBypassMode = islandBypassMode + 1
 	  if islandBypassMode > Island.BYPASS_MODE_MAX then
 		  islandBypassMode = Island.BYPASS_MODE_MIN
 	  end
     islandNodes = ( islandBypassMode ~= Island.BYPASS_MODE_NONE ) and field.islandNodes or {}
     generate()
-  end
-  if t == "," then
+  elseif key == "," then
     if minDistanceBetweenPoints > 0.25 then
       minDistanceBetweenPoints = minDistanceBetweenPoints - 0.25
       generate()
     end
-  end
-  if t == "<" then
+  elseif key == "<" then
     minDistanceBetweenPoints = minDistanceBetweenPoints + 0.25
     generate()
-  end
-  if t == "." then
+  elseif key == "." then
     if minSmoothingAngleDeg > 5 then
       minSmoothingAngleDeg = minSmoothingAngleDeg - 5
       generate()
     end
-  end
-  if t == ">" then
+  elseif key == ">" then
     minSmoothingAngleDeg = minSmoothingAngleDeg + 5
     generate()
-  end
-  if t == "k" then
+  elseif key == "k" then
     if headlandSettings.minHeadlandTurnAngleDeg > 5 then
       headlandSettings.minHeadlandTurnAngleDeg = headlandSettings.minHeadlandTurnAngleDeg - 5
       generate()
     end
-  end
-  if t == "K" then
+  elseif key == "K" then
     headlandSettings.minHeadlandTurnAngleDeg = headlandSettings.minHeadlandTurnAngleDeg + 5
     generate()
-  end
-  if t == "m" then
+  elseif key == "m" then
     field.doSmooth = not field.doSmooth
     generate()
-  end
-  if t == "1" then
+  elseif key == "1" then
     drawCourse = not drawCourse
-  end
-  if t == "2" then
+  elseif key == "2" then
     showHeadlandPath = not showHeadlandPath
-  end
-  if t == "3" then
+  elseif key == "3" then
     drawConnectingTracks = not drawConnectingTracks
-  end
-  if t == "4" then
+  elseif key == "4" then
     drawTrack = not drawTrack
-  end
-  if t == "5" then
+  elseif key == "5" then
     drawHelpers = not drawHelpers
-  end
-  if t == "6" then
+  elseif key == "6" then
     showSettings = not showSettings
-  end
-	if t == "7" then
+	elseif key == "7" then
 		drawBlocks= not drawBlocks
-	end
-	if t == "8" then
+  elseif key == "8" then
 		drawGrid= not drawGrid
-	end
-	if t == "9" then
+  elseif key == "9" then
 		showWidth = not showWidth
-	end
-  if t == "=" then
-	  currentWaypointIndex = currentWaypointIndex + 1
-	  if currentWaypointIndex > #field.course then
-		  currentWaypointIndex = 1 
-	  end
-  end
-	if t == "-" then
+  elseif key == "=" then
+		currentWaypointIndex = currentWaypointIndex + 1
+		if currentWaypointIndex > #field.course then
+			currentWaypointIndex = 1
+		end
+		if love.keyboard.isDown('lctrl') then
+			-- move vehicle to the current waypoitn
+			vehicle:setPosition(field.course[currentWaypointIndex].x, -field.course[currentWaypointIndex].y)
+			vehicle:setRotation(field.course[currentWaypointIndex].nextEdge.angle)
+		end
+  elseif key == "-" then
 		currentWaypointIndex = currentWaypointIndex - 1
 		if currentWaypointIndex < 1 then
 			currentWaypointIndex = #field.course
+		end
+		if love.keyboard.isDown('lctrl') then
+			vehicle:setPosition(field.course[currentWaypointIndex].x, -field.course[currentWaypointIndex].y)
+			vehicle:setRotation(field.course[currentWaypointIndex].nextEdge.angle)
 		end
 	end
 end
@@ -871,39 +876,62 @@ function love.wheelmoved( dx, dy )
 end
 
 function love.mousepressed(x, y, button, istouch)
-   if button == 1 then 
-     leftMouseKeyPressedAt = { x=x, y=y }
-     leftMouseKeyPressed = true
-     path.from = {}
-     path.from.x, path.from.y = love2real( x, y )
-     if field.course then
-       for i, point in ipairs( field.course ) do
-         if math.abs( point.x - path.from.x ) < 1 and math.abs( point.y - path.from.y ) < 1 then
-           print( i, point.x, point.y )
-           io.stdout:flush()
-           break
-         end
-       end
-     end
-   end
-   if button == 2 then
-     cix, ciy = love2real( x, y )
-     headlandSettings.startLocation.x = cix
-     headlandSettings.startLocation.y = ciy
-     generate()
-     path.to = {}
-     path.to.x, path.to.y = love2real( x, y )
-     if path.from then
-       print( string.format( "Finding path between %.2f, %.2f and %.2f, %.2f", path.from.x, path.from.y, path.to.x, path.to.y ))
-       local now = os.clock()
-       path.course, grid = pathFinder.findPath( path.from, path.to , field.boundary, nil, nil, pathFinder.addFruitDistanceFromBoundary )
-       reversePath.course, grid = pathFinder.findPath( path.to, path.from, field.boundary, nil, nil, pathFinder.addFruitDistanceFromBoundary )
-       print( string.format( "Pathfinding ran for %.2f seconds", os.clock() - now ))
-       io.stdout:flush()
-       if path.course ~= nil then path.course = path.course end
-       if reversePath.course ~= nil then reversePath.course = reversePath.course end
-     end
-   end
+	if button == 1 then
+		local x, y = love2real( x, y )
+		local ix = findWaypointIndexForPosition(x, y)
+		if love.keyboard.isDown('lctrl') then
+			-- place vehicle on the clicked position
+			vehicle:setPosition(x, -y)
+			-- and to the rotation
+			if ix then
+				vehicle:setRotation(field.course[ix].nextEdge.angle)
+			end
+		elseif love.keyboard.isDown('lshift') then
+			if ix then
+				vehicle:setTarget(Point(x, -y, field.course[ix].nextEdge.angle))
+			end
+		else
+			leftMouseKeyPressedAt = { x=x, y=y }
+			leftMouseKeyPressed = true
+			path.from = {}
+			path.from.x, path.from.y = x, y
+			if field.course then
+				for i, point in ipairs( field.course ) do
+					if math.abs( point.x - path.from.x ) < 1 and math.abs( point.y - path.from.y ) < 1 then
+						print( i, point.x, point.y )
+						io.stdout:flush()
+						break
+					end
+				end
+			end
+		end
+
+	end
+	if button == 2 then
+		cix, ciy = love2real( x, y )
+		headlandSettings.startLocation.x = cix
+		headlandSettings.startLocation.y = ciy
+		if not love.keyboard.isDown('lshift') then
+			generate()
+		else
+			path.to = {}
+			path.to.x, path.to.y = love2real( x, y )
+			if path.from then
+				print( string.format( "Finding path between %.2f, %.2f and %.2f, %.2f", path.from.x, path.from.y, path.to.x, path.to.y ))
+				local now = os.clock()
+				if false then
+					path.course, grid = pathFinder.findPath( path.from, path.to , field.boundary, nil, nil, pathFinder.addFruitDistanceFromBoundary )
+					reversePath.course, grid = pathFinder.findPath( path.to, path.from, field.boundary, nil, nil, pathFinder.addFruitDistanceFromBoundary )
+					print( string.format( "Pathfinding ran for %.2f seconds", os.clock() - now ))
+				else
+					path.course, grid = pathFinder.findPathOnHeadland(path.from, path.to , field.headlandTracks, field.width, true)
+				end
+				io.stdout:flush()
+				if path.course ~= nil then path.course = path.course end
+				if reversePath.course ~= nil then reversePath.course = reversePath.course end
+			end
+		end
+	end
 end
 
 function love.mousereleased(x, y, button, istouch)
@@ -919,12 +947,27 @@ function love.mousemoved( x, y, dx, dy )
   end
   -- show point info
   local rx, ry = love2real( x, y )
-  if field.course then
-    for i, point in ipairs( field.course ) do
-      if math.abs( point.x - rx ) < 1 and math.abs( point.y - ry ) < 1 then
-        currentWaypointIndex = i
-        break
-      end
-    end
-  end
+	currentWaypointIndex = findWaypointIndexForPosition(rx, ry) or currentWaypointIndex
+end
+
+function findWaypointIndexForPosition(rx, ry)
+	if field.course then
+		for i, point in ipairs( field.course ) do
+			if math.abs( point.x - rx ) < 1 and math.abs( point.y - ry ) < 1 then
+				return i
+			end
+		end
+	end
+	return nil
+end
+
+
+
+
+function love.update(dt)
+	-- limit frame rate (and thus CPU usage), my laptop likes that on long flights)
+	if dt < 1/10 then
+		love.timer.sleep(1/10 - dt)
+	end
+	vehicle:update(dt)
 end
