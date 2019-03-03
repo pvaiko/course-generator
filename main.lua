@@ -15,7 +15,11 @@ local windowWidth = 1400
 local windowHeight = 950
 local showWidth = false
 local currentWaypointIndex = 1
- 
+
+local pathFinder = PathFinder()
+local reversePathFinder = PathFinder()
+local headlandPathFinder = HeadlandPathFinder()
+
 local drawConnectingTracks = true
 local drawCourse = true
 local showHeadlandPath = true 
@@ -251,8 +255,9 @@ function drawSettings()
 	    local origTrack = cWp.originalTrackNumber or 'n/a'
 	    local ridgeMarker = cWp.ridgeMarker or 'n/a'
 	    local adjacentToIsland = cWp.adjacentIslands and #cWp.adjacentIslands or 'no'
-        love.graphics.print(string.format("pass=%s track =%s(%s) r=%s adj=%s rm=%s", tostring( pass), tostring( track ), tostring( origTrack ), radius, adjacentToIsland, tostring( ridgeMarker ) ),
-          windowWidth - 300, windowHeight - 20, 0, 1)
+        love.graphics.print(string.format("pass=%s track =%s(%s) r=%s adj=%s rm=%s islandbp=%s",
+					tostring( pass), tostring( track ), tostring( origTrack ), radius, adjacentToIsland, tostring( ridgeMarker ), tostring(cWp.islandBypass)),
+          windowWidth - 400, windowHeight - 20, 0, 1)
 
       end
   end
@@ -911,24 +916,24 @@ function love.mousepressed(x, y, button, istouch)
 		cix, ciy = love2real( x, y )
 		headlandSettings.startLocation.x = cix
 		headlandSettings.startLocation.y = ciy
-		if not love.keyboard.isDown('lshift') then
+		-- right mouse button: generate course
+		-- with left shift: generate headland path
+		-- with right CTRL: generate field path
+		if not love.keyboard.isDown('lshift') and not love.keyboard.isDown('lctrl') then
 			generate()
 		else
 			path.to = {}
 			path.to.x, path.to.y = love2real( x, y )
 			if path.from then
 				print( string.format( "Finding path between %.2f, %.2f and %.2f, %.2f", path.from.x, path.from.y, path.to.x, path.to.y ))
-				local now = os.clock()
-				if false then
-					path.course, grid = pathFinder.findPath( path.from, path.to , field.boundary, nil, nil, pathFinder.addFruitDistanceFromBoundary )
-					reversePath.course, grid = pathFinder.findPath( path.to, path.from, field.boundary, nil, nil, pathFinder.addFruitDistanceFromBoundary )
-					print( string.format( "Pathfinding ran for %.2f seconds", os.clock() - now ))
+				path.started = os.clock()
+				if love.keyboard.isDown('lctrl') then
+					busy, path.course, grid = pathFinder:start( path.from, path.to , field.boundary, nil)
+					busy, reversePath.course, grid = reversePathFinder:start( path.to, path.from, field.boundary, nil)
 				else
-					path.course, grid = pathFinder.findPathOnHeadland(path.from, path.to , field.headlandTracks, field.width, true)
+					path.course, grid = headlandPathFinder:findPath(path.from, path.to , field.headlandTracks, field.width, true)
 				end
 				io.stdout:flush()
-				if path.course ~= nil then path.course = path.course end
-				if reversePath.course ~= nil then reversePath.course = reversePath.course end
 			end
 		end
 	end
@@ -962,12 +967,25 @@ function findWaypointIndexForPosition(rx, ry)
 end
 
 
-
-
 function love.update(dt)
 	-- limit frame rate (and thus CPU usage), my laptop likes that on long flights)
 	if dt < 1/10 then
 		love.timer.sleep(1/10 - dt)
 	end
 	vehicle:update(dt)
+	if pathFinder:isActive() then
+		busy, path.course, grid = pathFinder:resume()
+		if not busy then
+			print( string.format( "Pathfinding ran for %.2f seconds", os.clock() - path.started ))
+			if path.course then
+				print(string.format('Path found, %d waypoints', #path.course))
+			else
+				print('Path not found')
+			end
+			io.stdout:flush()
+		end
+	end
+	if reversePathFinder:isActive() then
+		busy, reversePath.course, grid = reversePathFinder:resume()
+	end
 end
