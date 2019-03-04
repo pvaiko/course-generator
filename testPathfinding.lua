@@ -4,7 +4,7 @@ dofile( 'file.lua' )
 dofile( 'headland.lua' )
 dofile( 'center.lua' )
 dofile( 'geo.lua' )
-dofile( 'pathfinder.lua' )
+dofile( 'PathFinder.lua' )
 dofile( 'a-star.lua' )
 
 --- add some area with fruit for tests

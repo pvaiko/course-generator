@@ -156,9 +156,9 @@ function drawPathFindingHelpers()
     love.graphics.setColor( 220, 100, 0 )
     love.graphics.points( getVertices( reversePath.course ))
   end
-  if grid and drawGrid then 
+  if path.grid and drawGrid then
     love.graphics.setLineWidth( lineWidth )
-    for i, point in ipairs( grid ) do
+    for i, point in ipairs( path.grid ) do
       local len = 0.3
       if point.hasFruit then
         love.graphics.setColor( 100, 000, 0 )
@@ -928,10 +928,10 @@ function love.mousepressed(x, y, button, istouch)
 				print( string.format( "Finding path between %.2f, %.2f and %.2f, %.2f", path.from.x, path.from.y, path.to.x, path.to.y ))
 				path.started = os.clock()
 				if love.keyboard.isDown('lctrl') then
-					busy, path.course, grid = pathFinder:start( path.from, path.to , field.boundary, nil)
-					busy, reversePath.course, grid = reversePathFinder:start( path.to, path.from, field.boundary, nil)
+					path.done, path.course, path.grid = pathFinder:start( path.from, path.to , field.boundary, nil)
+					path.done, reversePath.course, path.grid = reversePathFinder:start( path.to, path.from, field.boundary, nil)
 				else
-					path.course, grid = headlandPathFinder:findPath(path.from, path.to , field.headlandTracks, field.width, true)
+					path.course, path.grid = headlandPathFinder:findPath(path.from, path.to , field.headlandTracks, field.width, true)
 				end
 				io.stdout:flush()
 			end
@@ -974,8 +974,8 @@ function love.update(dt)
 	end
 	vehicle:update(dt)
 	if pathFinder:isActive() then
-		busy, path.course, grid = pathFinder:resume()
-		if not busy then
+		path.done, path.course, path.grid = pathFinder:resume()
+		if path.done then
 			print( string.format( "Pathfinding ran for %.2f seconds", os.clock() - path.started ))
 			if path.course then
 				print(string.format('Path found, %d waypoints', #path.course))
@@ -986,6 +986,6 @@ function love.update(dt)
 		end
 	end
 	if reversePathFinder:isActive() then
-		busy, reversePath.course, grid = reversePathFinder:resume()
+		path.done, reversePath.course, path.grid = reversePathFinder:resume()
 	end
 end
