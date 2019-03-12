@@ -4,8 +4,7 @@ dofile( 'file.lua' )
 dofile( 'headland.lua' )
 dofile( 'center.lua' )
 dofile( 'geo.lua' )
-dofile( 'PathFinder.lua' )
-dofile( 'a-star.lua' )
+dofile( 'Pathfinder.lua' )
 
 --- add some area with fruit for tests
 function testAddFruit( grid, polygon )

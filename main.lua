@@ -1,4 +1,5 @@
 dofile( 'include.lua' )
+profile = require("profile")
 
 local field = {}
 marks = {}
@@ -16,9 +17,9 @@ local windowHeight = 950
 local showWidth = false
 local currentWaypointIndex = 1
 
-local pathFinder = PathFinder()
-local reversePathFinder = PathFinder()
-local headlandPathFinder = HeadlandPathFinder()
+local pathFinder = Pathfinder()
+local reversePathfinder = Pathfinder()
+local headlandPathfinder = HeadlandPathfinder()
 
 local drawConnectingTracks = true
 local drawCourse = true
@@ -928,10 +929,12 @@ function love.mousepressed(x, y, button, istouch)
 				print( string.format( "Finding path between %.2f, %.2f and %.2f, %.2f", path.from.x, path.from.y, path.to.x, path.to.y ))
 				path.started = os.clock()
 				if love.keyboard.isDown('lctrl') then
-					path.done, path.course, path.grid = pathFinder:start( path.from, path.to , field.boundary, nil)
-					path.done, reversePath.course, path.grid = reversePathFinder:start( path.to, path.from, field.boundary, nil)
+					--profile.hookall('Lua')
+					--profile.start()
+					path.done, path.course, path.grid = pathFinder:start( path.from, path.to , field.boundary, nil, nil, true)
+					--path.done, reversePath.course, path.grid = reversePathfinder:start( path.to, path.from, field.boundary, nil, nil, false)
 				else
-					path.course, path.grid = headlandPathFinder:findPath(path.from, path.to , field.headlandTracks, field.width, true)
+					path.course, path.grid = headlandPathfinder:findPath(path.from, path.to , field.headlandTracks, field.width, true)
 				end
 				io.stdout:flush()
 			end
@@ -982,10 +985,12 @@ function love.update(dt)
 			else
 				print('Path not found')
 			end
+			--profile.stop()
+			--print(profile.report('time', 10))
 			io.stdout:flush()
 		end
 	end
-	if reversePathFinder:isActive() then
-		path.done, reversePath.course, path.grid = reversePathFinder:resume()
+	if reversePathfinder:isActive() then
+		path.done, reversePath.course, path.grid = reversePathfinder:resume()
 	end
 end
