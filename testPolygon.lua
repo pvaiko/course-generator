@@ -1,6 +1,22 @@
 require( 'courseplay/course-generator/geo' )
 require( 'testCommon')
 
+local a = {0, 1, 2, 0, 3, 4, 0, 0, 8}
+local i = 1
+while a[i] do
+	if a[i] == 0 then
+		table.remove(a, i)
+	else
+		i = i + 1
+	end
+end
+
+for _, n in ipairs(a) do
+	print(n)
+
+end
+
+
 local polyline = Polyline:new( { point( 1, 0 ), point( 2, 0 ), point( 3, 0 ), point( 4, 0 ) })
 local n = 0
 local lastI = 0

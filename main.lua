@@ -31,12 +31,12 @@ local drawHelpers = true
 local showSettings = true
 
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
--- headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
-headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
+headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
+--headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
 headlandSettings.nPasses = 3
-local centerSettings = { mode = courseGenerator.CENTER_MODE_CIRCULAR, useBestAngle = true, rowAngle = 0, nRowsToSkip = 0 }
+local centerSettings = { mode = courseGenerator.CENTER_MODE_UP_DOWN, useBestAngle = false, useLongestEdgeAngle = true, rowAngle = 0, nRowsToSkip = 0 }
 
 local turningRadius = 4.5
 local extendTracks = 0
@@ -64,7 +64,7 @@ function love.load( arg )
         field = f
       end
     end
-    field.width = 6
+    field.width = 12
   end
 
   islandNodes = field.islandNodes
@@ -670,7 +670,7 @@ function generate()
                                            extendTracks, minDistanceBetweenPoints,
                                            math.rad( minSmoothingAngleDeg ), math.rad( headlandSettings.minHeadlandTurnAngleDeg ), field.doSmooth,
                                            field.roundCorners, turningRadius,
-  										                     true, islandNodes, islandBypassMode, centerSettings
+  										                     false, islandNodes, islandBypassMode, centerSettings
                                            )
 
   if not status then
