@@ -31,8 +31,8 @@ local drawHelpers = true
 local showSettings = true
 
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
-headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
---headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
+--headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
+headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
 headlandSettings.nPasses = 3
@@ -75,7 +75,7 @@ function love.load( arg )
 	vehicle = Vehicle(headlandSettings.startLocation.x, -headlandSettings.startLocation.y, 0)
 
   headlandSettings.overlapPercent = 7
-  headlandSettings.minHeadlandTurnAngleDeg = 150
+  headlandSettings.minHeadlandTurnAngleDeg = 45
   field.doSmooth = true
   headlandSettings.isClockwise = false
   field.roundCorners = true
