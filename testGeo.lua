@@ -1,5 +1,24 @@
 dofile( 'include.lua' )
 
+local positions = {10, 8, 6}
+local modulo10 = {}
+modulo10[0] = { 0, 0, 0}
+modulo10[2] = {-1, 0, 2}
+modulo10[4] = {-1, 1, 1}
+modulo10[6] = {-1, 2, 0}
+modulo10[8] = { 0, 1, 0}
+
+for i = 10, 100, 2 do
+	local tens = math.floor(i / 10)
+	local m = i % 10
+	tens = tens + modulo10[m][1]
+	local eights = modulo10[m][2]
+	local sixes = modulo10[m][3]
+
+	print(i, tens, eights, sixes, tens * 10 + eights * 8 + sixes * 6)
+end
+
+
 print(math.deg(getDeltaAngle(math.rad(-2.1), math.rad(-2.4))))
 
 for corner = 1, 4 do

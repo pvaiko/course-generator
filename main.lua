@@ -36,7 +36,7 @@ headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
 headlandSettings.nPasses = 3
-local centerSettings = { mode = courseGenerator.CENTER_MODE_UP_DOWN, useBestAngle = false, useLongestEdgeAngle = true, rowAngle = 0, nRowsToSkip = 0 }
+local centerSettings = { mode = courseGenerator.CENTER_MODE_CIRCULAR, useBestAngle = false, useLongestEdgeAngle = true, rowAngle = 0, nRowsToSkip = 0 }
 
 local turningRadius = 4.5
 local extendTracks = 0
@@ -78,7 +78,7 @@ function love.load( arg )
   headlandSettings.minHeadlandTurnAngleDeg = 45
   field.doSmooth = true
   headlandSettings.isClockwise = false
-  field.roundCorners = true
+  field.roundCorners = false
   if arg[ 2 ] == "fromCourse" then
     -- use the outermost headland path as the basis of the 
     -- generation, that is, the field.boundary is actually
