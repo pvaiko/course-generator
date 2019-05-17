@@ -2,6 +2,21 @@ dofile( 'include.lua' )
 
 marks = {}
 
+local headlandSettings = {}
+local implementWidth = 6
+local extendTracks = 0
+local minDistanceBetweenPoints = 0.5
+local minSmoothAngleDeg = 30
+local maxSmoothAngleDeg = 60
+local doSmooth = true
+local fromInside = false
+local turnRadius = 6
+local returnToFirst = true
+local islandNodes = {}
+local islandBypassMode = Island.BYPASS_MODE_CIRCLE;
+local centerSettings = {}
+local field, bb
+
 function printParameters()
   print( "implementWidth = ", implementWidth )
   print( "headlandSettings.mode = ", headlandSettings.mode )
@@ -57,7 +72,10 @@ function generatePermutations()
 		headlandSettings.startLocation = { x = bb.minX, y = bb.maxY }
 		generate()
 	end
+	centerSettings.mode = courseGenerator.CENTER_MODE_CIRCULAR
+	generate()
 	centerSettings.nRowsToSkip = 0
+	centerSettings.mode = courseGenerator.CENTER_MODE_UP_DOWN
 end
 
 function countGlitches( course, limit )
@@ -110,10 +128,10 @@ end
 
 -----------------------------------------------------------------------------
 resetParameter()
-fieldFile = "fields/Goldcrest.xml"
-savedFields = loadSavedFields( fieldFile )
+local fieldFile = "fields/Felsbrunn.xml"
+local savedFields = loadSavedFields( fieldFile )
 
-fieldNumber = 12
+local fieldNumber = 12
 field = savedFields[ fieldNumber ]
 print( "#####################################################################" )
 print( string.format( "Testing field %d from %s", fieldNumber, fieldFile ))

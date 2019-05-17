@@ -1,22 +1,48 @@
 dofile( 'include.lua' )
 
-local positions = {10, 8, 6}
-local modulo10 = {}
-modulo10[0] = { 0, 0, 0}
-modulo10[2] = {-1, 0, 2}
-modulo10[4] = {-1, 1, 1}
-modulo10[6] = {-1, 2, 0}
-modulo10[8] = { 0, 1, 0}
 
-for i = 10, 100, 2 do
-	local tens = math.floor(i / 10)
-	local m = i % 10
-	tens = tens + modulo10[m][1]
-	local eights = modulo10[m][2]
-	local sixes = modulo10[m][3]
-
-	print(i, tens, eights, sixes, tens * 10 + eights * 8 + sixes * 6)
+for n = 20, 25 do
+	local SKIP_FWD = {} -- skipping rows towards the end of field
+	local SKIP_BACK = {} -- skipping rows towards the beginning of the field
+	local FILL_IN = {} -- filling in whatever is left after skipping
+	print('### Tracks: ', n)
+	local nSkip = 4
+	local rowsDone = {}
+	-- start in the middle
+	local i = nSkip + 1
+	rowsDone[i] = true
+	local nDone = 1
+	local mode = SKIP_BACK
+	print(i)
+	while nDone < n do
+		local nextI
+		if mode == SKIP_FWD then
+			nextI = i + nSkip + 1
+			mode = SKIP_BACK
+		elseif mode == SKIP_BACK then
+			nextI = i - nSkip
+			mode = SKIP_FWD
+		elseif mode == FILL_IN then
+			nextI = i + 1
+		end
+		if rowsDone[nextI] then
+			print('next')
+			nextI = i + nSkip + 1
+			mode = SKIP_BACK
+		end
+		if nextI > n then
+			print('fill')
+			mode = FILL_IN
+			nextI = i + 1
+		end
+		i = nextI
+		rowsDone[i] = true
+		nDone = nDone + 1
+		print(i, nDone)
+	end
 end
+
+
 
 
 print(math.deg(getDeltaAngle(math.rad(-2.1), math.rad(-2.4))))
