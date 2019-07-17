@@ -1,6 +1,7 @@
 dofile( 'include.lua' )
 
 marks = {}
+unpack = unpack or table.unpack
 
 local headlandSettings = {}
 local implementWidth = 6
@@ -11,7 +12,7 @@ local maxSmoothAngleDeg = 60
 local doSmooth = true
 local fromInside = false
 local turnRadius = 6
-local returnToFirst = true
+local returnToFirst = false
 local islandNodes = {}
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE;
 local centerSettings = {}
@@ -118,7 +119,7 @@ function resetParameter()
   doSmooth = true
   fromInside = false
   turnRadius = 6
-  returnToFirst = true
+  returnToFirst = false
   islandNodes = {}
   islandBypassMode = Island.BYPASS_MODE_CIRCLE;
   centerSettings = {}
