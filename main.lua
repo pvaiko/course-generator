@@ -36,7 +36,7 @@ headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
 headlandSettings.nPasses = 2
-local centerSettings = { mode = courseGenerator.CENTER_MODE_SPIRAL, useBestAngle = true, useLongestEdgeAngle = false, rowAngle = 0, nRowsToSkip = 0 }
+local centerSettings = { mode = courseGenerator.CENTER_MODE_UP_DOWN, useBestAngle = false, useLongestEdgeAngle = true, rowAngle = 0, nRowsToSkip = 0 }
 
 local turningRadius = 6
 local extendTracks = 0
@@ -64,7 +64,7 @@ function love.load( arg )
         field = f
       end
     end
-    field.width = 6
+    field.width = 13.5
   end
 
   islandNodes = field.islandNodes
