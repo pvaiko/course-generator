@@ -6,8 +6,6 @@ marks = {}
 local lines = {}
 local helperPolygon = {}
 local headlandSettings = {}
-local leftMouseKeyPressedAt = {}
-local leftMouseKeyPressed = false
 local pointSize = 1
 local lineWidth = 0.1
 local scale = 1.0
@@ -17,7 +15,7 @@ local windowHeight = 950
 local showWidth = false
 local currentWaypointIndex = 1
 
-local pathFinder = Pathfinder()
+local pathFinder = HybridAStarWithAStarInTheMiddle(20)
 local reversePathfinder = Pathfinder()
 local headlandPathfinder = HeadlandPathfinder()
 
@@ -36,9 +34,9 @@ headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
 headlandSettings.nPasses = 2
-local centerSettings = { mode = courseGenerator.CENTER_MODE_UP_DOWN, useBestAngle = false, useLongestEdgeAngle = true, rowAngle = 0, nRowsToSkip = 0 }
+local centerSettings = { mode = courseGenerator.CENTER_MODE_UP_DOWN, useBestAngle = true, useLongestEdgeAngle = false, rowAngle = 0, nRowsToSkip = 0 }
 
-local turningRadius = 6
+local turnRadius = 6
 local extendTracks = 0
 local minDistanceBetweenPoints = 0.5
 local minSmoothingAngleDeg = 25
@@ -64,7 +62,7 @@ function love.load( arg )
         field = f
       end
     end
-    field.width = 13.5
+    field.width = 4
   end
 
   islandNodes = field.islandNodes
@@ -86,7 +84,7 @@ function love.load( arg )
     -- calculate the boundary from the headland track
     field.boundary = calculateHeadlandTrack( field.boundary, courseGenerator.HEADLAND_MODE_NORMAL, field.boundary.isClockwise,field.width / 2,
                                              minDistanceBetweenPoints, math.rad( minSmoothingAngleDeg), 0,
-                                             field.doSmooth, false, turningRadius, nil, nil )
+                                             field.doSmooth, false, turnRadius, nil, nil )
   end
   field.boundary = Polygon:new( field.boundary )
   field.boundingBox = field.boundary:getBoundingBox()
@@ -143,35 +141,37 @@ function saveFile()
 end
 
 function drawPathFindingHelpers()
-  -- for text, don't flip y axis as it results in mirrored characters
-  love.graphics.push()
-  love.graphics.setLineWidth( 1 )
-  love.graphics.setColor( 140, 140, 0 )
-  if path.course and #path.course > 2 then
-    love.graphics.line( getVertices( path.course ))
-    love.graphics.setColor( 200, 200, 0 )
-    love.graphics.points( getVertices( path.course ))
-  end
-  if reversePath.course and #reversePath.course > 2 then
-    love.graphics.line( getVertices( reversePath.course ))
-    love.graphics.setColor( 220, 100, 0 )
-    love.graphics.points( getVertices( reversePath.course ))
-  end
-  if path.grid and drawGrid then
-    love.graphics.setLineWidth( lineWidth )
-    for i, point in ipairs( path.grid ) do
-      local len = 0.3
-      if point.hasFruit then
-        love.graphics.setColor( 100, 000, 0 )
-      else
-        love.graphics.setColor( 000, 150, 0 )
-      end
-      if point.visited then len = 1 end
-      love.graphics.line( point.x - len, point.y, point.x + len, point.y )
-      love.graphics.line( point.x, point.y - len, point.x, point.y + len )
+
+    drawPathFinderNodes()
+    -- for text, don't flip y axis as it results in mirrored characters
+    love.graphics.push()
+    love.graphics.setLineWidth( 1 )
+    love.graphics.setColor(0, 40, 140 )
+    if path.course and #path.course > 2 then
+        love.graphics.line( getVertices( path.course ))
+        love.graphics.setColor(0, 120, 200 )
+        love.graphics.points( getVertices( path.course ))
     end
-  end
-  love.graphics.pop()
+    if reversePath.course and #reversePath.course > 2 then
+        love.graphics.line( getVertices( reversePath.course ))
+        love.graphics.setColor( 220, 100, 0 )
+        love.graphics.points( getVertices( reversePath.course ))
+    end
+    if path.grid and drawGrid then
+        love.graphics.setLineWidth( lineWidth )
+        for i, point in ipairs( path.grid ) do
+            local len = 0.3
+            if point.hasFruit then
+                love.graphics.setColor( 100, 000, 0 )
+            else
+                love.graphics.setColor( 000, 150, 0 )
+            end
+            if point.visited then len = 1 end
+            love.graphics.line( point.x - len, point.y, point.x + len, point.y )
+            love.graphics.line( point.x, point.y - len, point.x, point.y + len )
+        end
+    end
+    love.graphics.pop()
 end
 
 function drawPoints( polygon )
@@ -211,7 +211,7 @@ function drawSettings()
     roundCorners = "sharp"
   end
   love.graphics.print( string.format( "HEADLAND %s, width: %.1f m, overlap %d%% number of passes: %d, direction %s, corners: %s, radius: %.1f",
-           courseGenerator.headlandModeTexts[headlandSettings.mode], field.width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, turningRadius ), 10, 30, 0, 1 )
+           courseGenerator.headlandModeTexts[headlandSettings.mode], field.width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, turnRadius), 10, 30, 0, 1 )
   love.graphics.print( string.format( "CENTER mode: %s, skipping %d tracks, extend %d m",
            courseGenerator.centerModeTexts[centerSettings.mode], centerSettings.nRowsToSkip, extendTracks ), 10, 50, 0, 1 )
            
@@ -640,19 +640,51 @@ function drawWaypoints( course )
     end
 end
 
+function drawPathFinderNodes()
+    if pathFinder and pathFinder.nodes then
+        for _, row in pairs(pathFinder.nodes.nodes) do
+            for _, column in pairs(row) do
+                for _, cell in pairs(column) do
+                    if cell.pred == cell then
+                        love.graphics.setPointSize(5)
+                        love.graphics.setColor( 0, 100, 100 )
+                    else
+                        local range = pathFinder.nodes.highestCost - pathFinder.nodes.lowestCost
+                        local color = (cell.cost - pathFinder.nodes.lowestCost) * 250 / range
+                        love.graphics.setPointSize(1)
+                        if cell:isClosed() or true then
+                            love.graphics.setColor(100 + color, 250 - color, 0 )
+                        else
+                            love.graphics.setColor( cell.cost *3, 80, 0 )
+                        end
+                    end
+                    if cell.pred then
+                        love.graphics.setLineWidth(0.1)
+                        love.graphics.line(cell.x, cell.y, cell.pred.x, cell.pred.y)
+                    else
+                        love.graphics.setPointSize(3)
+                        love.graphics.points(cell.x, cell.y)
+                    end
+
+                end
+            end
+        end
+    end
+end
+
 function love.draw()
-  love.graphics.scale( scale, -scale )
-  love.graphics.translate( xOffset, yOffset )
-  love.graphics.setPointSize( pointSize )
-  if ( showOnly ) then
-    drawWaypoints(field.course)
-  else
-    drawField(field)
-  end
-  if showSettings then
-    drawSettings()
-  end
-	vehicle:draw()
+    love.graphics.scale( scale, -scale )
+    love.graphics.translate( xOffset, yOffset )
+    love.graphics.setPointSize( pointSize )
+    if ( showOnly ) then
+        drawWaypoints(field.course)
+    else
+        drawField(field)
+    end
+    if showSettings then
+        drawSettings()
+    end
+    vehicle:draw()
 end
 
 function errorHandler( err )
@@ -669,7 +701,7 @@ function generate()
                                            field, field.width, headlandSettings,
                                            extendTracks, minDistanceBetweenPoints,
                                            math.rad( minSmoothingAngleDeg ), math.rad( headlandSettings.minHeadlandTurnAngleDeg ), field.doSmooth,
-                                           field.roundCorners, turningRadius,
+                                           field.roundCorners, turnRadius,
   										                     false, islandNodes, islandBypassMode, centerSettings
                                            )
 
@@ -678,6 +710,7 @@ function generate()
 	elseif not ok then
 	  love.window.showMessageBox( "Warning", "Generated course may not be ok.", { "Ok" }, "warning" )
   end
+	if field.course then
 		for i = 2, #field.course - 1 do
 			local cp, pp, np = field.course[ i ], field.course[ i - 1 ], field.course[ i + 1 ]
 			local dA = math.abs( getDeltaAngle( pp.nextEdge.angle, pp.prevEdge.angle ))+
@@ -689,7 +722,7 @@ function generate()
 				table.insert(marks, {x = cp.x, y = cp.y})
 			end
 		end
-
+	end
 	io.stdout:flush()
 end
 function love.keypressed(key, scancode, isrepeat)
@@ -744,10 +777,10 @@ function love.textinput(key)
     field.roundCorners = not field.roundCorners
     generate()
   elseif key == "t" then
-    turningRadius = turningRadius - 0.5
+    turnRadius = turnRadius - 0.5
     generate()
   elseif key == "T" then
-    turningRadius = turningRadius + 0.5
+    turnRadius = turnRadius + 0.5
     generate()
   elseif key == "h" then
 	  headlandSettings.mode = headlandSettings.mode + 1
@@ -896,20 +929,6 @@ function love.mousepressed(x, y, button, istouch)
 			if ix then
 				vehicle:setTarget(Point(x, -y, field.course[ix].nextEdge.angle))
 			end
-		else
-			leftMouseKeyPressedAt = { x=x, y=y }
-			leftMouseKeyPressed = true
-			path.from = {}
-			path.from.x, path.from.y = x, y
-			if field.course then
-				for i, point in ipairs( field.course ) do
-					if math.abs( point.x - path.from.x ) < 1 and math.abs( point.y - path.from.y ) < 1 then
-						print( i, point.x, point.y )
-						io.stdout:flush()
-						break
-					end
-				end
-			end
 		end
 
 	end
@@ -925,13 +944,15 @@ function love.mousepressed(x, y, button, istouch)
 		else
 			path.to = {}
 			path.to.x, path.to.y = love2real( x, y )
+			path.from = vehicle:getXYPosition()
 			if path.from then
 				print( string.format( "Finding path between %.2f, %.2f and %.2f, %.2f", path.from.x, path.from.y, path.to.x, path.to.y ))
 				path.started = os.clock()
 				if love.keyboard.isDown('lctrl') then
-					--profile.hookall('Lua')
-					--profile.start()
-					path.done, path.course, path.grid = pathFinder:start( path.from, path.to , field.boundary, nil, nil, true)
+					--path.done, path.course, path.grid = pathFinder:start( path.from, path.to , field.boundary, nil, nil, true)
+                    local start = State3D(path.from.x, path.from.y, 0)
+                    local goal = State3D(path.to.x, path.to.y, math.pi)
+					path.done, path.course, path.grid = pathFinder:start( start, goal, turnRadius, false, field.boundary, getIslandPenalty)
 					--path.done, reversePath.course, path.grid = reversePathfinder:start( path.to, path.from, field.boundary, nil, nil, false)
 				else
 					path.course, path.grid = headlandPathfinder:findPath(path.from, path.to , field.headlandTracks, field.width, true)
@@ -969,13 +990,24 @@ function findWaypointIndexForPosition(rx, ry)
 	return nil
 end
 
+function getIslandPenalty(node)
+    for _, point in ipairs(field.islandNodes ) do
+        local dx = node.x - point.x
+        local dy = node.y - point.y
+        local d2 = dx * dx + dy * dy
+        if d2 < 9 then
+            return 100
+        end
+    end
+    return 0
+end
 
 function love.update(dt)
 	-- limit frame rate (and thus CPU usage), my laptop likes that on long flights)
 	if dt < 1/10 then
 		love.timer.sleep(1/10 - dt)
 	end
-	vehicle:update(dt)
+	--vehicle:update(dt)
 	if pathFinder:isActive() then
 		path.done, path.course, path.grid = pathFinder:resume()
 		if path.done then

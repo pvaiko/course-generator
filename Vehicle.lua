@@ -1,3 +1,4 @@
+--- Vehicle in the Giants x/z plane
 ---@class Vehicle
 Vehicle = CpObject()
 
@@ -18,6 +19,10 @@ function Vehicle:setPosition(x, z)
 	self.position.x = x
 	self.position.z = z
 	self.speed = 0
+end
+
+function Vehicle:getXYPosition()
+	return { x = self.position.x, y = -self.position.z}
 end
 
 function Vehicle:setRotation(yRotation)
