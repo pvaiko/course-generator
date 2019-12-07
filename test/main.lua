@@ -1,6 +1,6 @@
 dofile( 'include.lua' )
 
-local turnRadius = 6
+local turnRadius = 5
 local goalHeading = 0
 
 local start = State3D(0, 0, 0 , 0)
@@ -8,17 +8,9 @@ local goal = State3D(13.5, 0, goalHeading, 0)
 local dubinsPath = {}
 local pathFinder = HybridAStarWithAStarInTheMiddle(20)
 local done, path
-local corners = {
-    {x = -1000, y = -1000},
-    {x = -1000, y = 1000},
-    {x = 1000, y = 1000},
-    {x = 1000, y = -1000},
-}
-
-local fieldPolygon = Polygon:new(corners)
 
 function find(start, goal)
-    done, path = pathFinder:start(start, goal, turnRadius, true, fieldPolygon)
+    done, path = pathFinder:start(start, goal, 2, 5, turnRadius, false)
     local dubinsPathDescriptor = dubins_shortest_path(start, goal, turnRadius)
     dubinsPath = dubins_path_sample_many(dubinsPathDescriptor, 1)
     print(dubinsPathDescriptor.type)
@@ -90,7 +82,14 @@ function love.draw()
     love.graphics.setColor(200, 200, 0)
     drawGoal(goal)
 
-    love.graphics.setPointSize(3)
+    love.graphics.setPointSize(5)
+
+    if dubinsPath then
+        for i, p in ipairs(dubinsPath) do
+            love.graphics.setColor(200, 200, 0)
+            love.graphics.points(p.x, p.y)
+        end
+    end
 
     if path then
         for i, p in ipairs(path) do
@@ -102,15 +101,8 @@ function love.draw()
             if p.pred then
                 love.graphics.setLineWidth(0.3)
                 love.graphics.line(p.x, p.y, p.pred.x, p.pred.y)
-            else
-                love.graphics.points(p.x, p.y)
             end
-        end
-    end
-
-    if dubinsPath then
-        for i, p in ipairs(dubinsPath) do
-            love.graphics.setColor(200, 200, 0)
+            love.graphics.setColor(0, 100, 100)
             love.graphics.points(p.x, p.y)
         end
     end
@@ -135,7 +127,7 @@ function love.mousepressed(x, y, button, istouch)
 
         if path then
             debug('Path found with %d nodes', #path)
-        else
+        elseif done then
             debug('No path found')
         end
     end
