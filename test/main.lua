@@ -10,7 +10,7 @@ local pathFinder = HybridAStarWithAStarInTheMiddle(20)
 local done, path
 
 function find(start, goal)
-    done, path = pathFinder:start(start, goal, 2, 5, turnRadius, false)
+    done, path = pathFinder:start(start, goal, 2, 5, turnRadius, true)
     local dubinsPathDescriptor = dubins_shortest_path(start, goal, turnRadius)
     dubinsPath = dubins_path_sample_many(dubinsPathDescriptor, 1)
     print(dubinsPathDescriptor.type)
@@ -109,6 +109,9 @@ function love.draw()
 
     if pathFinder:isActive() then
         done, path = pathFinder:resume()
+        if done then
+            io.stdout:flush()
+        end
     end
 end
 
