@@ -693,11 +693,14 @@ function errorHandler( err )
 end
 
 function generate()
-  -- clear debug graphics
-  marks = {}
-  lines = {}
-  helperPolygon = {}
-  status, ok = xpcall( generateCourseForField, errorHandler, 
+    -- clear debug graphics
+    marks = {}
+    lines = {}
+    helperPolygon = {}
+    headlandSettings.width = field.width
+    centerSettings.width = field.width
+
+    status, ok = xpcall( generateCourseForField, errorHandler,
                                            field, field.width, headlandSettings,
                                            extendTracks, minDistanceBetweenPoints,
                                            math.rad( minSmoothingAngleDeg ), math.rad( headlandSettings.minHeadlandTurnAngleDeg ), field.doSmooth,
