@@ -21,12 +21,14 @@ local function isValidNode(node, userdata)
 end
 
 local turnRadius = 5
-local goalHeading = math.pi
-local startHeading = math.pi
+local goalHeading = 0 --math.pi
+local startHeading = 0 --math.pi
 
 local start = State3D(0, 0, startHeading, 0)
-local goal = State3D(0.08, 6.46, goalHeading, 0)
+local goal = State3D(10, 0, goalHeading, 0)
 local dubinsPath = {}
+local rsPath = {}
+local rsSolver = ReedsSheppSolver()
 local pathFinder = HybridAStarWithAStarInTheMiddle(200, 100)
 local done, path
 
@@ -36,6 +38,10 @@ function find(start, goal)
     local dubinsPathDescriptor = dubins_shortest_path(start, goal, turnRadius)
     dubinsPath = dubins_path_sample_many(dubinsPathDescriptor, 1)
     print(dubinsPathDescriptor.type, dubins_path_length(dubinsPathDescriptor))
+    local rsActionSet = rsSolver:solve(start, goal, turnRadius)
+    print(rsActionSet)
+    rsPath = rsActionSet:getWaypoints(start, vehicleData.turnRadius)
+    io.stdout:flush()
     return done, path
 end
 
@@ -65,6 +71,7 @@ function love.load()
     love.window.setMode(1000, 800)
     love.graphics.setPointSize(3)
     find(start, goal)
+
 end
 
 function love.draw()
@@ -124,6 +131,13 @@ function love.draw()
     if dubinsPath then
         for i, p in ipairs(dubinsPath) do
             love.graphics.setColor(200, 200, 0)
+            love.graphics.points(p.x, p.y)
+        end
+    end
+
+    if rsPath then
+        for i, p in ipairs(rsPath) do
+            love.graphics.setColor(100, 0, 200)
             love.graphics.points(p.x, p.y)
         end
     end
@@ -189,9 +203,9 @@ function love.keypressed(key, scancode, isrepeat)
             goal.t = goal.t - math.rad(headingStepDeg)
         end
     elseif key == '=' then
-        scale = scale + 1
+        scale = scale * 1.2
     elseif key == '-' then
-        scale = scale - 1
+        scale = scale / 1.2
     end
     xOffset, yOffset = width / scale / 2, height / scale / 2
     io.stdout:flush()

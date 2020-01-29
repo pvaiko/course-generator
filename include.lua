@@ -13,6 +13,8 @@ dofile('courseplay/course-generator/State3D.lua')
 dofile('courseplay/course-generator/HybridAStar.lua')
 dofile('courseplay/course-generator/PathfinderUtil.lua')
 dofile('courseplay/course-generator/Dubins.lua')
+dofile('courseplay/course-generator/ReedsShepp.lua')
+dofile('courseplay/course-generator/ReedsSheppSolver.lua')
 dofile('courseplay/Waypoint.lua')
 
 dofile( 'Vehicle.lua' )
