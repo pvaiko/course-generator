@@ -29,18 +29,26 @@ local goal = State3D(10, 0, goalHeading, 0)
 local dubinsPath = {}
 local rsPath = {}
 local rsSolver = ReedsSheppSolver()
-local pathFinder = HybridAStarWithAStarInTheMiddle(200, 100)
+local dubinsSolver = DubinsSolver()
+local pathFinder = HybridAStar(200)
 local done, path
 
-function find(start, goal)
+local function printPath(path)
+    for i, p in ipairs(path) do
+        print(i, tostring(p))
+    end
+end
+
+local function find(start, goal, allowReverse)
     local vehicleData ={name = 'name', turnRadius = turnRadius, dFront = 3, dRear = 3, dLeft = 1.5, dRight = 1.5}
-    done, path = pathFinder:start(start, goal, vehicleData.turnRadius, vehicleData, false,nil, isValidNode)
-    local dubinsPathDescriptor = dubins_shortest_path(start, goal, turnRadius)
-    dubinsPath = dubins_path_sample_many(dubinsPathDescriptor, 1)
-    print(dubinsPathDescriptor.type, dubins_path_length(dubinsPathDescriptor))
+    done, path = pathFinder:start(start, goal, vehicleData.turnRadius, vehicleData, allowReverse,nil, isValidNode)
+    local dubinsSolution = dubinsSolver:solve(start, goal, turnRadius)
+    dubinsPath = dubinsSolution:getWaypoints(start, turnRadius)
     local rsActionSet = rsSolver:solve(start, goal, turnRadius)
-    print(rsActionSet)
     rsPath = rsActionSet:getWaypoints(start, vehicleData.turnRadius)
+    if done and path then
+        printPath(path)
+    end
     io.stdout:flush()
     return done, path
 end
@@ -56,7 +64,7 @@ local function drawNode(node)
     love.graphics.push()
     love.graphics.translate(node.x, node.y)
     love.graphics.rotate(node.t)
-    local left, right = -1.5, 1.5
+    local left, right = -1.0, 1.0
     local triangle = { 0, left, 0, right, 4, 0}
     love.graphics.polygon( 'fill', triangle )
     love.graphics.pop()
@@ -145,24 +153,22 @@ function love.draw()
     if path then
         for i = 2, #path do
             local p = path[i]
-            if p.motionPrimitive and HybridAStar.MotionPrimitives.isReverse(p.motionPrimitive) then
+            if p.gear == HybridAStar.Gear.Backward then
                 love.graphics.setColor(0, 100, 255)
-            else
+            elseif p.gear == HybridAStar.Gear.Forward then
                 love.graphics.setColor( 255, 255, 255 )
-            end
-            if p.pred then
-                love.graphics.setLineWidth(0.3)
-                love.graphics.line(p.x, p.y, path[i-1].x, path[i - 1].y)
             else
-                love.graphics.setColor(0, 100, 100)
-                love.graphics.points(p.x, p.y)
+                love.graphics.setColor(100, 0, 0)
             end
+            love.graphics.setLineWidth(0.3)
+            love.graphics.line(p.x, p.y, path[i-1].x, path[i - 1].y)
         end
     end
 
     if pathFinder:isActive() then
         done, path = pathFinder:resume()
-        if done then
+        if done and path then
+            printPath(path)
             io.stdout:flush()
         end
     end
@@ -177,7 +183,7 @@ function love.mousepressed(x, y, button, istouch)
     if button == 1 then
         goal.x, goal.y = love2real( x, y )
 
-        done, path = find(start, goal)
+        done, path = find(start, goal, love.keyboard.isDown('lctrl'))
 
         if path then
             debug('Path found with %d nodes', #path)
@@ -192,15 +198,15 @@ function love.keypressed(key, scancode, isrepeat)
     local headingStepDeg = 15
     if key == 'left' then
         if love.keyboard.isDown('lshift') then
-            start.t = start.t + math.rad(headingStepDeg)
+            start:addHeading(math.rad(headingStepDeg))
         else
-            goal.t = goal.t + math.rad(headingStepDeg)
+            goal:addHeading(math.rad(headingStepDeg))
         end
     elseif key == 'right' then
         if love.keyboard.isDown('lshift') then
-            start.t = start.t - math.rad(headingStepDeg)
+            start:addHeading(-math.rad(headingStepDeg))
         else
-            goal.t = goal.t - math.rad(headingStepDeg)
+            goal:addHeading(-math.rad(headingStepDeg))
         end
     elseif key == '=' then
         scale = scale * 1.2
