@@ -6,31 +6,57 @@ LOVE app to test the Courseplay pathfinding
 
 dofile( 'include.lua' )
 
-local obstacle = {
-    x1 = 13,
-    y1 = 5,
-    x2 = 15,
-    y2 = 15
-}
+local obstacles = {
+    {
+        x1 = 13,
+        y1 = 5,
+        x2 = 15,
+        y2 = 15
+    },
 
+    {
+        x1 = 113,
+        y1 = 5,
+        x2 = 115,
+        y2 = 15
+    },
+
+    {
+        x1 = 100,
+        y1 = 15,
+        x2 = 115,
+        y2 = 17
+    }
+}
 ---@param node State3D
 ---@param userdata table
 local function isValidNode(node, userdata)
-    local isInObstacle = node.x > obstacle.x1 and node.x < obstacle.x2 and node.y > obstacle.y1 and node.y < obstacle.y2
-    return not isInObstacle
+    for _, obstacle in ipairs(obstacles) do
+        local isInObstacle = node.x >= obstacle.x1 and node.x <= obstacle.x2 and node.y >= obstacle.y1 and node.y <= obstacle.y2
+        if isInObstacle then return false end
+    end
+    return true
 end
 
+local dragging = false
+
 local turnRadius = 5
-local goalHeading = 0 --math.pi
-local startHeading = 0 --math.pi
+local goalHeading = -math.pi / 2
+local startHeading = math.pi / 2
+
+local scale, width, height = 10, 500, 400
+local origin = {x = -width / 4, y = -height / 2}
+local xOffset, yOffset = width / scale / 4, height / scale
 
 local start = State3D(0, 0, startHeading, 0)
 local goal = State3D(10, 0, goalHeading, 0)
 local dubinsPath = {}
+local grid = Grid(1, width,height, origin)
+local heuristic = NonholonomicRelaxed(grid)
 local rsPath = {}
 local rsSolver = ReedsSheppSolver()
 local dubinsSolver = DubinsSolver()
-local pathFinder = HybridAStar(200)
+local pathFinder = HybridAStarWithAStarInTheMiddle(20, 200, 100000)
 local done, path
 
 local function printPath(path)
@@ -40,12 +66,16 @@ local function printPath(path)
 end
 
 local function find(start, goal, allowReverse)
+
+    --heuristic:update(goal, isValidNode)
+
     local vehicleData ={name = 'name', turnRadius = turnRadius, dFront = 3, dRear = 3, dLeft = 1.5, dRight = 1.5}
     done, path = pathFinder:start(start, goal, vehicleData.turnRadius, vehicleData, allowReverse,nil, isValidNode)
     local dubinsSolution = dubinsSolver:solve(start, goal, turnRadius)
     dubinsPath = dubinsSolution:getWaypoints(start, turnRadius)
     local rsActionSet = rsSolver:solve(start, goal, turnRadius)
     rsPath = rsActionSet:getWaypoints(start, vehicleData.turnRadius)
+
     if done and path then
         printPath(path)
     end
@@ -53,13 +83,11 @@ local function find(start, goal, allowReverse)
     return done, path
 end
 
-local scale, width, height = 10, 1000, 800
-local xOffset, yOffset = width / scale / 2, height / scale / 2
-
 local function debug(...)
     print(string.format(...))
 end
 
+---@param node State3D
 local function drawNode(node)
     love.graphics.push()
     love.graphics.translate(node.x, node.y)
@@ -70,11 +98,69 @@ local function drawNode(node)
     love.graphics.pop()
 end
 
-local function drawObstacle(obstacle)
-    love.graphics.setColor( 90, 90, 90 )
-    love.graphics.rectangle('fill', obstacle.x1, obstacle.y1, obstacle.x2 - obstacle.x1, obstacle.y2 - obstacle.y1)
+local function drawObstacles(obstacles)
+    for _, obstacle in ipairs(obstacles) do
+        love.graphics.setColor( 0.4, 0.4, 0.4 )
+        love.graphics.rectangle('line', obstacle.x1, obstacle.y1, obstacle.x2 - obstacle.x1, obstacle.y2 - obstacle.y1)
+    end
 end
 
+local function drawHeuristicGrid(heuristic)
+    local range = (heuristic.maxValue - heuristic.minValue)
+    for c = 1, #heuristic.heuristic do
+        for r = 1, #heuristic.heuristic[c] do
+                local pos = heuristic.grid:cellPositionToPointPosition(c, r)
+                love.graphics.setColor(0.6, 0.6, 0.6)
+                love.graphics.print(string.format('%d', heuristic.heuristic[c][r]), pos.x, pos.y, 0, 0.04, -0.04)
+
+              --  love.graphics.setColor((heuristic.heuristic[c][r] - heuristic.minValue) / range, 0, 0)
+                --love.graphics.points(pos.x, pos.y)
+        end
+    end
+end
+
+---@param path State3D[]
+local function drawPath(path, pointSize, r, g, b)
+    if path then
+        love.graphics.setPointSize(pointSize)
+        for i, p in ipairs(path) do
+            love.graphics.setColor(r, g, b)
+            love.graphics.points(p.x, p.y)
+        end
+    end
+end
+
+local function drawNodes(nodes)
+    if nodes then
+        for _, row in pairs(nodes.nodes) do
+            for _, column in pairs(row) do
+                for _, cell in pairs(column) do
+                    if cell.pred == cell then
+                        love.graphics.setPointSize(5)
+                        love.graphics.setColor( 0, 0.5, 0.5 )
+                    else
+                        local range = nodes.highestCost - nodes.lowestCost
+                        local color = (cell.cost - nodes.lowestCost) / range
+                        love.graphics.setPointSize(1)
+                        if cell:isClosed() then
+                            love.graphics.setColor(0.5 + color, 1 - color, 0 )
+                        else
+                            love.graphics.setColor( 0, 0.4, cell.cost * 3 / 255 )
+                        end
+                    end
+                    if cell.pred then
+                        love.graphics.setLineWidth(0.1)
+                        love.graphics.line(cell.x, cell.y, cell.pred.x, cell.pred.y)
+                    else
+                        love.graphics.setPointSize(3)
+                        love.graphics.points(cell.x, cell.y)
+                    end
+                    love.graphics.print(string.format('%d', cell.h), cell.x, cell.y, 0, 0.04, -0.04)
+                end
+            end
+        end
+    end
+end
 function love.load()
     love.window.setMode(1000, 800)
     love.graphics.setPointSize(3)
@@ -86,84 +172,49 @@ function love.draw()
     love.graphics.scale(scale, -scale)
     love.graphics.translate(xOffset, -yOffset)
 
-
-    love.graphics.setColor( 50, 50, 50 )
+    love.graphics.setColor( 0.2, 0.2, 0.2 )
+    love.graphics.setLineWidth(0.2)
     love.graphics.line(-1000, 0, 1000, 0)
     love.graphics.line(0, -1000, 0, 1000)
 
-    local nodes
+    drawHeuristicGrid(heuristic)
+
     if pathFinder then
-        if pathFinder.nodes then
-            nodes = pathFinder.nodes
-        elseif pathFinder.hybridAStarPathFinder and pathFinder.hybridAStarPathFinder.nodes then
-            nodes = pathFinder.hybridAStarPathFinder.nodes
+        if pathFinder.aStarPathFinder and pathFinder.aStarPathFinder.nodes then
+            drawNodes(pathFinder.aStarPathFinder.nodes)
         end
-        if nodes then
-            for _, row in pairs(nodes.nodes) do
-                for _, column in pairs(row) do
-                    for _, cell in pairs(column) do
-                        if cell.pred == cell then
-                            love.graphics.setPointSize(5)
-                            love.graphics.setColor( 0, 100, 100 )
-                        else
-                            local range = nodes.highestCost - nodes.lowestCost
-                            local color = (cell.cost - nodes.lowestCost) * 250 / range
-                            love.graphics.setPointSize(1)
-                            if cell:isClosed() then
-                                love.graphics.setColor(100 + color, 250 - color, 0 )
-                            else
-                                love.graphics.setColor( 0, 80, cell.cost *3 )
-                            end
-                        end
-                        if cell.pred then
-                            love.graphics.setLineWidth(0.1)
-                            love.graphics.line(cell.x, cell.y, cell.pred.x, cell.pred.y)
-                        else
-                            love.graphics.setPointSize(3)
-                            love.graphics.points(cell.x, cell.y)
-                        end
-                        love.graphics.print(string.format('%d', cell.h), cell.x, cell.y, 0, 0.04, -0.04)
-            end
-        end
-            end
+        if pathFinder.hybridAStarPathFinder and pathFinder.hybridAStarPathFinder.nodes then
+            drawNodes(pathFinder.hybridAStarPathFinder.nodes)
         end
     end
 
-    love.graphics.setColor(200, 200, 0)
+    love.graphics.setColor(0.8, 0.8, 0)
     drawNode(goal)
     drawNode(start)
-    drawObstacle(obstacle)
+    drawObstacles(obstacles)
 
     love.graphics.setPointSize(5)
 
-    if dubinsPath then
-        for i, p in ipairs(dubinsPath) do
-            love.graphics.setColor(200, 200, 0)
-            love.graphics.points(p.x, p.y)
-        end
-    end
-
-    if rsPath then
-        for i, p in ipairs(rsPath) do
-            love.graphics.setColor(100, 0, 200)
-            love.graphics.points(p.x, p.y)
-        end
-    end
+    drawPath(dubinsPath, 2, 0.8, 0.8, 0)
+    drawPath(rsPath, 2, 0.4, 0, 0.8)
 
     if path then
-        for i = 2, #path do
-            local p = path[i]
-            if p.gear == HybridAStar.Gear.Backward then
-                love.graphics.setColor(0, 100, 255)
+            love.graphics.setPointSize(0.5 * scale)
+            for i = 2, #path do
+                local p = path[i]
+                if p.gear == HybridAStar.Gear.Backward then
+                love.graphics.setColor(0, 0.4, 1)
             elseif p.gear == HybridAStar.Gear.Forward then
-                love.graphics.setColor( 255, 255, 255 )
+                love.graphics.setColor( 1, 1, 1 )
             else
-                love.graphics.setColor(100, 0, 0)
+                love.graphics.setColor(0.4, 0, 0)
             end
-            love.graphics.setLineWidth(0.3)
+            love.graphics.setLineWidth(0.1)
             love.graphics.line(p.x, p.y, path[i-1].x, path[i - 1].y)
+            love.graphics.points(p.x, p.y)
         end
     end
+    drawPath(pathFinder.middlePath, 6, 0.7, 0.7, 0.0)
 
     if pathFinder:isActive() then
         done, path = pathFinder:resume()
@@ -177,21 +228,6 @@ end
 
 local function love2real( x, y )
     return ( x / scale ) - xOffset,  - ( y / scale ) + yOffset
-end
-
-function love.mousepressed(x, y, button, istouch)
-    if button == 1 then
-        goal.x, goal.y = love2real( x, y )
-
-        done, path = find(start, goal, love.keyboard.isDown('lctrl'))
-
-        if path then
-            debug('Path found with %d nodes', #path)
-        elseif done then
-            debug('No path found')
-        end
-    end
-    io.stdout:flush()
 end
 
 function love.keypressed(key, scancode, isrepeat)
@@ -213,6 +249,45 @@ function love.keypressed(key, scancode, isrepeat)
     elseif key == '-' then
         scale = scale / 1.2
     end
-    xOffset, yOffset = width / scale / 2, height / scale / 2
     io.stdout:flush()
+end
+
+function love.mousepressed(x, y, button, istouch)
+    -- left shift + left click: find path forward only,
+    -- left ctrl + left click: find path with reversing allowed
+    if button == 1 then
+        if love.keyboard.isDown('lshift') or love.keyboard.isDown('lctrl') then
+            goal.x, goal.y = love2real( x, y )
+
+            done, path = find(start, goal, love.keyboard.isDown('lctrl'))
+
+            if path then
+                debug('Path found with %d nodes', #path)
+            elseif done then
+                debug('No path found')
+            end
+        else
+            dragging = true
+        end
+        io.stdout:flush()
+    end
+end
+
+function love.mousereleased(x, y, button, istouch)
+    if button == 1 then
+        dragging = false
+    end
+end
+
+function love.mousemoved( x, y, dx, dy )
+    if dragging then
+        xOffset = xOffset + dx / scale
+        yOffset = yOffset + dy / scale
+    end
+end
+
+function love.wheelmoved( dx, dy )
+    xOffset = xOffset + dy / scale / 2
+    yOffset = yOffset - dy / scale / 2
+    scale = scale + scale * dy * 0.05
 end

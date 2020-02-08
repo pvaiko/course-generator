@@ -968,12 +968,12 @@ end
 
 function love.mousereleased(x, y, button, istouch)
    if button == 1 then 
-      leftMouseKeyPressed = false
+      dragging = false
    end
 end
 
 function love.mousemoved( x, y, dx, dy )
-  if leftMouseKeyPressed then
+  if dragging then
     xOffset = xOffset + dx
     yOffset = yOffset - dy
   end

@@ -11,6 +11,7 @@
       <sourceFolder url="file://$MODULE_DIR$/courseplay" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/courseplay/course-generator" isTestSource="false" />
+      <excludeFolder url="file://$MODULE_DIR$/fields" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

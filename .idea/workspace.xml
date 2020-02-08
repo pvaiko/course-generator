@@ -1,10 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="515c9c6a-5ee4-47c9-b655-ab198105a3b2" name="Default" comment="New fieldwork patterns work in progress.">
+    <list default="true" id="515c9c6a-5ee4-47c9-b655-ab198105a3b2" name="Default" comment="Reeds-Shepp migrated from C#">
+      <change afterPath="$PROJECT_DIR$/courseplay/course-generator/Dijkstra.lua" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/courseplay/course-generator/Vector.lua" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/course-generator.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/course-generator.iml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/courseplay/DevHelper.lua" beforeDir="false" afterPath="$PROJECT_DIR$/courseplay/DevHelper.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/courseplay/course-generator/Dubins.lua" beforeDir="false" afterPath="$PROJECT_DIR$/courseplay/course-generator/Dubins.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/courseplay/course-generator/HybridAStar.lua" beforeDir="false" afterPath="$PROJECT_DIR$/courseplay/course-generator/HybridAStar.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/courseplay/course-generator/ReedsShepp.lua" beforeDir="false" afterPath="$PROJECT_DIR$/courseplay/course-generator/ReedsShepp.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/courseplay/course-generator/ReedsSheppSolver.lua" beforeDir="false" afterPath="$PROJECT_DIR$/courseplay/course-generator/ReedsSheppSolver.lua" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/courseplay/course-generator/State3D.lua" beforeDir="false" afterPath="$PROJECT_DIR$/courseplay/course-generator/State3D.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/include.lua" beforeDir="false" afterPath="$PROJECT_DIR$/include.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.lua" beforeDir="false" afterPath="$PROJECT_DIR$/main.lua" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/test/main.lua" beforeDir="false" afterPath="$PROJECT_DIR$/test/main.lua" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -395,7 +406,7 @@
     <property name="com.android.tools.idea.instantapp.provision.ProvisionBeforeRunTaskProvider.myTimeStamp" value="1556714866422" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$1/New Scratch File" value="Lua&#10;TEXT" />
     <property name="editor.config.ad.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../FS19/AutonomousCar" />
+    <property name="last_opened_file_path" value="C:/Program Files/LOVE/love.exe" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -407,7 +418,7 @@
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="restartRequiresConfirmation" value="false" />
-    <property name="settings.editor.selected.configurable" value="editor.preferences.appearance" />
+    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="PsiViewer.ProjectComponent">
     <option name="HIGHLIGHT" value="false" />
@@ -530,6 +541,32 @@
       <option name="WORKING_DIRECTORY" value="$MODULE_DIR$" />
       <properties />
       <listeners />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HybridAStarTestLove" type="#com.sylvanaar.idea.Lua.run.LuaConfigurationType" factoryName="Lua Script">
+      <module name="course-generator" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="INTERPRETER_PATH" value="C:\Program Files\LOVE\love.exe" />
+      <option name="WORKING_DIRECTORY" value="D:\Projects\Private\FS17\course-generator\" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="ALTERNATE_INTERPRETER" value="true" />
+      <option name="SCRIPT_NAME" value="test" />
+      <option name="PARAMETERS" value="" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="HybridAStarTest" type="#com.sylvanaar.idea.Lua.run.LuaConfigurationType" factoryName="Lua Script">
+      <module name="course-generator" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="INTERPRETER_PATH" value="C:\Program Files (x86)\Lua\5.1\lua.exe" />
+      <option name="WORKING_DIRECTORY" value="D:\Projects\Private\FS17\course-generator\courseplay\test" />
+      <option name="PARENT_ENVS" value="true" />
+      <option name="ALTERNATE_INTERPRETER" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/courseplay/test/HybridAStarTest.lua" />
+      <option name="PARAMETERS" value="" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -745,9 +782,9 @@
       <method v="2" />
     </configuration>
     <configuration name="HybrdAStarTestLove" type="lua.app" factoryName="Lua Application">
-      <option name="program" value="$PROJECT_DIR$/../course-generator\LOVE\love.exe" />
+      <option name="program" value="C:\Program Files\LOVE\love.exe" />
       <option name="file" value="" />
-      <option name="workingDir" value="$PROJECT_DIR$" />
+      <option name="workingDir" value="$PROJECT_DIR$/" />
       <option name="debuggerType" value="2" />
       <option name="params" value="test" />
       <option name="charset" value="UTF-8" />
@@ -755,10 +792,10 @@
       <method v="2" />
     </configuration>
     <configuration name="HybridAStarTest" type="lua.app" factoryName="Lua Application">
-      <option name="program" value="$PROJECT_DIR$/lua53.exe" />
+      <option name="program" value="D:\Projects\Private\FS17\Lua\bin\lua.exe" />
       <option name="file" value="HybridAStarTest.lua" />
       <option name="workingDir" value="$PROJECT_DIR$/courseplay/test" />
-      <option name="debuggerType" value="1" />
+      <option name="debuggerType" value="2" />
       <option name="params" value="" />
       <option name="charset" value="UTF-8" />
       <option name="showConsole" value="false" />
@@ -934,6 +971,16 @@
       <option name="showConsole" value="false" />
       <method v="2" />
     </configuration>
+    <configuration name="VectorTest" type="lua.app" factoryName="Lua Application">
+      <option name="program" value="D:\Projects\Private\FS17\Lua\bin\lua.exe" />
+      <option name="file" value="VectorTest.lua" />
+      <option name="workingDir" value="$PROJECT_DIR$/courseplay/test" />
+      <option name="debuggerType" value="2" />
+      <option name="params" value="" />
+      <option name="charset" value="UTF-8" />
+      <option name="showConsole" value="false" />
+      <method v="2" />
+    </configuration>
     <configuration name="WaypointTest" type="lua.app" factoryName="Lua Application">
       <option name="program" value="lua.exe" />
       <option name="file" value="WaypointTest.lua" />
@@ -1043,6 +1090,7 @@
       <item itemvalue="Lua Application.Goldcrest 9" />
       <item itemvalue="Lua Application.HybrdAStarTestLove" />
       <item itemvalue="Lua Application.HybridAStarTest" />
+      <item itemvalue="Lua Application.VectorTest" />
       <item itemvalue="Lua Application.Kandelin 24 (4041)" />
       <item itemvalue="Lua Application.Lehndorf 13 (3979)" />
       <item itemvalue="Lua Application.Loesshuegelland 13" />
@@ -1250,28 +1298,24 @@
       <workItem from="1579699688914" duration="1085000" />
       <workItem from="1579701647291" duration="603000" />
       <workItem from="1579732299551" duration="29474000" />
-      <workItem from="1580076323455" duration="13272000" />
-    </task>
-    <task id="LOCAL-00028" summary="Refactored new generation breeding &#10;&#10;Much better convergence now, more consistent results.">
-      <created>1515763198587</created>
-      <option name="number" value="00028" />
-      <option name="presentableId" value="LOCAL-00028" />
-      <option name="project" value="LOCAL" />
-      <updated>1515763198587</updated>
-    </task>
-    <task id="LOCAL-00029" summary="Path to first block fixed&#10;&#10;Pick closest in same direction as headland (same behaviour as before the big island feature)">
-      <created>1515765502152</created>
-      <option name="number" value="00029" />
-      <option name="presentableId" value="LOCAL-00029" />
-      <option name="project" value="LOCAL" />
-      <updated>1515765502152</updated>
-    </task>
-    <task id="LOCAL-00030" summary="Getting there">
-      <created>1515871052045</created>
-      <option name="number" value="00030" />
-      <option name="presentableId" value="LOCAL-00030" />
-      <option name="project" value="LOCAL" />
-      <updated>1515871052045</updated>
+      <workItem from="1580076323455" duration="36292000" />
+      <workItem from="1580386091663" duration="8194000" />
+      <workItem from="1580489974760" duration="10474000" />
+      <workItem from="1580608782523" duration="21112000" />
+      <workItem from="1580693861607" duration="3143000" />
+      <workItem from="1580697034678" duration="2642000" />
+      <workItem from="1580733663284" duration="6000000" />
+      <workItem from="1580763371141" duration="31000" />
+      <workItem from="1580773997423" duration="6573000" />
+      <workItem from="1580823255658" duration="489000" />
+      <workItem from="1580825118531" duration="682000" />
+      <workItem from="1580828225584" duration="635000" />
+      <workItem from="1580830488113" duration="11552000" />
+      <workItem from="1580954183395" duration="6986000" />
+      <workItem from="1581030744728" duration="6949000" />
+      <workItem from="1581093249791" duration="3477000" />
+      <workItem from="1581124150415" duration="1149000" />
+      <workItem from="1581125384639" duration="15750000" />
     </task>
     <task id="LOCAL-00031" summary="Getting there">
       <created>1515874459887</created>
@@ -1595,7 +1639,28 @@
       <option name="project" value="LOCAL" />
       <updated>1580002859582</updated>
     </task>
-    <option name="localTasksCounter" value="77" />
+    <task id="LOCAL-00077" summary="Reeds-Shepp migrated from C#">
+      <created>1580177675087</created>
+      <option name="number" value="00077" />
+      <option name="presentableId" value="LOCAL-00077" />
+      <option name="project" value="LOCAL" />
+      <updated>1580177675087</updated>
+    </task>
+    <task id="LOCAL-00078" summary="Reeds-Shepp is now working">
+      <created>1580304529010</created>
+      <option name="number" value="00078" />
+      <option name="presentableId" value="LOCAL-00078" />
+      <option name="project" value="LOCAL" />
+      <updated>1580304529010</updated>
+    </task>
+    <task id="LOCAL-00079" summary="Reeds-Shepp working good now.">
+      <created>1580562475293</created>
+      <option name="number" value="00079" />
+      <option name="presentableId" value="LOCAL-00079" />
+      <option name="project" value="LOCAL" />
+      <updated>1580562475293</updated>
+    </task>
+    <option name="localTasksCounter" value="80" />
     <servers />
   </component>
   <component name="TodoView">
@@ -1653,9 +1718,6 @@
   <component name="VcsManagerConfiguration">
     <option name="CHECK_CODE_SMELLS_BEFORE_PROJECT_COMMIT" value="false" />
     <option name="CHECK_NEW_TODO" value="false" />
-    <MESSAGE value="Fix for multiple islands.&#10;&#10;Was only generating headland path for the first island found. Now all &#10;islands will be circled." />
-    <MESSAGE value="Skip rows fixed for multi-block fields" />
-    <MESSAGE value="Force turn radius in corners" />
     <MESSAGE value="Ridge marker fix" />
     <MESSAGE value="Refactoring for two-side headland" />
     <MESSAGE value="Two-side headland work in progress" />
@@ -1678,89 +1740,141 @@
     <MESSAGE value="Less waypoints in path" />
     <MESSAGE value="Self unload reversing" />
     <MESSAGE value="Added analytic expansion to hybrid A*&#10;&#10;For now, just the Dubins path" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added analytic expansion to hybrid A*&#10;&#10;For now, just the Dubins path" />
+    <MESSAGE value="Reeds-Shepp migrated from C#" />
+    <MESSAGE value="Reeds-Shepp is now working" />
+    <MESSAGE value="Reeds-Shepp working good now." />
+    <option name="LAST_COMMIT_MESSAGE" value="Reeds-Shepp working good now." />
   </component>
   <component name="WindowStateProjectService">
+    <state x="712" y="333" key="#2582" timestamp="1580858610678">
+      <screen x="65" y="0" width="1855" height="1200" />
+    </state>
+    <state x="712" y="333" key="#2582/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@65.0.1855.1200" timestamp="1580858610678" />
     <state x="608" y="214" key="#HybrdAStarTestLove" timestamp="1579699876566">
       <screen x="67" y="0" width="1640" height="960" />
     </state>
     <state x="608" y="214" key="#HybrdAStarTestLove/67.0.1640.960@67.0.1640.960" timestamp="1579699876566" />
-    <state x="480" y="140" key="#Plugins" timestamp="1579698936535">
-      <screen x="67" y="0" width="1640" height="960" />
+    <state x="607" y="214" key="#HybridAStarTest" timestamp="1580695057471">
+      <screen x="65" y="0" width="1642" height="960" />
     </state>
+    <state x="607" y="214" key="#HybridAStarTest/65.0.1642.960@65.0.1642.960" timestamp="1580695057471" />
+    <state x="479" y="140" key="#Plugins" timestamp="1580693986305">
+      <screen x="65" y="0" width="1642" height="960" />
+    </state>
+    <state x="479" y="140" key="#Plugins/65.0.1642.960@65.0.1642.960" timestamp="1580693986305" />
     <state x="480" y="140" key="#Plugins/67.0.1640.960@67.0.1640.960" timestamp="1579698936535" />
-    <state x="226" y="13" width="1321" height="909" key="CommitChangelistDialog2" timestamp="1580177593400">
+    <state x="479" y="140" key="#Project_Structure" timestamp="1580694949469">
       <screen x="65" y="0" width="1642" height="960" />
     </state>
-    <state x="226" y="13" width="1321" height="909" key="CommitChangelistDialog2/65.0.1642.960@65.0.1642.960" timestamp="1580177593400" />
-    <state x="667" y="236" key="FileChooserDialogImpl" timestamp="1580079657188">
+    <state x="479" y="140" key="#Project_Structure/65.0.1642.960@65.0.1642.960" timestamp="1580694949469" />
+    <state x="607" y="168" key="#Unnamed" timestamp="1580694554626">
       <screen x="65" y="0" width="1642" height="960" />
     </state>
-    <state x="667" y="236" key="FileChooserDialogImpl/65.0.1642.960@65.0.1642.960" timestamp="1580079657188" />
-    <state width="1598" height="113" key="GridCell.Tab.0.bottom" timestamp="1580076260700">
+    <state x="607" y="168" key="#Unnamed/65.0.1642.960@65.0.1642.960" timestamp="1580694554626" />
+    <state x="341" y="136" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1580992039201">
       <screen x="65" y="0" width="1642" height="960" />
     </state>
-    <state width="1598" height="113" key="GridCell.Tab.0.bottom/65.0.1642.960@65.0.1642.960" timestamp="1580076260700" />
+    <state x="341" y="136" key="#com.intellij.execution.impl.EditConfigurationsDialog/65.0.1642.960@65.0.1642.960" timestamp="1580992039201" />
+    <state x="517" y="170" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog" timestamp="1580694685859">
+      <screen x="65" y="0" width="1642" height="960" />
+    </state>
+    <state x="517" y="170" key="#com.intellij.ide.util.frameworkSupport.AddFrameworkSupportDialog/65.0.1642.960@65.0.1642.960" timestamp="1580694685859" />
+    <state x="226" y="13" width="1321" height="909" key="CommitChangelistDialog2" timestamp="1581080508031">
+      <screen x="65" y="0" width="1642" height="960" />
+    </state>
+    <state x="226" y="13" width="1321" height="909" key="CommitChangelistDialog2/65.0.1642.960@65.0.1642.960" timestamp="1581080508031" />
+    <state x="667" y="236" key="FileChooserDialogImpl" timestamp="1580733859036">
+      <screen x="65" y="0" width="1642" height="960" />
+    </state>
+    <state x="667" y="236" key="FileChooserDialogImpl/65.0.1642.960@65.0.1642.960" timestamp="1580733859036" />
+    <state width="1219" height="883" key="GridCell.Tab.0.bottom" timestamp="1581190194552">
+      <screen x="93" y="0" width="1614" height="960" />
+    </state>
+    <state width="1221" height="884" key="GridCell.Tab.0.bottom/65.0.1642.960@65.0.1642.960" timestamp="1581081309430" />
+    <state width="1040" height="775" key="GridCell.Tab.0.bottom/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@1920.0.1920.1200" timestamp="1580774913869" />
+    <state width="1219" height="883" key="GridCell.Tab.0.bottom/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@65.0.1855.1200" timestamp="1581118378863" />
     <state width="1706" height="887" key="GridCell.Tab.0.bottom/65.0.1855.1200/1920.0.1920.1200@65.0.1855.1200" timestamp="1579880042272" />
     <state width="1708" height="888" key="GridCell.Tab.0.bottom/67.0.1640.960@67.0.1640.960" timestamp="1579870016678" />
     <state width="1708" height="915" key="GridCell.Tab.0.bottom/67.0.1853.1200/1920.0.1920.1200/3840.-241.1707.960@67.0.1853.1200" timestamp="1579825233997" />
     <state width="1471" height="798" key="GridCell.Tab.0.bottom/67.0.1853.1200/1920.0.1920.1200@67.0.1853.1200" timestamp="1579737185138" />
     <state width="609" height="415" key="GridCell.Tab.0.bottom/88.0.1619.960@88.0.1619.960" timestamp="1579175612267" />
     <state width="609" height="415" key="GridCell.Tab.0.bottom/88.0.1832.1200/1920.0.1920.1200@88.0.1832.1200" timestamp="1578611509174" />
-    <state width="1598" height="113" key="GridCell.Tab.0.center" timestamp="1580076260700">
-      <screen x="65" y="0" width="1642" height="960" />
+    <state width="1219" height="883" key="GridCell.Tab.0.bottom/93.0.1614.960@93.0.1614.960" timestamp="1581190194552" />
+    <state width="1219" height="883" key="GridCell.Tab.0.center" timestamp="1581190194552">
+      <screen x="93" y="0" width="1614" height="960" />
     </state>
-    <state width="1598" height="113" key="GridCell.Tab.0.center/65.0.1642.960@65.0.1642.960" timestamp="1580076260700" />
+    <state width="1221" height="884" key="GridCell.Tab.0.center/65.0.1642.960@65.0.1642.960" timestamp="1581081309430" />
+    <state width="1040" height="775" key="GridCell.Tab.0.center/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@1920.0.1920.1200" timestamp="1580774913869" />
+    <state width="1219" height="883" key="GridCell.Tab.0.center/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@65.0.1855.1200" timestamp="1581118378861" />
     <state width="1706" height="887" key="GridCell.Tab.0.center/65.0.1855.1200/1920.0.1920.1200@65.0.1855.1200" timestamp="1579880042272" />
     <state width="1708" height="888" key="GridCell.Tab.0.center/67.0.1640.960@67.0.1640.960" timestamp="1579870016677" />
     <state width="1708" height="915" key="GridCell.Tab.0.center/67.0.1853.1200/1920.0.1920.1200/3840.-241.1707.960@67.0.1853.1200" timestamp="1579825233997" />
     <state width="1471" height="798" key="GridCell.Tab.0.center/67.0.1853.1200/1920.0.1920.1200@67.0.1853.1200" timestamp="1579737185138" />
     <state width="609" height="415" key="GridCell.Tab.0.center/88.0.1619.960@88.0.1619.960" timestamp="1579175612267" />
     <state width="609" height="415" key="GridCell.Tab.0.center/88.0.1832.1200/1920.0.1920.1200@88.0.1832.1200" timestamp="1578611509173" />
-    <state width="1598" height="113" key="GridCell.Tab.0.left" timestamp="1580076260700">
-      <screen x="65" y="0" width="1642" height="960" />
+    <state width="1219" height="883" key="GridCell.Tab.0.center/93.0.1614.960@93.0.1614.960" timestamp="1581190194552" />
+    <state width="1219" height="883" key="GridCell.Tab.0.left" timestamp="1581190194552">
+      <screen x="93" y="0" width="1614" height="960" />
     </state>
-    <state width="1598" height="113" key="GridCell.Tab.0.left/65.0.1642.960@65.0.1642.960" timestamp="1580076260700" />
+    <state width="1221" height="884" key="GridCell.Tab.0.left/65.0.1642.960@65.0.1642.960" timestamp="1581081309430" />
+    <state width="1040" height="775" key="GridCell.Tab.0.left/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@1920.0.1920.1200" timestamp="1580774913869" />
+    <state width="1219" height="883" key="GridCell.Tab.0.left/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@65.0.1855.1200" timestamp="1581118378860" />
     <state width="1706" height="887" key="GridCell.Tab.0.left/65.0.1855.1200/1920.0.1920.1200@65.0.1855.1200" timestamp="1579880042272" />
     <state width="1708" height="888" key="GridCell.Tab.0.left/67.0.1640.960@67.0.1640.960" timestamp="1579870016677" />
     <state width="1708" height="915" key="GridCell.Tab.0.left/67.0.1853.1200/1920.0.1920.1200/3840.-241.1707.960@67.0.1853.1200" timestamp="1579825233997" />
     <state width="1471" height="798" key="GridCell.Tab.0.left/67.0.1853.1200/1920.0.1920.1200@67.0.1853.1200" timestamp="1579737185138" />
     <state width="609" height="415" key="GridCell.Tab.0.left/88.0.1619.960@88.0.1619.960" timestamp="1579175612267" />
     <state width="609" height="415" key="GridCell.Tab.0.left/88.0.1832.1200/1920.0.1920.1200@88.0.1832.1200" timestamp="1578611509173" />
-    <state width="1598" height="113" key="GridCell.Tab.0.right" timestamp="1580076260700">
-      <screen x="65" y="0" width="1642" height="960" />
+    <state width="1219" height="883" key="GridCell.Tab.0.left/93.0.1614.960@93.0.1614.960" timestamp="1581190194552" />
+    <state width="1219" height="883" key="GridCell.Tab.0.right" timestamp="1581190194552">
+      <screen x="93" y="0" width="1614" height="960" />
     </state>
-    <state width="1598" height="113" key="GridCell.Tab.0.right/65.0.1642.960@65.0.1642.960" timestamp="1580076260700" />
+    <state width="1221" height="884" key="GridCell.Tab.0.right/65.0.1642.960@65.0.1642.960" timestamp="1581081309430" />
+    <state width="1040" height="775" key="GridCell.Tab.0.right/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@1920.0.1920.1200" timestamp="1580774913869" />
+    <state width="1219" height="883" key="GridCell.Tab.0.right/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@65.0.1855.1200" timestamp="1581118378862" />
     <state width="1706" height="887" key="GridCell.Tab.0.right/65.0.1855.1200/1920.0.1920.1200@65.0.1855.1200" timestamp="1579880042272" />
     <state width="1708" height="888" key="GridCell.Tab.0.right/67.0.1640.960@67.0.1640.960" timestamp="1579870016677" />
     <state width="1708" height="915" key="GridCell.Tab.0.right/67.0.1853.1200/1920.0.1920.1200/3840.-241.1707.960@67.0.1853.1200" timestamp="1579825233997" />
     <state width="1471" height="798" key="GridCell.Tab.0.right/67.0.1853.1200/1920.0.1920.1200@67.0.1853.1200" timestamp="1579737185138" />
     <state width="609" height="415" key="GridCell.Tab.0.right/88.0.1619.960@88.0.1619.960" timestamp="1579175612267" />
     <state width="609" height="415" key="GridCell.Tab.0.right/88.0.1832.1200/1920.0.1920.1200@88.0.1832.1200" timestamp="1578611509174" />
-    <state width="1598" height="113" key="GridCell.Tab.1.bottom" timestamp="1580076260701">
-      <screen x="65" y="0" width="1642" height="960" />
+    <state width="1219" height="883" key="GridCell.Tab.0.right/93.0.1614.960@93.0.1614.960" timestamp="1581190194552" />
+    <state width="1877" height="195" key="GridCell.Tab.1.bottom" timestamp="1580763325875">
+      <screen x="65" y="0" width="1855" height="1200" />
     </state>
-    <state width="1598" height="113" key="GridCell.Tab.1.bottom/65.0.1642.960@65.0.1642.960" timestamp="1580076260701" />
+    <state width="1598" height="195" key="GridCell.Tab.1.bottom/65.0.1642.960@65.0.1642.960" timestamp="1580734284009" />
+    <state width="1877" height="195" key="GridCell.Tab.1.bottom/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@65.0.1855.1200" timestamp="1580763325875" />
     <state width="829" height="203" key="GridCell.Tab.1.bottom/67.0.1640.960@67.0.1640.960" timestamp="1579782576835" />
-    <state width="1598" height="113" key="GridCell.Tab.1.center" timestamp="1580076260701">
-      <screen x="65" y="0" width="1642" height="960" />
+    <state width="1877" height="195" key="GridCell.Tab.1.center" timestamp="1580763325874">
+      <screen x="65" y="0" width="1855" height="1200" />
     </state>
-    <state width="1598" height="113" key="GridCell.Tab.1.center/65.0.1642.960@65.0.1642.960" timestamp="1580076260701" />
+    <state width="1598" height="195" key="GridCell.Tab.1.center/65.0.1642.960@65.0.1642.960" timestamp="1580734284009" />
+    <state width="1877" height="195" key="GridCell.Tab.1.center/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@65.0.1855.1200" timestamp="1580763325874" />
     <state width="829" height="203" key="GridCell.Tab.1.center/67.0.1640.960@67.0.1640.960" timestamp="1579782576835" />
-    <state width="1598" height="113" key="GridCell.Tab.1.left" timestamp="1580076260700">
-      <screen x="65" y="0" width="1642" height="960" />
+    <state width="1877" height="195" key="GridCell.Tab.1.left" timestamp="1580763325874">
+      <screen x="65" y="0" width="1855" height="1200" />
     </state>
-    <state width="1598" height="113" key="GridCell.Tab.1.left/65.0.1642.960@65.0.1642.960" timestamp="1580076260700" />
+    <state width="1598" height="195" key="GridCell.Tab.1.left/65.0.1642.960@65.0.1642.960" timestamp="1580734284009" />
+    <state width="1877" height="195" key="GridCell.Tab.1.left/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@65.0.1855.1200" timestamp="1580763325874" />
     <state width="829" height="203" key="GridCell.Tab.1.left/67.0.1640.960@67.0.1640.960" timestamp="1579782576835" />
-    <state width="1598" height="113" key="GridCell.Tab.1.right" timestamp="1580076260701">
-      <screen x="65" y="0" width="1642" height="960" />
+    <state width="1877" height="195" key="GridCell.Tab.1.right" timestamp="1580763325874">
+      <screen x="65" y="0" width="1855" height="1200" />
     </state>
-    <state width="1598" height="113" key="GridCell.Tab.1.right/65.0.1642.960@65.0.1642.960" timestamp="1580076260701" />
+    <state width="1598" height="195" key="GridCell.Tab.1.right/65.0.1642.960@65.0.1642.960" timestamp="1580734284009" />
+    <state width="1877" height="195" key="GridCell.Tab.1.right/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@65.0.1855.1200" timestamp="1580763325874" />
     <state width="829" height="203" key="GridCell.Tab.1.right/67.0.1640.960@67.0.1640.960" timestamp="1579782576835" />
     <state x="611" y="197" key="MultipleFileMergeDialog" timestamp="1579143497126">
       <screen x="88" y="0" width="1619" height="960" />
     </state>
     <state x="611" y="197" key="MultipleFileMergeDialog/88.0.1619.960@88.0.1619.960" timestamp="1579143497126" />
+    <state x="388" y="124" key="SettingsEditor" timestamp="1580823209449">
+      <screen x="65" y="0" width="1642" height="960" />
+    </state>
+    <state x="388" y="124" key="SettingsEditor/65.0.1642.960@65.0.1642.960" timestamp="1580823209449" />
+    <state x="479" y="214" key="Vcs.Push.Dialog.v2" timestamp="1580562476514">
+      <screen x="65" y="0" width="1642" height="960" />
+    </state>
+    <state x="479" y="214" key="Vcs.Push.Dialog.v2/65.0.1642.960@65.0.1642.960" timestamp="1580562476514" />
     <state x="557" y="131" key="com.intellij.openapi.editor.actions.MultiplePasteAction$ClipboardContentChooser" timestamp="1580080096545">
       <screen x="65" y="0" width="1642" height="960" />
     </state>
@@ -1769,26 +1883,43 @@
       <screen x="88" y="0" width="1619" height="960" />
     </state>
     <state x="707" y="398" key="com.intellij.openapi.vcs.update.UpdateOrStatusOptionsDialogupdate-v2/88.0.1619.960@88.0.1619.960" timestamp="1579143448524" />
-    <state x="360" y="78" width="1031" height="648" key="find.popup" timestamp="1580083256424">
-      <screen x="65" y="0" width="1642" height="960" />
+    <state x="383" y="78" width="1014" height="648" key="find.popup" timestamp="1581174774045">
+      <screen x="93" y="0" width="1614" height="960" />
     </state>
-    <state x="360" y="78" width="1031" height="648" key="find.popup/65.0.1642.960@65.0.1642.960" timestamp="1580083256424" />
+    <state x="360" y="78" width="1031" height="648" key="find.popup/65.0.1642.960@65.0.1642.960" timestamp="1581080025674" />
+    <state x="2265" y="98" width="1206" height="810" key="find.popup/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@1920.0.1920.1200" timestamp="1580342094730" />
+    <state x="398" y="98" width="1165" height="810" key="find.popup/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@65.0.1855.1200" timestamp="1580835274247" />
     <state x="362" y="78" width="1029" height="648" key="find.popup/67.0.1640.960@67.0.1640.960" timestamp="1579743676538" />
     <state x="400" y="98" width="1163" height="810" key="find.popup/67.0.1853.1200/1920.0.1920.1200@67.0.1853.1200" timestamp="1579737536627" />
     <state x="379" y="78" width="1015" height="648" key="find.popup/88.0.1619.960@88.0.1619.960" timestamp="1579133184796" />
-    <state x="543" y="221" key="run.anything.popup" timestamp="1579999614784">
-      <screen x="65" y="0" width="1642" height="960" />
+    <state x="383" y="78" width="1014" height="648" key="find.popup/93.0.1614.960@93.0.1614.960" timestamp="1581174774045" />
+    <state x="605" y="276" key="run.anything.popup" timestamp="1580763312479">
+      <screen x="65" y="0" width="1855" height="1200" />
     </state>
-    <state x="543" y="221" key="run.anything.popup/65.0.1642.960@65.0.1642.960" timestamp="1579999614784" />
+    <state x="543" y="221" key="run.anything.popup/65.0.1642.960@65.0.1642.960" timestamp="1580655087420" />
+    <state x="605" y="276" key="run.anything.popup/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@65.0.1855.1200" timestamp="1580763312479" />
     <state x="544" y="221" key="run.anything.popup/67.0.1640.960@67.0.1640.960" timestamp="1579614030111" />
-    <state x="544" y="205" width="683" height="679" key="search.everywhere.popup" timestamp="1580082153335">
-      <screen x="65" y="0" width="1642" height="960" />
+    <state x="564" y="205" width="672" height="679" key="search.everywhere.popup" timestamp="1581176738554">
+      <screen x="93" y="0" width="1614" height="960" />
     </state>
-    <state x="544" y="205" width="683" height="679" key="search.everywhere.popup/65.0.1642.960@65.0.1642.960" timestamp="1580082153335" />
+    <state x="544" y="205" width="683" height="679" key="search.everywhere.popup/65.0.1642.960@65.0.1642.960" timestamp="1581079437820" />
+    <state x="606" y="256" width="772" height="849" key="search.everywhere.popup/65.0.1855.1200/1920.0.1920.1200/3840.-241.1707.960@65.0.1855.1200" timestamp="1581031150749" />
     <state x="606" y="256" width="771" height="848" key="search.everywhere.popup/65.0.1855.1200/1920.0.1920.1200@65.0.1855.1200" timestamp="1579880077436" />
     <state x="545" y="205" width="681" height="678" key="search.everywhere.popup/67.0.1640.960@67.0.1640.960" timestamp="1579702042761" />
     <state x="607" y="256" width="770" height="848" key="search.everywhere.popup/67.0.1853.1200/1920.0.1920.1200@67.0.1853.1200" timestamp="1579732771877" />
     <state x="560" y="205" width="672" height="678" key="search.everywhere.popup/88.0.1619.960@88.0.1619.960" timestamp="1579134446891" />
+    <state x="564" y="205" width="672" height="679" key="search.everywhere.popup/93.0.1614.960@93.0.1614.960" timestamp="1581176738554" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="lua-line">
+          <url>file://$PROJECT_DIR$/courseplay/test/HybridAStarTest.lua</url>
+          <line>60</line>
+          <option name="timeStamp" value="21" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
   <component name="antWorkspaceConfiguration">
     <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
@@ -1824,93 +1955,5 @@
         <evaluation-mode>EXPRESSION</evaluation-mode>
       </expression>
     </expressions>
-  </component>
-  <component name="masterDetails">
-    <states>
-      <state key="ArtifactsStructureConfigurable.UI">
-        <settings>
-          <artifact-editor />
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="FacetStructureConfigurable.UI">
-        <settings>
-          <last-edited>Lua</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="GlobalLibrariesConfigurable.UI">
-        <settings>
-          <last-edited>Python 2.7.14 (C:\Python27\python.exe) interpreter library</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="JdkListConfigurable.UI">
-        <settings>
-          <last-edited>Lua 5.1.5</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ModuleStructureConfigurable.UI">
-        <settings>
-          <last-edited>course-generator</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-                <option value="0.6" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectJDKs.UI">
-        <settings>
-          <last-edited>LuaJ</last-edited>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-      <state key="ProjectLibrariesConfigurable.UI">
-        <settings>
-          <splitter-proportions>
-            <option name="proportions">
-              <list>
-                <option value="0.2" />
-              </list>
-            </option>
-          </splitter-proportions>
-        </settings>
-      </state>
-    </states>
   </component>
 </project>
