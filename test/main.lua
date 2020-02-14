@@ -9,8 +9,15 @@ dofile( 'include.lua' )
 local obstacles = {
     {
         x1 = 13,
-        y1 = 5,
+        y1 = -15,
         x2 = 15,
+        y2 = 15
+    },
+
+    {
+        x1 = 13,
+        y1 = 12,
+        x2 = 40,
         y2 = 15
     },
 
@@ -45,18 +52,32 @@ local goalHeading = -math.pi / 2
 local startHeading = math.pi / 2
 
 local scale, width, height = 10, 500, 400
-local origin = {x = -width / 4, y = -height / 2}
+local origin = {x = -width / 8, y = -height / 4}
 local xOffset, yOffset = width / scale / 4, height / scale
 
+local goalHeading = 0* math.pi / 4
+local startHeading = 0*math.pi / 4
+
 local start = State3D(0, 0, startHeading, 0)
-local goal = State3D(10, 0, goalHeading, 0)
+local goal = State3D(120, 12, goalHeading, 0)
+--local goal = State3D(6, 0, goalHeading, 0)
 local dubinsPath = {}
-local grid = Grid(1, width,height, origin)
+local grid = Grid(1, width / 2,height / 2, origin)
 local heuristic = NonholonomicRelaxed(grid)
 local rsPath = {}
 local rsSolver = ReedsSheppSolver()
 local dubinsSolver = DubinsSolver()
-local pathFinder = HybridAStarWithAStarInTheMiddle(20, 200, 100000)
+local pathfinders = {
+    HybridAStarWithAStarInTheMiddle(20, 200, 100000),
+    HybridAStarWithHeuristic(20, 200, 100000),
+    HybridAStar(200, 100000)
+}
+local pathfinderTexts = {
+    'HybridAStarWithAStarInTheMiddle',
+    'HybridAStarWithHeuristic',
+    'HybridAStar'
+}
+local currentPathfinderIndex = #pathfinders
 local done, path
 
 local function printPath(path)
@@ -70,7 +91,7 @@ local function find(start, goal, allowReverse)
     --heuristic:update(goal, isValidNode)
 
     local vehicleData ={name = 'name', turnRadius = turnRadius, dFront = 3, dRear = 3, dLeft = 1.5, dRight = 1.5}
-    done, path = pathFinder:start(start, goal, vehicleData.turnRadius, vehicleData, allowReverse,nil, isValidNode)
+    done, path = pathfinders[currentPathfinderIndex]:start(start, goal, vehicleData.turnRadius, vehicleData, allowReverse,nil, isValidNode, nil)
     local dubinsSolution = dubinsSolver:solve(start, goal, turnRadius)
     dubinsPath = dubinsSolution:getWaypoints(start, turnRadius)
     local rsActionSet = rsSolver:solve(start, goal, turnRadius)
@@ -94,7 +115,7 @@ local function drawNode(node)
     love.graphics.rotate(node.t)
     local left, right = -1.0, 1.0
     local triangle = { 0, left, 0, right, 4, 0}
-    love.graphics.polygon( 'fill', triangle )
+    love.graphics.polygon( 'line', triangle )
     love.graphics.pop()
 end
 
@@ -155,7 +176,7 @@ local function drawNodes(nodes)
                         love.graphics.setPointSize(3)
                         love.graphics.points(cell.x, cell.y)
                     end
-                    love.graphics.print(string.format('%d', cell.h), cell.x, cell.y, 0, 0.04, -0.04)
+                    love.graphics.print(string.format('%d', cell.cost), cell.x, cell.y, 0, 0.04, -0.04)
                 end
             end
         end
@@ -168,7 +189,14 @@ function love.load()
 
 end
 
+local function showStatus()
+    love.graphics.setColor(1,1,1)
+
+    love.graphics.print(pathfinderTexts[currentPathfinderIndex], 10, 10)
+end
+
 function love.draw()
+    love.graphics.push()
     love.graphics.scale(scale, -scale)
     love.graphics.translate(xOffset, -yOffset)
 
@@ -179,12 +207,15 @@ function love.draw()
 
     drawHeuristicGrid(heuristic)
 
-    if pathFinder then
-        if pathFinder.aStarPathFinder and pathFinder.aStarPathFinder.nodes then
-            drawNodes(pathFinder.aStarPathFinder.nodes)
+    if pathfinders[currentPathfinderIndex] then
+        if pathfinders[currentPathfinderIndex].nodes then
+            drawNodes(pathfinders[currentPathfinderIndex].nodes)
         end
-        if pathFinder.hybridAStarPathFinder and pathFinder.hybridAStarPathFinder.nodes then
-            drawNodes(pathFinder.hybridAStarPathFinder.nodes)
+        if pathfinders[currentPathfinderIndex].aStarPathfinder and pathfinders[currentPathfinderIndex].aStarPathfinder.nodes then
+            drawNodes(pathfinders[currentPathfinderIndex].aStarPathfinder.nodes)
+        end
+        if pathfinders[currentPathfinderIndex].hybridAStarPathfinder and pathfinders[currentPathfinderIndex].hybridAStarPathfinder.nodes then
+            drawNodes(pathfinders[currentPathfinderIndex].hybridAStarPathfinder.nodes)
         end
     end
 
@@ -197,6 +228,10 @@ function love.draw()
 
     drawPath(dubinsPath, 2, 0.8, 0.8, 0)
     drawPath(rsPath, 2, 0.4, 0, 0.8)
+
+    if pathfinders[currentPathfinderIndex].aStarPath then
+        drawPath(pathfinders[currentPathfinderIndex].aStarPath, 10, 1, 0, 1)
+    end
 
     if path then
             love.graphics.setPointSize(0.5 * scale)
@@ -211,19 +246,26 @@ function love.draw()
             end
             love.graphics.setLineWidth(0.1)
             love.graphics.line(p.x, p.y, path[i-1].x, path[i - 1].y)
-            love.graphics.points(p.x, p.y)
+            --love.graphics.points(p.x, p.y)
         end
     end
-    drawPath(pathFinder.middlePath, 6, 0.7, 0.7, 0.0)
+    drawPath(pathfinders[currentPathfinderIndex].middlePath, 6, 0.7, 0.7, 0.0)
 
-    if pathFinder:isActive() then
-        done, path = pathFinder:resume()
+    if pathfinders[currentPathfinderIndex]:isActive() then
+        done, path = pathfinders[currentPathfinderIndex]:resume()
         if done and path then
             printPath(path)
             io.stdout:flush()
         end
     end
+
+    love.graphics.pop()
+
+    showStatus()
+
 end
+
+
 
 
 local function love2real( x, y )
@@ -248,6 +290,8 @@ function love.keypressed(key, scancode, isrepeat)
         scale = scale * 1.2
     elseif key == '-' then
         scale = scale / 1.2
+    elseif key == 'p' then
+        currentPathfinderIndex = (currentPathfinderIndex + 1) > #pathfinders and 1 or currentPathfinderIndex + 1
     end
     io.stdout:flush()
 end
