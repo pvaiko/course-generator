@@ -3,7 +3,7 @@ profile = require("profile")
 
 local field = {}
 marks = {}
-local lines = {}
+lines = {}
 local helperPolygon = {}
 local headlandSettings = {}
 local pointSize = 1
@@ -14,6 +14,8 @@ local windowWidth = 1400
 local windowHeight = 950
 local showWidth = false
 local currentWaypointIndex = 1
+local offset = 0
+local multiTool = 2
 
 local pathFinder = HybridAStarWithAStarInTheMiddle(20)
 local reversePathfinder = Pathfinder()
@@ -29,7 +31,7 @@ local drawHelpers = true
 local showSettings = true
 
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
---headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
+-- headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
 headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
@@ -62,7 +64,7 @@ function love.load( arg )
         field = f
       end
     end
-    field.width = 4
+    field.width = 12
   end
 
   islandNodes = field.islandNodes
@@ -288,7 +290,7 @@ function drawSettings()
   y = y + 20
   love.graphics.print( "x/X - -/+ extend center tracks into headland (m)", 10, y, 0, 1 )
   y = y + 20
-  love.graphics.print( "o/O - -/+ work width overlap on headland", 10, y, 0, 1 )
+  love.graphics.print( "o/O - left/right offset", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "p/P - -/+ headland passes", 10, y, 0, 1 )
   y = y + 20
@@ -321,7 +323,7 @@ end
 function drawMarks( points )
   love.graphics.setColor( 200, 200, 0 )
   for i, point in pairs( points ) do
-    love.graphics.circle( "line", point.x, point.y, 1 )
+    love.graphics.circle( "fill", point.x, point.y, 1 )
     if point.label then
       love.graphics.push()
       love.graphics.scale( 1, -1 )
@@ -726,6 +728,13 @@ function generate()
 			end
 		end
 	end
+    if multiTool > 1 and offset ~= 0 then
+        marks = {}
+        local course = Course.createFromGeneratedCourse({}, field.course)
+        local offsetCourse = course:calculateOffsetCourse(multiTool, offset, field.width / multiTool)
+        field.course = Polygon:new(courseGenerator.pointsToXyInPlace(offsetCourse.waypoints))
+        field.course:calculateData()
+    end
 	io.stdout:flush()
 end
 function love.keypressed(key, scancode, isrepeat)
@@ -760,10 +769,10 @@ function love.textinput(key)
 		extendTracks = extendTracks - 1
 		generate()
 	elseif key == "o" then
-		headlandSettings.overlapPercent = headlandSettings.overlapPercent - 1
+        offset = offset - 1
 		generate()
 	elseif key == "O" then
-		headlandSettings.overlapPercent = headlandSettings.overlapPercent + 1
+        offset = offset + 1
 		generate()
 	elseif key == "P" then
 		headlandSettings.nPasses = headlandSettings.nPasses + 1
