@@ -15,7 +15,7 @@ local windowHeight = 950
 local showWidth = false
 local currentWaypointIndex = 1
 local offset = 0
-local multiTool = 2
+local multiTool = 4
 
 local pathFinder = HybridAStarWithAStarInTheMiddle(20)
 local reversePathfinder = Pathfinder()
@@ -930,18 +930,20 @@ function love.mousepressed(x, y, button, istouch)
 	if button == 1 then
 		local x, y = love2real( x, y )
 		local ix = findWaypointIndexForPosition(x, y)
-		if love.keyboard.isDown('lctrl') then
-			-- place vehicle on the clicked position
-			vehicle:setPosition(x, -y)
-			-- and to the rotation
-			if ix then
-				vehicle:setRotation(field.course[ix].nextEdge.angle)
-			end
-		elseif love.keyboard.isDown('lshift') then
-			if ix then
-				vehicle:setTarget(Point(x, -y, field.course[ix].nextEdge.angle))
-			end
-		end
+        if love.keyboard.isDown('lctrl') then
+            -- place vehicle on the clicked position
+            vehicle:setPosition(x, -y)
+            -- and to the rotation
+            if ix then
+                vehicle:setRotation(field.course[ix].nextEdge.angle)
+            end
+        elseif love.keyboard.isDown('lshift') then
+            if ix then
+                vehicle:setTarget(Point(x, -y, field.course[ix].nextEdge.angle))
+            end
+        else
+            dragging = true
+        end
 
 	end
 	if button == 2 then
