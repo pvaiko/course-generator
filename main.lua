@@ -29,6 +29,7 @@ local drawBlocks = true
 local drawGrid = true
 local drawHelpers = true
 local showSettings = true
+local symmetricLaneChange = false
 
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
 -- headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
@@ -314,6 +315,8 @@ function drawSettings()
   y = y + 20
   love.graphics.print( "i - toggle island bypass mode", 10, y, 0, 1 )
   y = y + 20
+    love.graphics.print( "y - toggle symmetric lane change", 10, y, 0, 1 )
+    y = y + 20
   love.graphics.print( "g - generate course", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "s - save course", 10, y, 0, 1 )
@@ -731,7 +734,7 @@ function generate()
     if multiTool > 1 and offset ~= 0 then
         marks = {}
         local course = Course.createFromGeneratedCourse({}, field.course)
-        local offsetCourse = course:calculateOffsetCourse(multiTool, offset, field.width / multiTool)
+        local offsetCourse = course:calculateOffsetCourse(multiTool, offset, field.width / multiTool, symmetricLaneChange)
         field.course = Polygon:new(courseGenerator.pointsToXyInPlace(offsetCourse.waypoints))
         field.course:calculateData()
     end
@@ -750,175 +753,178 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.textinput(key)
-	if key == "g" then
-    gridSpacing = gridSpacing - 0.5
-	elseif key == "G" then
-		gridSpacing = gridSpacing + 0.5
-	elseif key == "s" then
-		saveFile()
-	elseif key == "W" then
-		field.width = field.width + 0.1
-		generate()
-	elseif key == "w" then
-		field.width = field.width - 0.1
-		generate()
-	elseif key == "X" then
-		extendTracks = extendTracks + 1
-		generate()
-	elseif key == "x" then
-		extendTracks = extendTracks - 1
-		generate()
-	elseif key == "o" then
+    if key == "g" then
+        gridSpacing = gridSpacing - 0.5
+    elseif key == "G" then
+        gridSpacing = gridSpacing + 0.5
+    elseif key == "s" then
+        saveFile()
+    elseif key == "W" then
+        field.width = field.width + 0.1
+        generate()
+    elseif key == "w" then
+        field.width = field.width - 0.1
+        generate()
+    elseif key == "X" then
+        extendTracks = extendTracks + 1
+        generate()
+    elseif key == "x" then
+        extendTracks = extendTracks - 1
+        generate()
+    elseif key == "o" then
         offset = offset - 1
-		generate()
-	elseif key == "O" then
+        generate()
+    elseif key == "O" then
         offset = offset + 1
-		generate()
-	elseif key == "P" then
-		headlandSettings.nPasses = headlandSettings.nPasses + 1
-		generate()
-  elseif key == "p" then
-    if headlandSettings.nPasses > 0 then
-      headlandSettings.nPasses = headlandSettings.nPasses - 1
-      generate()
+        generate()
+    elseif key == "P" then
+        headlandSettings.nPasses = headlandSettings.nPasses + 1
+        generate()
+    elseif key == "p" then
+        if headlandSettings.nPasses > 0 then
+            headlandSettings.nPasses = headlandSettings.nPasses - 1
+            generate()
+        end
+    elseif key == "c" then
+        headlandSettings.isClockwise = not headlandSettings.isClockwise
+        generate()
+    elseif key == "d" then
+        field.roundCorners = not field.roundCorners
+        generate()
+    elseif key == "t" then
+        turnRadius = turnRadius - 0.5
+        generate()
+    elseif key == "T" then
+        turnRadius = turnRadius + 0.5
+        generate()
+    elseif key == "h" then
+        headlandSettings.mode = headlandSettings.mode + 1
+        if headlandSettings.mode > courseGenerator.HEADLAND_MODE_MAX then
+            headlandSettings.mode = courseGenerator.HEADLAND_MODE_MIN
+        end
+        generate()
+    elseif key == "H" then
+        headlandSettings.mode = headlandSettings.mode - 1
+        if headlandSettings.mode < courseGenerator.HEADLAND_MODE_MIN then
+            headlandSettings.mode = courseGenerator.HEADLAND_MODE_MAX
+        end
+        generate()
+    elseif key == "l" then
+        centerSettings.mode = centerSettings.mode + 1
+        if centerSettings.mode > courseGenerator.CENTER_MODE_MAX then
+            centerSettings.mode = courseGenerator.CENTER_MODE_MIN
+        end
+        generate()
+    elseif key == "L" then
+        centerSettings.mode = centerSettings.mode - 1
+        if centerSettings.mode < courseGenerator.CENTER_MODE_MIN then
+            centerSettings.mode = courseGenerator.CENTER_MODE_MAX
+        end
+        generate()
+    elseif key == "r" then
+        headlandSettings.headlandFirst = not headlandSettings.headlandFirst
+        generate()
+    elseif key == "q" then
+        if centerSettings.useBestAngle then
+            centerSettings.useBestAngle = nil
+            centerSettings.useLongestEdgeAngle = true
+        elseif centerSettings.useLongestEdgeAngle then
+            centerSettings.useBestAngle = nil
+            centerSettings.useLongestEdgeAngle = nil
+        else
+            centerSettings.useBestAngle = true
+            centerSettings.useLongestEdgeAngle = nil
+        end
+        generate()
+    elseif key == "A" then
+        centerSettings.rowAngle = centerSettings.rowAngle + math.pi / 16
+        generate()
+    elseif key == "a" then
+        centerSettings.rowAngle = centerSettings.rowAngle - math.pi / 16
+        generate()
+    elseif key == "J" then
+        centerSettings.nRowsToSkip = centerSettings.nRowsToSkip + 1
+        generate()
+    elseif key == "j" then
+        if centerSettings.nRowsToSkip > 0 then
+            centerSettings.nRowsToSkip = centerSettings.nRowsToSkip - 1
+            generate()
+        end
+    elseif key == "i" then
+        islandBypassMode = islandBypassMode + 1
+        if islandBypassMode > Island.BYPASS_MODE_MAX then
+            islandBypassMode = Island.BYPASS_MODE_MIN
+        end
+        islandNodes = ( islandBypassMode ~= Island.BYPASS_MODE_NONE ) and field.islandNodes or {}
+        generate()
+    elseif key == "," then
+        if minDistanceBetweenPoints > 0.25 then
+            minDistanceBetweenPoints = minDistanceBetweenPoints - 0.25
+            generate()
+        end
+    elseif key == "<" then
+        minDistanceBetweenPoints = minDistanceBetweenPoints + 0.25
+        generate()
+    elseif key == "." then
+        if minSmoothingAngleDeg > 5 then
+            minSmoothingAngleDeg = minSmoothingAngleDeg - 5
+            generate()
+        end
+    elseif key == ">" then
+        minSmoothingAngleDeg = minSmoothingAngleDeg + 5
+        generate()
+    elseif key == "k" then
+        if headlandSettings.minHeadlandTurnAngleDeg > 5 then
+            headlandSettings.minHeadlandTurnAngleDeg = headlandSettings.minHeadlandTurnAngleDeg - 5
+            generate()
+        end
+    elseif key == "K" then
+        headlandSettings.minHeadlandTurnAngleDeg = headlandSettings.minHeadlandTurnAngleDeg + 5
+        generate()
+    elseif key == "m" then
+        field.doSmooth = not field.doSmooth
+        generate()
+    elseif key == "y" then
+        symmetricLaneChange = not symmetricLaneChange
+        generate()
+    elseif key == "1" then
+        drawCourse = not drawCourse
+    elseif key == "2" then
+        showHeadlandPath = not showHeadlandPath
+    elseif key == "3" then
+        drawConnectingTracks = not drawConnectingTracks
+    elseif key == "4" then
+        drawTrack = not drawTrack
+    elseif key == "5" then
+        drawHelpers = not drawHelpers
+    elseif key == "6" then
+        showSettings = not showSettings
+    elseif key == "7" then
+        drawBlocks= not drawBlocks
+    elseif key == "8" then
+        drawGrid= not drawGrid
+    elseif key == "9" then
+        showWidth = not showWidth
+    elseif key == "=" then
+        currentWaypointIndex = currentWaypointIndex + 1
+        if currentWaypointIndex > #field.course then
+            currentWaypointIndex = 1
+        end
+        if love.keyboard.isDown('lctrl') then
+            -- move vehicle to the current waypoitn
+            vehicle:setPosition(field.course[currentWaypointIndex].x, -field.course[currentWaypointIndex].y)
+            vehicle:setRotation(field.course[currentWaypointIndex].nextEdge.angle)
+        end
+    elseif key == "-" then
+        currentWaypointIndex = currentWaypointIndex - 1
+        if currentWaypointIndex < 1 then
+            currentWaypointIndex = #field.course
+        end
+        if love.keyboard.isDown('lctrl') then
+            vehicle:setPosition(field.course[currentWaypointIndex].x, -field.course[currentWaypointIndex].y)
+            vehicle:setRotation(field.course[currentWaypointIndex].nextEdge.angle)
+        end
     end
-  elseif key == "c" then
-    headlandSettings.isClockwise = not headlandSettings.isClockwise
-    generate()
-  elseif key == "d" then
-    field.roundCorners = not field.roundCorners
-    generate()
-  elseif key == "t" then
-    turnRadius = turnRadius - 0.5
-    generate()
-  elseif key == "T" then
-    turnRadius = turnRadius + 0.5
-    generate()
-  elseif key == "h" then
-	  headlandSettings.mode = headlandSettings.mode + 1
-	  if headlandSettings.mode > courseGenerator.HEADLAND_MODE_MAX then
-		  headlandSettings.mode = courseGenerator.HEADLAND_MODE_MIN
-	  end
-	  generate()
-	elseif key == "H" then
-		headlandSettings.mode = headlandSettings.mode - 1
-		if headlandSettings.mode < courseGenerator.HEADLAND_MODE_MIN then
-			headlandSettings.mode = courseGenerator.HEADLAND_MODE_MAX
-		end
-		generate()
-	elseif key == "l" then
-		centerSettings.mode = centerSettings.mode + 1
-		if centerSettings.mode > courseGenerator.CENTER_MODE_MAX then
-			centerSettings.mode = courseGenerator.CENTER_MODE_MIN
-		end
-		generate()
-	elseif key == "L" then
-		centerSettings.mode = centerSettings.mode - 1
-		if centerSettings.mode < courseGenerator.CENTER_MODE_MIN then
-			centerSettings.mode = courseGenerator.CENTER_MODE_MAX
-		end
-		generate()
-  elseif key == "r" then
-    headlandSettings.headlandFirst = not headlandSettings.headlandFirst
-    generate()
-  elseif key == "q" then
-		if centerSettings.useBestAngle then
-			centerSettings.useBestAngle = nil
-			centerSettings.useLongestEdgeAngle = true
-		elseif centerSettings.useLongestEdgeAngle then
-			centerSettings.useBestAngle = nil
-			centerSettings.useLongestEdgeAngle = nil
-		else
-			centerSettings.useBestAngle = true
-			centerSettings.useLongestEdgeAngle = nil
-		end
-		generate()
-	elseif key == "A" then
-	  centerSettings.rowAngle = centerSettings.rowAngle + math.pi / 16
-      generate()
-  elseif key == "a" then
-		centerSettings.rowAngle = centerSettings.rowAngle - math.pi / 16
-      generate()
-  elseif key == "J" then
-		centerSettings.nRowsToSkip = centerSettings.nRowsToSkip + 1
-		generate()
-	elseif key == "j" then
-		if centerSettings.nRowsToSkip > 0 then
-			centerSettings.nRowsToSkip = centerSettings.nRowsToSkip - 1
-			generate()
-		end
-	elseif key == "i" then
-    islandBypassMode = islandBypassMode + 1
-	  if islandBypassMode > Island.BYPASS_MODE_MAX then
-		  islandBypassMode = Island.BYPASS_MODE_MIN
-	  end
-    islandNodes = ( islandBypassMode ~= Island.BYPASS_MODE_NONE ) and field.islandNodes or {}
-    generate()
-  elseif key == "," then
-    if minDistanceBetweenPoints > 0.25 then
-      minDistanceBetweenPoints = minDistanceBetweenPoints - 0.25
-      generate()
-    end
-  elseif key == "<" then
-    minDistanceBetweenPoints = minDistanceBetweenPoints + 0.25
-    generate()
-  elseif key == "." then
-    if minSmoothingAngleDeg > 5 then
-      minSmoothingAngleDeg = minSmoothingAngleDeg - 5
-      generate()
-    end
-  elseif key == ">" then
-    minSmoothingAngleDeg = minSmoothingAngleDeg + 5
-    generate()
-  elseif key == "k" then
-    if headlandSettings.minHeadlandTurnAngleDeg > 5 then
-      headlandSettings.minHeadlandTurnAngleDeg = headlandSettings.minHeadlandTurnAngleDeg - 5
-      generate()
-    end
-  elseif key == "K" then
-    headlandSettings.minHeadlandTurnAngleDeg = headlandSettings.minHeadlandTurnAngleDeg + 5
-    generate()
-  elseif key == "m" then
-    field.doSmooth = not field.doSmooth
-    generate()
-  elseif key == "1" then
-    drawCourse = not drawCourse
-  elseif key == "2" then
-    showHeadlandPath = not showHeadlandPath
-  elseif key == "3" then
-    drawConnectingTracks = not drawConnectingTracks
-  elseif key == "4" then
-    drawTrack = not drawTrack
-  elseif key == "5" then
-    drawHelpers = not drawHelpers
-  elseif key == "6" then
-    showSettings = not showSettings
-	elseif key == "7" then
-		drawBlocks= not drawBlocks
-  elseif key == "8" then
-		drawGrid= not drawGrid
-  elseif key == "9" then
-		showWidth = not showWidth
-  elseif key == "=" then
-		currentWaypointIndex = currentWaypointIndex + 1
-		if currentWaypointIndex > #field.course then
-			currentWaypointIndex = 1
-		end
-		if love.keyboard.isDown('lctrl') then
-			-- move vehicle to the current waypoitn
-			vehicle:setPosition(field.course[currentWaypointIndex].x, -field.course[currentWaypointIndex].y)
-			vehicle:setRotation(field.course[currentWaypointIndex].nextEdge.angle)
-		end
-  elseif key == "-" then
-		currentWaypointIndex = currentWaypointIndex - 1
-		if currentWaypointIndex < 1 then
-			currentWaypointIndex = #field.course
-		end
-		if love.keyboard.isDown('lctrl') then
-			vehicle:setPosition(field.course[currentWaypointIndex].x, -field.course[currentWaypointIndex].y)
-			vehicle:setRotation(field.course[currentWaypointIndex].nextEdge.angle)
-		end
-	end
 end
 
 function love.wheelmoved( dx, dy )
