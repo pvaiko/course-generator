@@ -15,7 +15,8 @@ local windowHeight = 950
 local showWidth = false
 local currentWaypointIndex = 1
 local offset = 0
-local multiTool = 4
+local multiTool = 1
+local width = 6
 
 local pathFinder = HybridAStarWithAStarInTheMiddle(20)
 local reversePathfinder = Pathfinder()
@@ -65,7 +66,6 @@ function love.load( arg )
         field = f
       end
     end
-    field.width = 12
   end
 
   islandNodes = field.islandNodes
@@ -85,7 +85,7 @@ function love.load( arg )
     -- generation, that is, the field.boundary is actually
     -- a headland pass of a course
     -- calculate the boundary from the headland track
-    field.boundary = calculateHeadlandTrack( field.boundary, courseGenerator.HEADLAND_MODE_NORMAL, field.boundary.isClockwise,field.width / 2,
+    field.boundary = calculateHeadlandTrack( field.boundary, courseGenerator.HEADLAND_MODE_NORMAL, field.boundary.isClockwise,width / 2,
                                              minDistanceBetweenPoints, math.rad( minSmoothingAngleDeg), 0,
                                              field.doSmooth, false, turnRadius, nil, nil )
   end
@@ -214,7 +214,7 @@ function drawSettings()
     roundCorners = "sharp"
   end
   love.graphics.print( string.format( "HEADLAND %s, width: %.1f m, overlap %d%% number of passes: %d, direction %s, corners: %s, radius: %.1f",
-           courseGenerator.headlandModeTexts[headlandSettings.mode], field.width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, turnRadius), 10, 30, 0, 1 )
+           courseGenerator.headlandModeTexts[headlandSettings.mode], width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, turnRadius), 10, 30, 0, 1 )
   love.graphics.print( string.format( "CENTER mode: %s, skipping %d tracks, extend %d m",
            courseGenerator.centerModeTexts[centerSettings.mode], centerSettings.nRowsToSkip, extendTracks ), 10, 50, 0, 1 )
            
@@ -577,7 +577,7 @@ function drawField( field )
   if drawTrack then
     if field.track and #field.track > 1 then
       if showWidth then
-        love.graphics.setLineWidth( field.width )
+        love.graphics.setLineWidth( width )
         love.graphics.setColor( 100, 200, 100, 100 )
       else
         love.graphics.setLineWidth( lineWidth )
@@ -622,7 +622,7 @@ function drawIslands( points )
     for _, island in ipairs( field.islands ) do
       love.graphics.polygon('line', getVertices( island.nodes ))
       if showWidth then
-        love.graphics.setLineWidth( field.width )
+        love.graphics.setLineWidth( width )
         love.graphics.setColor( 100, 200, 100, 100 )
       else
         love.graphics.setLineWidth( lineWidth * 6 )
@@ -702,11 +702,11 @@ function generate()
     marks = {}
     lines = {}
     helperPolygon = {}
-    headlandSettings.width = field.width
-    centerSettings.width = field.width
+    headlandSettings.width = width
+    centerSettings.width = width
 
     status, ok = xpcall( generateCourseForField, errorHandler,
-                                           field, field.width, headlandSettings,
+                                           field, width, headlandSettings,
                                            extendTracks, minDistanceBetweenPoints,
                                            math.rad( minSmoothingAngleDeg ), math.rad( headlandSettings.minHeadlandTurnAngleDeg ), field.doSmooth,
                                            field.roundCorners, turnRadius,
@@ -734,7 +734,7 @@ function generate()
     if multiTool > 1 and offset ~= 0 then
         marks = {}
         local course = Course.createFromGeneratedCourse({}, field.course)
-        local offsetCourse = course:calculateOffsetCourse(multiTool, offset, field.width / multiTool, symmetricLaneChange)
+        local offsetCourse = course:calculateOffsetCourse(multiTool, offset, width / multiTool, symmetricLaneChange)
         field.course = Polygon:new(courseGenerator.pointsToXyInPlace(offsetCourse.waypoints))
         field.course:calculateData()
     end
@@ -760,10 +760,10 @@ function love.textinput(key)
     elseif key == "s" then
         saveFile()
     elseif key == "W" then
-        field.width = field.width + 0.1
+        width = width + 0.1
         generate()
     elseif key == "w" then
-        field.width = field.width - 0.1
+        width = width - 0.1
         generate()
     elseif key == "X" then
         extendTracks = extendTracks + 1
@@ -975,7 +975,7 @@ function love.mousepressed(x, y, button, istouch)
 					path.done, path.course, path.grid = pathFinder:start( start, goal, turnRadius, false, field.boundary, getIslandPenalty)
 					--path.done, reversePath.course, path.grid = reversePathfinder:start( path.to, path.from, field.boundary, nil, nil, false)
 				else
-					path.course, path.grid = headlandPathfinder:findPath(path.from, path.to , field.headlandTracks, field.width, true)
+					path.course, path.grid = headlandPathfinder:findPath(path.from, path.to , field.headlandTracks, width, true)
 				end
 				io.stdout:flush()
 			end
