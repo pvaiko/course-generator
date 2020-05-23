@@ -19,8 +19,6 @@ local multiTool = 1
 local width = 6
 
 local pathFinder = HybridAStarWithAStarInTheMiddle(20)
-local reversePathfinder = Pathfinder()
-local headlandPathfinder = HeadlandPathfinder()
 
 local drawConnectingTracks = true
 local drawCourse = true
@@ -38,7 +36,7 @@ headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
 headlandSettings.nPasses = 2
-local centerSettings = { mode = courseGenerator.CENTER_MODE_UP_DOWN, useBestAngle = true, useLongestEdgeAngle = false, rowAngle = 0, nRowsToSkip = 0 }
+local centerSettings = { mode = courseGenerator.CENTER_MODE_LANDS, useBestAngle = true, useLongestEdgeAngle = false, rowAngle = 0, nRowsToSkip = 0 }
 
 local turnRadius = 6
 local extendTracks = 0
@@ -972,10 +970,10 @@ function love.mousepressed(x, y, button, istouch)
 					--path.done, path.course, path.grid = pathFinder:start( path.from, path.to , field.boundary, nil, nil, true)
                     local start = State3D(path.from.x, path.from.y, 0)
                     local goal = State3D(path.to.x, path.to.y, math.pi)
-					path.done, path.course, path.grid = pathFinder:start( start, goal, turnRadius, false, field.boundary, getIslandPenalty)
+--					path.done, path.course, path.grid = pathFinder:start( start, goal, turnRadius, false, field.boundary, getIslandPenalty)
 					--path.done, reversePath.course, path.grid = reversePathfinder:start( path.to, path.from, field.boundary, nil, nil, false)
 				else
-					path.course, path.grid = headlandPathfinder:findPath(path.from, path.to , field.headlandTracks, width, true)
+--					path.course, path.grid = headlandPathfinder:findPath(path.from, path.to , field.headlandTracks, width, true)
 				end
 				io.stdout:flush()
 			end
@@ -1042,7 +1040,7 @@ function love.update(dt)
 			io.stdout:flush()
 		end
 	end
-	if reversePathfinder:isActive() then
-		path.done, reversePath.course, path.grid = reversePathfinder:resume()
-	end
+	--if reversePathfinder:isActive() then
+	--	path.done, reversePath.course, path.grid = reversePathfinder:resume()
+	--end
 end

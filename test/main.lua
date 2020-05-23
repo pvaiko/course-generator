@@ -10,19 +10,19 @@ local obstacles = {
     {
         x1 = 13,
         y1 = -15,
-        x2 = 15,
+        x2 = 18,
         y2 = 15
     },
 
     {
         x1 = 13,
-        y1 = 12,
+        y1 = 10,
         x2 = 40,
         y2 = 15
     },
 
     {
-        x1 = 113,
+        x1 = 110,
         y1 = 5,
         x2 = 115,
         y2 = 15
@@ -32,7 +32,7 @@ local obstacles = {
         x1 = 100,
         y1 = 15,
         x2 = 115,
-        y2 = 17
+        y2 = 20
     }
 }
 ---@param node State3D
@@ -46,10 +46,9 @@ local function isValidNode(node, userdata)
 end
 
 local dragging = false
-
+local startTime
+local profilerReportLength = 40
 local turnRadius = 5
-local goalHeading = -math.pi / 2
-local startHeading = math.pi / 2
 
 local scale, width, height = 10, 500, 400
 local origin = {x = -width / 8, y = -height / 4}
@@ -59,8 +58,8 @@ local goalHeading = 0* math.pi / 4
 local startHeading = 0*math.pi / 4
 
 local start = State3D(0, 0, startHeading, 0)
-local goal = State3D(120, 12, goalHeading, 0)
---local goal = State3D(6, 0, goalHeading, 0)
+--local goal = State3D(120, 8, goalHeading, 0)
+local goal = State3D(70, -11, goalHeading, 0)
 local dubinsPath = {}
 local grid = Grid(1, width / 2,height / 2, origin)
 local heuristic = NonholonomicRelaxed(grid)
@@ -87,19 +86,24 @@ local function printPath(path)
 end
 
 local function find(start, goal, allowReverse)
-
+    love.profiler.start()
+    startTime = love.timer.getTime()
     --heuristic:update(goal, isValidNode)
 
     local vehicleData ={name = 'name', turnRadius = turnRadius, dFront = 3, dRear = 3, dLeft = 1.5, dRight = 1.5}
-    done, path = pathfinders[currentPathfinderIndex]:start(start, goal, vehicleData.turnRadius, vehicleData, allowReverse,nil, isValidNode, nil)
+    done, path = pathfinders[currentPathfinderIndex]:start(start, goal, vehicleData.turnRadius, vehicleData, allowReverse, nil, isValidNode, isValidNode)
     local dubinsSolution = dubinsSolver:solve(start, goal, turnRadius)
     dubinsPath = dubinsSolution:getWaypoints(start, turnRadius)
     local rsActionSet = rsSolver:solve(start, goal, turnRadius)
     rsPath = rsActionSet:getWaypoints(start, vehicleData.turnRadius)
 
     if done and path then
-        printPath(path)
+        --printPath(path)
+        print(love.profiler.report(profilerReportLength))
+        love.profiler.reset()
+
     end
+    love.profiler.stop()
     io.stdout:flush()
     return done, path
 end
@@ -183,9 +187,13 @@ local function drawNodes(nodes)
     end
 end
 function love.load()
+
+    love.profiler = require('profile')
+
     love.window.setMode(1000, 800)
     love.graphics.setPointSize(3)
-    find(start, goal)
+    find(start, goal, true)
+
 
 end
 
@@ -252,9 +260,14 @@ function love.draw()
     drawPath(pathfinders[currentPathfinderIndex].middlePath, 6, 0.7, 0.7, 0.0)
 
     if pathfinders[currentPathfinderIndex]:isActive() then
+        love.profiler.start()
         done, path = pathfinders[currentPathfinderIndex]:resume()
+        love.profiler.stop()
         if done and path then
-            printPath(path)
+            --printPath(path)
+            print(string.format('Done in %.2f seconds', love.timer.getTime() - startTime))
+            print(love.profiler.report(profilerReportLength))
+            love.profiler.reset()
             io.stdout:flush()
         end
     end
@@ -302,7 +315,7 @@ function love.mousepressed(x, y, button, istouch)
     if button == 1 then
         if love.keyboard.isDown('lshift') or love.keyboard.isDown('lctrl') then
             goal.x, goal.y = love2real( x, y )
-
+            print(love.profiler.report(profilerReportLength))
             done, path = find(start, goal, love.keyboard.isDown('lctrl'))
 
             if path then
