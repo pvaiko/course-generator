@@ -15,7 +15,7 @@ local windowHeight = 950
 local showWidth = false
 local currentWaypointIndex = 1
 local offset = 0
-local multiTool = 1
+local multiTool = 0
 local width = 6
 
 local pathFinder = HybridAStarWithAStarInTheMiddle(20)
@@ -31,12 +31,13 @@ local showSettings = true
 local symmetricLaneChange = false
 
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
--- headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
+--headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
 headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
-headlandSettings.nPasses = 2
-local centerSettings = { mode = courseGenerator.CENTER_MODE_LANDS, useBestAngle = true, useLongestEdgeAngle = false, rowAngle = 0, nRowsToSkip = 0 }
+headlandSettings.nPasses = 3
+local centerSettings = { mode = courseGenerator.CENTER_MODE_LANDS, useBestAngle = true, useLongestEdgeAngle = false,
+                         rowAngle = 0, nRowsToSkip = 0, nRowsPerLand = 6, pipeOnLeftSide = false }
 
 local turnRadius = 6
 local extendTracks = 0
@@ -49,6 +50,7 @@ local reversePath = {}
 local gridSpacing = 4.07
 local islandNodes = {}
 local vehicle
+
 
 function love.load( arg )
   if arg[#arg] == "-debug" then require("mobdebug").start() end
@@ -76,7 +78,7 @@ function love.load( arg )
   headlandSettings.overlapPercent = 7
   headlandSettings.minHeadlandTurnAngleDeg = 45
   field.doSmooth = true
-  headlandSettings.isClockwise = false
+  headlandSettings.isClockwise = true
   field.roundCorners = false
   if arg[ 2 ] == "fromCourse" then
     -- use the outermost headland path as the basis of the 

@@ -148,6 +148,8 @@ local polygon = Polygon:new( { point( 1, 0 ), point( 2, 0 ), point( 3, 0 ), poin
 assertEquals( polygon[ 1 ].x, 1 )
 assertEquals( polygon[ 0 ].x, 4 )
 assertEquals( polygon[ -1 ].x, 3 )
+assertEquals( polygon[ -4 ].x, 4 )
+assertEquals( polygon[ -5 ].x, 3 )
 assertEquals( polygon[ 5 ].x, 1 )
 assertEquals( polygon[ 9 ].x, 1 )
 assertEquals( polygon[ 6 ].x, 2 )
