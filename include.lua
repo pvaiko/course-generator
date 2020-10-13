@@ -27,6 +27,7 @@ dofile('courseplay/course-generator/ReedsSheppSolver.lua')
 dofile('courseplay/course-generator/Dijkstra.lua')
 dofile('courseplay/Waypoint.lua')
 dofile('courseplay/course-generator/PathfinderUtil.lua')
+dofile('courseplay/settings.lua')
 
 dofile( 'Vehicle.lua' )
 dofile( 'file.lua' )

@@ -18,6 +18,7 @@ local offset = 0
 local multiTool = 0
 local width = 6
 
+courseplay.globalCourseGeneratorSettings = SettingsContainer.createGlobalCourseGeneratorSettings()
 local pathFinder = HybridAStarWithAStarInTheMiddle(20)
 
 local drawConnectingTracks = true
