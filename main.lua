@@ -15,8 +15,6 @@ local windowHeight = 950
 local showWidth = false
 local currentWaypointIndex = 1
 local offset = 0
-local multiTool = 0
-local width = 6
 
 courseplay.globalCourseGeneratorSettings = SettingsContainer.createGlobalCourseGeneratorSettings()
 local pathFinder = HybridAStarWithAStarInTheMiddle(20)
@@ -36,10 +34,12 @@ local islandBypassMode = Island.BYPASS_MODE_CIRCLE
 headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
-headlandSettings.nPasses = 3
+headlandSettings.nPasses = 2
 local centerSettings = { mode = courseGenerator.CENTER_MODE_LANDS, useBestAngle = true, useLongestEdgeAngle = false,
                          rowAngle = 0, nRowsToSkip = 0, nRowsPerLand = 6, pipeOnLeftSide = false }
 
+local multiTool = 0
+local width = 7.6
 local turnRadius = 6
 local extendTracks = 0
 local minDistanceBetweenPoints = 0.5
@@ -244,9 +244,10 @@ function drawSettings()
     if cWp then
 	    local rev = cWp.rev and 'rev' or 'fwd'
 	    local turn = cWp.turnStart and 'start' or ( cWp.turnEnd and 'end' or '')
-      love.graphics.print(string.format("ix=%d x=%.1f y=%.1f %.0f°>%.0f° %s %s", currentWaypointIndex, cWp.x, cWp.y, 
-        math.deg( cWp.prevEdge.angle ), math.deg( cWp.nextEdge.angle ), turn, rev ),
-        windowWidth - 300, windowHeight - 40, 0, 1)
+        local connecting = cWp.isConnectingTrack and 'conn' or ''
+      love.graphics.print(string.format("ix=%d x=%.1f y=%.1f %.0f°>%.0f° %s %s %s", currentWaypointIndex, cWp.x, cWp.y,
+        math.deg( cWp.prevEdge.angle ), math.deg( cWp.nextEdge.angle ), turn, rev, connecting ),
+        windowWidth - 350, windowHeight - 40, 0, 1)
       local radius = 'n/a'
       if cWp.radius then
         if cWp.radius > 100 then
@@ -257,8 +258,8 @@ function drawSettings()
       end
       local pass = cWp.passNumber or 'n/a'
       local track = cWp.trackNumber or 'n/a' 
-	    local origTrack = cWp.originalTrackNumber or 'n/a'
-	    local ridgeMarker = cWp.ridgeMarker or 'n/a'
+        local origTrack = cWp.originalTrackNumber or 'n/a'
+        local ridgeMarker = cWp.ridgeMarker or 'n/a'
 	    local adjacentToIsland = cWp.adjacentIslands and #cWp.adjacentIslands or 'no'
         love.graphics.print(string.format("pass=%s track =%s(%s) r=%s adj=%s rm=%s islandbp=%s",
 					tostring( pass), tostring( track ), tostring( origTrack ), radius, adjacentToIsland, tostring( ridgeMarker ), tostring(cWp.islandBypass)),
@@ -707,12 +708,12 @@ function generate()
     centerSettings.width = width
 
     status, ok = xpcall( generateCourseForField, errorHandler,
-                                           field, width, headlandSettings,
-                                           extendTracks, minDistanceBetweenPoints,
-                                           math.rad( minSmoothingAngleDeg ), math.rad( headlandSettings.minHeadlandTurnAngleDeg ), field.doSmooth,
-                                           field.roundCorners, turnRadius,
-  										                     false, islandNodes, islandBypassMode, centerSettings
-                                           )
+            field, width, headlandSettings,
+            extendTracks, minDistanceBetweenPoints,
+            math.rad( minSmoothingAngleDeg ), math.rad( headlandSettings.minHeadlandTurnAngleDeg ), field.doSmooth,
+            field.roundCorners, turnRadius,
+            islandNodes, islandBypassMode, centerSettings
+    )
 
   if not status then
     love.window.showMessageBox( "Error", "Could not generate course.", { "Ok" }, "error" )

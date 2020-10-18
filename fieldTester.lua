@@ -49,7 +49,7 @@ function generate()
  local status, err = xpcall( generateCourseForField, function() print( err, debug.traceback()) printParameters() end,
                              field, implementWidth, headlandSettings, extendTracks,
                              minDistanceBetweenPoints, math.rad( minSmoothAngleDeg ), math.rad( maxSmoothAngleDeg ), doSmooth, fromInside,
-                             turnRadius, returnToFirst, field.islandNodes,
+                             turnRadius, field.islandNodes,
                              islandBypassMode, centerSettings )
 	if headlandSettings.nPasses < 10 then
 		countGlitches(field.course,0)
