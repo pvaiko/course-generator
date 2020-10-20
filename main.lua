@@ -16,7 +16,6 @@ local showWidth = false
 local currentWaypointIndex = 1
 local offset = 0
 
-courseplay.globalCourseGeneratorSettings = SettingsContainer.createGlobalCourseGeneratorSettings()
 local pathFinder = HybridAStarWithAStarInTheMiddle(20)
 
 local drawConnectingTracks = true

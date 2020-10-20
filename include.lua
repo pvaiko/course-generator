@@ -5,6 +5,7 @@ courseplay.RIDGEMARKER_NONE = 0
 courseplay.RIDGEMARKER_LEFT = 1
 courseplay.RIDGEMARKER_RIGHT = 2
 
+
 dofile('courseplay/CpObject.lua')
 dofile( courseGeneratorPath .. 'geo.lua' )
 dofile( courseGeneratorPath .. 'Island.lua' )
@@ -32,3 +33,5 @@ dofile('courseplay/settings.lua')
 dofile( 'Vehicle.lua' )
 dofile( 'file.lua' )
 
+courseplay.globalCourseGeneratorSettings = SettingsContainer.createGlobalCourseGeneratorSettings()
+courseplay.globalPathfinderSettings = SettingsContainer.createGlobalPathfinderSettings()

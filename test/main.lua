@@ -200,7 +200,7 @@ local function find(start, goal, allowReverse)
 
     if done and path then
         --printPath(path)
-        print(love.profiler.report(profilerReportLength))
+        --print(love.profiler.report(profilerReportLength))
         love.profiler.reset()
 
     end
@@ -420,7 +420,7 @@ function love.mousepressed(x, y, button, istouch)
     if button == 1 then
         if love.keyboard.isDown('lshift') or love.keyboard.isDown('lctrl') then
             goal.x, goal.y = love2real( x, y )
-            print(love.profiler.report(profilerReportLength))
+            --print(love.profiler.report(profilerReportLength))
             done, path = find(start, goal, love.keyboard.isDown('lctrl'))
 
             if path then
