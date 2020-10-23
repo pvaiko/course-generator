@@ -34,11 +34,19 @@ headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
 headlandSettings.nPasses = 2
+
+headlandSettings.overlapPercent = 7
+headlandSettings.minHeadlandTurnAngleDeg = 45
+headlandSettings.isClockwise = true
+local doSmooth = true
+field.roundCorners = false
+
+
 local centerSettings = { mode = courseGenerator.CENTER_MODE_LANDS, useBestAngle = true, useLongestEdgeAngle = false,
                          rowAngle = 0, nRowsToSkip = 0, nRowsPerLand = 6, pipeOnLeftSide = false }
 
-local multiTool = 0
-local width = 7.6
+local multiTool = 2
+local width = 8.1
 local turnRadius = 6
 local extendTracks = 0
 local minDistanceBetweenPoints = 0.5
@@ -75,11 +83,6 @@ function love.load( arg )
 	love.keyboard.setKeyRepeat(true)
 	vehicle = Vehicle(headlandSettings.startLocation.x, -headlandSettings.startLocation.y, 0)
 
-  headlandSettings.overlapPercent = 7
-  headlandSettings.minHeadlandTurnAngleDeg = 45
-  field.doSmooth = true
-  headlandSettings.isClockwise = true
-  field.roundCorners = false
   if arg[ 2 ] == "fromCourse" then
     -- use the outermost headland path as the basis of the 
     -- generation, that is, the field.boundary is actually
@@ -87,7 +90,7 @@ function love.load( arg )
     -- calculate the boundary from the headland track
     field.boundary = calculateHeadlandTrack( field.boundary, courseGenerator.HEADLAND_MODE_NORMAL, field.boundary.isClockwise,width / 2,
                                              minDistanceBetweenPoints, math.rad( minSmoothingAngleDeg), 0,
-                                             field.doSmooth, false, turnRadius, nil, nil )
+                                             doSmooth, false, turnRadius, nil, nil )
   end
   field.boundary = Polygon:new( field.boundary )
   field.boundingBox = field.boundary:getBoundingBox()
@@ -219,7 +222,7 @@ function drawSettings()
            courseGenerator.centerModeTexts[centerSettings.mode], centerSettings.nRowsToSkip, extendTracks ), 10, 50, 0, 1 )
            
   local smoothingStatus 
-  if field.doSmooth then smoothingStatus = "on" else smoothingStatus = "off" end
+  if doSmooth then smoothingStatus = "on" else smoothingStatus = "off" end
   
   love.graphics.print( string.format( "min point distance: %.2f m, corner smoothing: %s, min. smoothing angle: %d, min. headland turn angle = %d", 
     minDistanceBetweenPoints, smoothingStatus, minSmoothingAngleDeg, headlandSettings.minHeadlandTurnAngleDeg ), 10, 70, 0, 1 )
@@ -709,7 +712,7 @@ function generate()
     status, ok = xpcall( generateCourseForField, errorHandler,
             field, width, headlandSettings,
             extendTracks, minDistanceBetweenPoints,
-            math.rad( minSmoothingAngleDeg ), math.rad( headlandSettings.minHeadlandTurnAngleDeg ), field.doSmooth,
+            math.rad( minSmoothingAngleDeg ), math.rad( headlandSettings.minHeadlandTurnAngleDeg ), doSmooth,
             field.roundCorners, turnRadius,
             islandNodes, islandBypassMode, centerSettings
     )
@@ -883,7 +886,7 @@ function love.textinput(key)
         headlandSettings.minHeadlandTurnAngleDeg = headlandSettings.minHeadlandTurnAngleDeg + 5
         generate()
     elseif key == "m" then
-        field.doSmooth = not field.doSmooth
+        doSmooth = not doSmooth
         generate()
     elseif key == "y" then
         symmetricLaneChange = not symmetricLaneChange
