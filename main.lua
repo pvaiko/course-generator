@@ -11,7 +11,7 @@ local lineWidth = 0.1
 local scale = 1.0
 local xOffset, yOffset = 10000, 10000
 local windowWidth = 1400
-local windowHeight = 950
+local windowHeight = 800
 local showWidth = false
 local currentWaypointIndex = 1
 local offset = 0
@@ -33,7 +33,7 @@ local islandBypassMode = Island.BYPASS_MODE_CIRCLE
 headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
-headlandSettings.nPasses = 2
+headlandSettings.nPasses = 0
 
 headlandSettings.overlapPercent = 7
 headlandSettings.minHeadlandTurnAngleDeg = 45
@@ -42,11 +42,11 @@ local doSmooth = true
 field.roundCorners = false
 
 
-local centerSettings = { mode = courseGenerator.CENTER_MODE_LANDS, useBestAngle = true, useLongestEdgeAngle = false,
+local centerSettings = { mode = courseGenerator.CENTER_MODE_UP_DOWN, useBestAngle = true, useLongestEdgeAngle = false,
                          rowAngle = 0, nRowsToSkip = 0, nRowsPerLand = 6, pipeOnLeftSide = false }
 
-local multiTool = 2
-local width = 8.1
+local multiTool = 0
+local width = 10.8
 local turnRadius = 6
 local extendTracks = 0
 local minDistanceBetweenPoints = 0.5
