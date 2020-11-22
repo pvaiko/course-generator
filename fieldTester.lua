@@ -5,7 +5,6 @@ unpack = unpack or table.unpack
 
 local headlandSettings = {}
 local implementWidth = 6
-local extendTracks = 0
 local minDistanceBetweenPoints = 0.5
 local minSmoothAngleDeg = 30
 local maxSmoothAngleDeg = 60
@@ -26,7 +25,6 @@ function printParameters()
   print( "headlandSettings.startLocation = ", headlandSettings.startLocation.x, headlandSettings.startLocation.y )
   print( "headlandSettings.overlapPercent = ", headlandSettings.overlapPercent )
   print( "nRowsToSkip = ", centerSettings.nRowsToSkip )
-  print( "extendTracks = ", extendTracks )
   print( "minDistanceBetweenPoints = ", minDistanceBetweenPoints )
   print( "minSmoothAngleDeg = ", minSmoothAngleDeg )
   print( "maxSmoothAngleDeg =", maxSmoothAngleDeg )
@@ -47,7 +45,7 @@ end
 
 function generate()
  local status, err = xpcall( generateCourseForField, function() print( err, debug.traceback()) printParameters() end,
-                             field, implementWidth, headlandSettings, extendTracks,
+                             field, implementWidth, headlandSettings,
                              minDistanceBetweenPoints, math.rad( minSmoothAngleDeg ), math.rad( maxSmoothAngleDeg ), doSmooth, fromInside,
                              turnRadius, field.islandNodes,
                              islandBypassMode, centerSettings )
@@ -112,7 +110,6 @@ function resetParameter()
   headlandSettings.overlapPercent = 0
 	headlandSettings.minHeadlandTurnAngleDeg = 60
 	headlandSettings.headlandFirst = true
-  extendTracks = 0
   minDistanceBetweenPoints = 0.5
   minSmoothAngleDeg = 30
   maxSmoothAngleDeg = 60

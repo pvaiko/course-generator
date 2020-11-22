@@ -48,7 +48,6 @@ local centerSettings = { mode = courseGenerator.CENTER_MODE_UP_DOWN, useBestAngl
 local multiTool = 0
 local width = 10.8
 local turnRadius = 6
-local extendTracks = 0
 local minDistanceBetweenPoints = 0.5
 local minSmoothingAngleDeg = 25
 
@@ -218,8 +217,8 @@ function drawSettings()
   end
   love.graphics.print( string.format( "HEADLAND %s, width: %.1f m, overlap %d%% number of passes: %d, direction %s, corners: %s, radius: %.1f",
            courseGenerator.headlandModeTexts[headlandSettings.mode], width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, turnRadius), 10, 30, 0, 1 )
-  love.graphics.print( string.format( "CENTER mode: %s, skipping %d tracks, extend %d m",
-           courseGenerator.centerModeTexts[centerSettings.mode], centerSettings.nRowsToSkip, extendTracks ), 10, 50, 0, 1 )
+  love.graphics.print( string.format( "CENTER mode: %s, skipping %d tracks",
+           courseGenerator.centerModeTexts[centerSettings.mode], centerSettings.nRowsToSkip ), 10, 50, 0, 1 )
            
   local smoothingStatus 
   if doSmooth then smoothingStatus = "on" else smoothingStatus = "off" end
@@ -711,7 +710,7 @@ function generate()
 
     status, ok = xpcall( generateCourseForField, errorHandler,
             field, width, headlandSettings,
-            extendTracks, minDistanceBetweenPoints,
+            minDistanceBetweenPoints,
             math.rad( minSmoothingAngleDeg ), math.rad( headlandSettings.minHeadlandTurnAngleDeg ), doSmooth,
             field.roundCorners, turnRadius,
             islandNodes, islandBypassMode, centerSettings
@@ -770,11 +769,7 @@ function love.textinput(key)
         width = width - 0.1
         generate()
     elseif key == "X" then
-        extendTracks = extendTracks + 1
-        generate()
     elseif key == "x" then
-        extendTracks = extendTracks - 1
-        generate()
     elseif key == "o" then
         offset = offset - 1
         generate()
