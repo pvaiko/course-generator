@@ -6,6 +6,10 @@ LOVE app to test the Courseplay pathfinding
 
 dofile( 'include.lua' )
 
+package.cpath = package.cpath .. ';C:/Users/nyovape1/AppData/Roaming/JetBrains/IntelliJIdea2020.2/plugins/intellij-emmylua/classes/debugger/emmy/windows/x64/?.dll'
+local dbg = require('emmy_core')
+dbg.tcpListen('localhost', 9966)
+
 local obstacles = {
 
 
@@ -22,36 +26,74 @@ local obstacles = {
         x2 = -60,
         y2 = 10
     },
-
+}
+local fruit = {
 
     {
-        x1 = 110,
+        x1 = 25,
         y1 = 5,
-        x2 = 115,
-        y2 = 15
+        x2 = 110,
+        y2 = 25
     },
 
     {
-        x1 = 100,
-        y1 = 15,
-        x2 = 115,
-        y2 = 20
+        x1 = 80,
+        y1 = 25,
+        x2 = 325,
+        y2 = 40
     }
 }
+---@class TestPathfinderConstraints : PathfinderConstraintInterface
+local TestPathfinderConstraints = CpObject(PathfinderConstraintInterface)
+
+function TestPathfinderConstraints:init()
+    self:resetConstraints()
+end
+
 ---@param node State3D
 ---@param userdata table
-local function isValidNode(node, userdata)
+function TestPathfinderConstraints:isValidNode(node)
     for _, obstacle in ipairs(obstacles) do
         local isInObstacle = node.x >= obstacle.x1 and node.x <= obstacle.x2 and node.y >= obstacle.y1 and node.y <= obstacle.y2
-        if isInObstacle then return false end
+        if isInObstacle then
+            return false
+        end
     end
     return true
 end
+
+function TestPathfinderConstraints:getNodePenalty(node)
+    for _, obstacle in ipairs(fruit) do
+        local isInObstacle = node.x >= obstacle.x1 and node.x <= obstacle.x2 and node.y >= obstacle.y1 and node.y <= obstacle.y2
+        if isInObstacle then
+            return 200
+        end
+    end
+    return 0
+end
+
+function TestPathfinderConstraints:isValidAnalyticSolutionNode(node)
+    local fruitValue = self:getNodePenalty(node)
+    if fruitValue > self.fruitLimit then return false end
+    return self:isValidNode(node)
+end
+
+function TestPathfinderConstraints:relaxConstraints()
+    self.fruitLimit = math.huge
+end
+
+function TestPathfinderConstraints:resetConstraints()
+    self.fruitLimit = 100
+end
+
 
 local dragging = false
 local startTime
 local profilerReportLength = 40
 local turnRadius = 5
+
+local vehicleData ={name = 'name', turnRadius = turnRadius, dFront = 3, dRear = 3, dLeft = 1.5, dRight = 1.5}
+local constraints = TestPathfinderConstraints()
 
 local scale, width, height = 2, 500, 400
 local origin = {x = -width / 8, y = -height / 4}
@@ -64,15 +106,12 @@ local start = State3D(0, 0, startHeading, 0)
 --local goal = State3D(120, 8, goalHeading, 0)
 local goal = State3D(300, 150, goalHeading, 0)
 local dubinsPath = {}
-local grid = Grid(1, width / 2,height / 2, origin)
-local heuristic = NonholonomicRelaxed(grid)
 local rsPath = {}
 local rsSolver = ReedsSheppSolver()
 local dubinsSolver = DubinsSolver()
 local pathfinders = {
-    HybridAStarWithAStarInTheMiddle(20, 200, 100000),
-    HybridAStarWithHeuristic(20, 200, 100000),
-    HybridAStar(200, 100000)
+    HybridAStarWithAStarInTheMiddle(20, 200, 20000),
+    HybridAStar(200, 20000)
 }
 local pathfinderTexts = {
     'HybridAStarWithAStarInTheMiddle',
@@ -80,118 +119,17 @@ local pathfinderTexts = {
     'HybridAStar'
 }
 local currentPathfinderIndex = 1
-local done, path
-
-local function printPath(path)
-    for i, p in ipairs(path) do
-        print(i, tostring(p))
-    end
-end
+local done, path, goalNodeInvalid
 
 local line = {}
-
-local function plotLine(x0, y0, x1, y1)
-    x0, y0, x1, y1 = math.floor(x0), math.floor(y0), math.floor(x1), math.floor(y1)
-    local dx, sx = math.abs(x1 - x0), x0 < x1 and 1 or -1
-    local dy, sy = -math.abs(y1 - y0), y0 < y1 and 1 or -1
-    local err, e2 = dx + dy
-
-    while true do
-        table.insert(line, {x0, y0})
-        e2 = 2 * err
-        if e2 >= dy then
-            if x0 == x1 then break end
-            err = err + dy
-            x0 = x0 + sx
-        end
-        if e2 <= dx then
-            if y0 == y1 then break end
-            err = err + dx
-            y0 = y0 + sy
-        end
-    end
-end
-
-local function plotThickLine(p0, p1, w)
-    line = {}
-
-    w = math.max(2, math.floor(w + 0.5))
-    local halfWidth = math.floor(w / 2 + 0.5)
-    local dx, dy = p1.x - p0.x, p1.y - p0.y
-    local s = Vector(p0.x, p0.y)
-    local v = Vector(dx, dy):rotate(math.rad(-90))
-    plotLine(p0.x, p0.y, p1.x, p1.y)
-    for w1 = 1, halfWidth do
-        v:setLength(w1)
-        local s1 = s + v
-        plotLine(s1.x, s1.y, s1.x + dx, s1.y + dy)
-    end
-    v = Vector(dx, dy):rotate(math.rad(90))
-    for w1 = 1, halfWidth do
-        v:setLength(w1)
-        local s1 = s + v
-        plotLine(s1.x, s1.y, s1.x + dx, s1.y + dy)
-    end
-end
-
-
-local function plotThickLineBad(x0, y0, x1, y1, wd)
-
-    x0, y0, x1, y1 = math.floor(x0 + 0.5), math.floor(y0 + 0.5), math.floor(x1 + 0.5), math.floor(y1 + 0.5)
-
-    local dx, sx = math.abs(x1 - x0), x0 < x1 and 1 or -1
-    local dy, sy = math.abs(y1 - y0), y0 < y1 and 1 or -1
-    local err = dx - dy
-    local e2, x2, y2
-
-    local ed = (dx + dy) == 0 and 1 or math.sqrt(dx * dx + dy * dy)
-    local wd2 = wd / 2
-    wd = (wd + 1) / 2
-    line = {}
-
-    while true do
-        table.insert(line, {x0, y0})
-        e2 = err
-        x2 = x0
-        if (2 * e2 >= -dx) then
-            e2 = e2 + dy
-            y2 = y0 -- sy * wd2
-            while e2 < ed * wd and (y1 ~= y2 or dx > dy) do
-                y2 = y2 + sy
-                print(x0, y2, e2, ed, dx, dy)
-                table.insert(line, {x0, y2})
-                e2 = e2 + dx
-            end
-            if (x0 == x1) then break end
-            e2 = err
-            err = err - dy
-            print('x0', x0)
-            x0 = x0 + sx
-        end
-        if (2 * e2 <= dy) then
-            e2 = dx - e2
-            while e2 < ed * wd and (x1 ~= x2 or dx < dy) do
-                x2 = x2 + sx
-                print('@@ ', x2, y0)
-                table.insert(line, {x2, y0})
-                e2 = e2 + dy
-            end
-
-            if (y0 == y1) then break end
-            err = err + dx
-            print('y0', y0)
-            y0 = y0 + sy
-        end
-    end
-end
 
 local function find(start, goal, allowReverse)
     love.profiler.start()
     startTime = love.timer.getTime()
     --heuristic:update(goal, isValidNode)
 
-    local vehicleData ={name = 'name', turnRadius = turnRadius, dFront = 3, dRear = 3, dLeft = 1.5, dRight = 1.5}
-    done, path = pathfinders[currentPathfinderIndex]:start(start, goal, vehicleData.turnRadius, vehicleData, allowReverse, nil, isValidNode, isValidNode)
+    done, path, goalNodeInvalid = pathfinders[currentPathfinderIndex]:start(start, goal, vehicleData.turnRadius, allowReverse,
+            constraints)
     --plotThickLine(start, goal, 12)
     local dubinsSolution = dubinsSolver:solve(start, goal, turnRadius)
     dubinsPath = dubinsSolution:getWaypoints(start, turnRadius)
@@ -206,7 +144,7 @@ local function find(start, goal, allowReverse)
     end
     love.profiler.stop()
     io.stdout:flush()
-    return done, path
+    return done, path, goalNodeInvalid
 end
 
 local function debug(...)
@@ -228,20 +166,6 @@ local function drawObstacles(obstacles)
     for _, obstacle in ipairs(obstacles) do
         love.graphics.setColor( 0.4, 0.4, 0.4 )
         love.graphics.rectangle('line', obstacle.x1, obstacle.y1, obstacle.x2 - obstacle.x1, obstacle.y2 - obstacle.y1)
-    end
-end
-
-local function drawHeuristicGrid(heuristic)
-    local range = (heuristic.maxValue - heuristic.minValue)
-    for c = 1, #heuristic.heuristic do
-        for r = 1, #heuristic.heuristic[c] do
-                local pos = heuristic.grid:cellPositionToPointPosition(c, r)
-                love.graphics.setColor(0.6, 0.6, 0.6)
-                love.graphics.print(string.format('%d', heuristic.heuristic[c][r]), pos.x, pos.y, 0, 0.04, -0.04)
-
-              --  love.graphics.setColor((heuristic.heuristic[c][r] - heuristic.minValue) / range, 0, 0)
-                --love.graphics.points(pos.x, pos.y)
-        end
     end
 end
 
@@ -318,8 +242,6 @@ function love.draw()
     love.graphics.setPointSize(3)
     love.graphics.points(line)
 
-    drawHeuristicGrid(heuristic)
-
     if pathfinders[currentPathfinderIndex] then
         if pathfinders[currentPathfinderIndex].nodes then
             drawNodes(pathfinders[currentPathfinderIndex].nodes)
@@ -336,6 +258,8 @@ function love.draw()
     drawNode(goal)
     drawNode(start)
     drawObstacles(obstacles)
+    love.graphics.setColor(0, 0.8, 0)
+    drawObstacles(fruit)
 
     love.graphics.setPointSize(5)
 
@@ -378,7 +302,6 @@ function love.draw()
     end
 
     love.graphics.pop()
-
     showStatus()
 
 end
@@ -421,13 +344,18 @@ function love.mousepressed(x, y, button, istouch)
         if love.keyboard.isDown('lshift') or love.keyboard.isDown('lctrl') then
             goal.x, goal.y = love2real( x, y )
             --print(love.profiler.report(profilerReportLength))
-            done, path = find(start, goal, love.keyboard.isDown('lctrl'))
+            done, path, goalNodeInvalid = find(start, goal, love.keyboard.isDown('lctrl'))
 
             if path then
                 debug('Path found with %d nodes', #path)
             elseif done then
                 debug('No path found')
+                if goalNodeInvalid then
+                    debug('Goal node invalid')
+                end
             end
+        elseif love.keyboard.isDown('lalt') then
+            start.x, start.y = love2real( x, y )
         else
             dragging = true
         end
