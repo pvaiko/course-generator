@@ -6,43 +6,41 @@ LOVE app to test the Courseplay pathfinding
 
 dofile( 'include.lua' )
 
-package.cpath = package.cpath .. ';C:/Users/nyovape1/AppData/Roaming/JetBrains/IntelliJIdea2020.2/plugins/intellij-emmylua/classes/debugger/emmy/windows/x64/?.dll'
-local dbg = require('emmy_core')
-dbg.tcpListen('localhost', 9966)
+local goalHeading = 0 * math.pi / 4
+local startHeading = 0 * math.pi / 4
+
+local start = State3D(0, 0, startHeading, 0)
+--local goal = State3D(120, 8, goalHeading, 0)
+local goal = State3D(0, 150, goalHeading, 0)
+
+local turnRadius = 5
+local vehicleData ={name = 'name', turnRadius = turnRadius, dFront = 4, dRear = 2, dLeft = 1.5, dRight = 1.5}
 
 local obstacles = {
-
-
-    {
-        x1 = 13,
-        y1 = 100,
-        x2 = 400,
-        y2 = 120
-    },
-
-    {
-        x1 = -10,
-        y1 = 5,
-        x2 = -60,
-        y2 = 10
-    },
+    { x1 = 13, y1 = 100, x2 = 400, y2 = 120 },
+    { x1 = -10, y1 = 5, x2 = -60, y2 = 10 },
 }
 local fruit = {
-
-    {
-        x1 = 25,
-        y1 = 5,
-        x2 = 110,
-        y2 = 25
-    },
-
-    {
-        x1 = 80,
-        y1 = 25,
-        x2 = 325,
-        y2 = 40
-    }
+    { x1 = 25, y1 = 5, x2 = 110, y2 = 25 },
+    { x1 = 80, y1 = 25, x2 = 325, y2 = 40 }
 }
+
+---@param node State3D
+---@param table {dFront, dRear, dLeft, dRight}
+local function getVehicleRectangle(node, vehicleData)
+    local fl = node + Vector(vehicleData.dFront, -vehicleData.dLeft):rotate(node.t)
+    local fr = node + Vector(vehicleData.dFront, vehicleData.dRight):rotate(node.t)
+    local rl = node + Vector(-vehicleData.dRear, -vehicleData.dLeft):rotate(node.t)
+    local rr = node + Vector(-vehicleData.dRear, vehicleData.dRight):rotate(node.t)
+    -- make sure it works with the Giants coordinate system functions in the x-z plane
+    fl.z = fl.y
+    fr.z = fr.y
+    rl.z = rl.y
+    rr.z = rr.y
+    return {fl, fr, rr, rl}
+end
+
+
 ---@class TestPathfinderConstraints : PathfinderConstraintInterface
 local TestPathfinderConstraints = CpObject(PathfinderConstraintInterface)
 
@@ -56,6 +54,14 @@ function TestPathfinderConstraints:isValidNode(node)
     for _, obstacle in ipairs(obstacles) do
         local isInObstacle = node.x >= obstacle.x1 and node.x <= obstacle.x2 and node.y >= obstacle.y1 and node.y <= obstacle.y2
         if isInObstacle then
+            return false
+        end
+        if PathfinderUtil.doRectanglesOverlap(
+                {{x = obstacle.x1, z = obstacle.y1},
+                 {x = obstacle.x2, z = obstacle.y1},
+                 {x = obstacle.x2, z = obstacle.y2},
+                 {x = obstacle.x1, z = obstacle.y2}},
+                getVehicleRectangle(node, vehicleData)) then
             return false
         end
     end
@@ -79,38 +85,31 @@ function TestPathfinderConstraints:isValidAnalyticSolutionNode(node)
 end
 
 function TestPathfinderConstraints:relaxConstraints()
+    print('Relaxing fruit limit to math.huge')
     self.fruitLimit = math.huge
 end
 
 function TestPathfinderConstraints:resetConstraints()
+    print('Resetting fruit limit to 100')
     self.fruitLimit = 100
 end
-
 
 local dragging = false
 local startTime
 local profilerReportLength = 40
-local turnRadius = 5
 
-local vehicleData ={name = 'name', turnRadius = turnRadius, dFront = 3, dRear = 3, dLeft = 1.5, dRight = 1.5}
 local constraints = TestPathfinderConstraints()
 
-local scale, width, height = 2, 500, 400
+local scale, width, height = 3, 500, 400
 local origin = {x = -width / 8, y = -height / 4}
 local xOffset, yOffset = width / scale / 4, height / scale
 
-local goalHeading = 0* math.pi / 4
-local startHeading = 0*math.pi / 4
-
-local start = State3D(0, 0, startHeading, 0)
---local goal = State3D(120, 8, goalHeading, 0)
-local goal = State3D(300, 150, goalHeading, 0)
 local dubinsPath = {}
 local rsPath = {}
 local rsSolver = ReedsSheppSolver()
 local dubinsSolver = DubinsSolver()
 local pathfinders = {
-    HybridAStarWithAStarInTheMiddle(20, 200, 20000),
+    HybridAStarWithAStarInTheMiddle(20, 200, 10000),
     HybridAStar(200, 20000)
 }
 local pathfinderTexts = {
@@ -149,6 +148,12 @@ end
 
 local function debug(...)
     print(string.format(...))
+end
+
+local function printPath(path)
+    for i, p in ipairs(path) do
+       -- print(i, tostring(p))
+    end
 end
 
 ---@param node State3D
@@ -213,6 +218,7 @@ local function drawNodes(nodes)
 end
 function love.load()
 
+    require("mobdebug").start()
     love.profiler = require('profile')
 
     love.window.setMode(1000, 800)
@@ -271,10 +277,10 @@ function love.draw()
     end
 
     if path then
-            love.graphics.setPointSize(0.5 * scale)
-            for i = 2, #path do
-                local p = path[i]
-                if p.gear == HybridAStar.Gear.Backward then
+        love.graphics.setPointSize(0.5 * scale)
+        for i = 2, #path do
+            local p = path[i]
+            if p.gear == HybridAStar.Gear.Backward then
                 love.graphics.setColor(0, 0.4, 1)
             elseif p.gear == HybridAStar.Gear.Forward then
                 love.graphics.setColor( 1, 1, 1 )
@@ -284,6 +290,15 @@ function love.draw()
             love.graphics.setLineWidth(0.1)
             love.graphics.line(p.x, p.y, path[i-1].x, path[i - 1].y)
             --love.graphics.points(p.x, p.y)
+            local v = getVehicleRectangle(p, vehicleData)
+            love.graphics.setColor( 0, 0.4, 0 )
+            love.graphics.line(v[1].x, v[1].y, v[2].x, v[2].y)
+            love.graphics.setColor( 0.4, 0.4, 0 )
+            love.graphics.line(v[2].x, v[2].y, v[3].x, v[3].y)
+            love.graphics.setColor( 0.4, 0, 0 )
+            love.graphics.line(v[3].x, v[3].y, v[4].x, v[4].y)
+            love.graphics.setColor( 0, 0.4, 0.4 )
+            love.graphics.line(v[4].x, v[4].y, v[1].x, v[1].y)
         end
     end
     drawPath(pathfinders[currentPathfinderIndex].middlePath, 6, 0.7, 0.7, 0.0)
@@ -293,9 +308,9 @@ function love.draw()
         done, path = pathfinders[currentPathfinderIndex]:resume()
         love.profiler.stop()
         if done and path then
-            --printPath(path)
+            printPath(path)
             print(string.format('Done in %.2f seconds', love.timer.getTime() - startTime))
-            print(love.profiler.report(profilerReportLength))
+            --print(love.profiler.report(profilerReportLength))
             love.profiler.reset()
             io.stdout:flush()
         end
