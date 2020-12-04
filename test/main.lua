@@ -11,13 +11,20 @@ local startHeading = 0 * math.pi / 4
 
 local start = State3D(0, 0, startHeading, 0)
 --local goal = State3D(120, 8, goalHeading, 0)
-local goal = State3D(0, 150, goalHeading, 0)
+local goal = State3D(15, -60, goalHeading, 0)
 
-local turnRadius = 5
+
+local scale, width, height = 8, 500, 400
+local origin = {x = -width / 8, y = -height / 4}
+local xOffset, yOffset = width / scale / 4, height / scale
+
+
+local turnRadius = 8
 local vehicleData ={name = 'name', turnRadius = turnRadius, dFront = 4, dRear = 2, dLeft = 1.5, dRight = 1.5}
+local trailerData ={name = 'name', turnRadius = turnRadius, dFront = 3, dRear = 7, dLeft = 1.5, dRight = 1.5}
 
 local obstacles = {
-    { x1 = 13, y1 = 100, x2 = 400, y2 = 120 },
+    { x1 = 13, y1 = 100, x2 = 403, y2 = 120 },
     { x1 = -10, y1 = 5, x2 = -60, y2 = 10 },
 }
 local fruit = {
@@ -27,11 +34,11 @@ local fruit = {
 
 ---@param node State3D
 ---@param table {dFront, dRear, dLeft, dRight}
-local function getVehicleRectangle(node, vehicleData)
-    local fl = node + Vector(vehicleData.dFront, -vehicleData.dLeft):rotate(node.t)
-    local fr = node + Vector(vehicleData.dFront, vehicleData.dRight):rotate(node.t)
-    local rl = node + Vector(-vehicleData.dRear, -vehicleData.dLeft):rotate(node.t)
-    local rr = node + Vector(-vehicleData.dRear, vehicleData.dRight):rotate(node.t)
+local function getVehicleRectangle(node, data, heading, frontOffset)
+    local fl = node + Vector(frontOffset, 0):rotate(heading) + Vector(data.dFront, -data.dLeft):rotate(heading)
+    local fr = node + Vector(frontOffset, 0):rotate(heading) + Vector(data.dFront, data.dRight):rotate(heading)
+    local rl = node + Vector(frontOffset, 0):rotate(heading) + Vector(-data.dRear, -data.dLeft):rotate(heading)
+    local rr = node + Vector(frontOffset, 0):rotate(heading) + Vector(-data.dRear, data.dRight):rotate(heading)
     -- make sure it works with the Giants coordinate system functions in the x-z plane
     fl.z = fl.y
     fr.z = fr.y
@@ -61,7 +68,18 @@ function TestPathfinderConstraints:isValidNode(node)
                  {x = obstacle.x2, z = obstacle.y1},
                  {x = obstacle.x2, z = obstacle.y2},
                  {x = obstacle.x1, z = obstacle.y2}},
-                getVehicleRectangle(node, vehicleData)) then
+                getVehicleRectangle(node, vehicleData, node.t, 0)) then
+            --print('vehicle')
+            return false
+        end
+        if PathfinderUtil.doRectanglesOverlap(
+                        {{x = obstacle.x1, z = obstacle.y1},
+                         {x = obstacle.x2, z = obstacle.y1},
+                         {x = obstacle.x2, z = obstacle.y2},
+                         {x = obstacle.x1, z = obstacle.y2}},
+                        getVehicleRectangle(node, trailerData, node.tTrailer, -trailerData.dFront))
+        then
+            --print('trailer', math.deg(node.tTrailer))
             return false
         end
     end
@@ -100,10 +118,6 @@ local profilerReportLength = 40
 
 local constraints = TestPathfinderConstraints()
 
-local scale, width, height = 3, 500, 400
-local origin = {x = -width / 8, y = -height / 4}
-local xOffset, yOffset = width / scale / 4, height / scale
-
 local dubinsPath = {}
 local rsPath = {}
 local rsSolver = ReedsSheppSolver()
@@ -117,10 +131,17 @@ local pathfinderTexts = {
     'HybridAStarWithHeuristic',
     'HybridAStar'
 }
+local currentHighlight = 1
 local currentPathfinderIndex = 1
 local done, path, goalNodeInvalid
 
 local line = {}
+
+local function printPath(path)
+    for i, p in ipairs(path) do
+        print(i, tostring(p))
+    end
+end
 
 local function find(start, goal, allowReverse)
     love.profiler.start()
@@ -136,7 +157,7 @@ local function find(start, goal, allowReverse)
     rsPath = rsActionSet:getWaypoints(start, vehicleData.turnRadius)
 
     if done and path then
-        --printPath(path)
+        printPath(path)
         --print(love.profiler.report(profilerReportLength))
         love.profiler.reset()
 
@@ -149,11 +170,27 @@ end
 local function debug(...)
     print(string.format(...))
 end
-
-local function printPath(path)
-    for i, p in ipairs(path) do
-       -- print(i, tostring(p))
-    end
+local function drawVehicle(p, i)
+    local v = getVehicleRectangle(p, vehicleData, p.t, 0)
+    local r, g, b = 0.4, 0.4, 0
+    local highlight = i == currentHighlight and 0.4 or 0
+    love.graphics.setColor( 0, g + highlight, 0 )
+    love.graphics.line(v[1].x, v[1].y, v[2].x, v[2].y)
+    love.graphics.setColor( r + highlight, g + highlight, 0 )
+    love.graphics.line(v[2].x, v[2].y, v[3].x, v[3].y)
+    love.graphics.setColor( r + g, 0, 0 )
+    love.graphics.line(v[3].x, v[3].y, v[4].x, v[4].y)
+    love.graphics.setColor( 0, r + highlight, g + highlight )
+    love.graphics.line(v[4].x, v[4].y, v[1].x, v[1].y)
+    v = getVehicleRectangle(p, trailerData, p.tTrailer, -trailerData.dFront)
+    love.graphics.setColor( 0, 0.3 + highlight, 0 )
+    love.graphics.line(v[1].x, v[1].y, v[2].x, v[2].y)
+    love.graphics.setColor( 0, 0, 0.6 + highlight )
+    love.graphics.line(v[2].x, v[2].y, v[3].x, v[3].y)
+    love.graphics.setColor( 0.3 + highlight, 0, 0 )
+    love.graphics.line(v[3].x, v[3].y, v[4].x, v[4].y)
+    love.graphics.setColor( 0, 0, 0.6 + highlight )
+    love.graphics.line(v[4].x, v[4].y, v[1].x, v[1].y)
 end
 
 ---@param node State3D
@@ -218,7 +255,13 @@ local function drawNodes(nodes)
 end
 function love.load()
 
-    require("mobdebug").start()
+    --require("mobdebug").start()
+
+    --package.cpath = package.cpath .. ';C:/Users/nyovape1/AppData/Roaming/JetBrains/IntelliJIdea2020.2/plugins/intellij-emmylua/classes/debugger/emmy/windows/x86/?.dll'
+    --local dbg = require('emmy_core')
+    --dbg.tcpListen('localhost', 9966)
+    --dbg.waitIDE()
+
     love.profiler = require('profile')
 
     love.window.setMode(1000, 800)
@@ -232,6 +275,14 @@ local function showStatus()
     love.graphics.setColor(1,1,1)
 
     love.graphics.print(pathfinderTexts[currentPathfinderIndex], 10, 10)
+
+    if path then
+        if constraints:isValidNode(path[math.min(#path, currentHighlight)]) then
+            love.graphics.print('VALID', 10, 20)
+        else
+            love.graphics.print('NOT VALID', 10, 20)
+        end
+    end
 end
 
 function love.draw()
@@ -273,7 +324,7 @@ function love.draw()
     drawPath(rsPath, 2, 0.4, 0, 0.8)
 
     if pathfinders[currentPathfinderIndex].aStarPath then
-        drawPath(pathfinders[currentPathfinderIndex].aStarPath, 10, 1, 0, 1)
+        drawPath(pathfinders[currentPathfinderIndex].aStarPath, 10, 0.5, 0, 0.5)
     end
 
     if path then
@@ -290,15 +341,7 @@ function love.draw()
             love.graphics.setLineWidth(0.1)
             love.graphics.line(p.x, p.y, path[i-1].x, path[i - 1].y)
             --love.graphics.points(p.x, p.y)
-            local v = getVehicleRectangle(p, vehicleData)
-            love.graphics.setColor( 0, 0.4, 0 )
-            love.graphics.line(v[1].x, v[1].y, v[2].x, v[2].y)
-            love.graphics.setColor( 0.4, 0.4, 0 )
-            love.graphics.line(v[2].x, v[2].y, v[3].x, v[3].y)
-            love.graphics.setColor( 0.4, 0, 0 )
-            love.graphics.line(v[3].x, v[3].y, v[4].x, v[4].y)
-            love.graphics.setColor( 0, 0.4, 0.4 )
-            love.graphics.line(v[4].x, v[4].y, v[1].x, v[1].y)
+            drawVehicle(p, i)
         end
     end
     drawPath(pathfinders[currentPathfinderIndex].middlePath, 6, 0.7, 0.7, 0.0)
@@ -348,6 +391,10 @@ function love.keypressed(key, scancode, isrepeat)
         scale = scale / 1.2
     elseif key == 'p' then
         currentPathfinderIndex = (currentPathfinderIndex + 1) > #pathfinders and 1 or currentPathfinderIndex + 1
+    elseif key == '.' then
+        if path then currentHighlight = math.min(currentHighlight + 1, #path) end
+    elseif key == ',' then
+        if path then currentHighlight = math.max(currentHighlight - 1, 1) end
     end
     io.stdout:flush()
 end
