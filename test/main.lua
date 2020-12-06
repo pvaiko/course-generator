@@ -21,7 +21,7 @@ local xOffset, yOffset = width / scale / 4, height / scale
 
 local turnRadius = 8
 local vehicleData ={name = 'name', turnRadius = turnRadius, dFront = 4, dRear = 2, dLeft = 1.5, dRight = 1.5}
-local trailerData ={name = 'name', turnRadius = turnRadius, dFront = 3, dRear = 7, dLeft = 1.5, dRight = 1.5}
+local trailerData ={name = 'name', turnRadius = turnRadius, dFront = 3, dRear = 7, dLeft = 1.5, dRight = 1.5, hitchLength = 10}
 
 local obstacles = {
     { x1 = 13, y1 = 100, x2 = 403, y2 = 120 },
@@ -149,7 +149,7 @@ local function find(start, goal, allowReverse)
     --heuristic:update(goal, isValidNode)
 
     done, path, goalNodeInvalid = pathfinders[currentPathfinderIndex]:start(start, goal, vehicleData.turnRadius, allowReverse,
-            constraints)
+            constraints, trailerData.hitchLength)
     --plotThickLine(start, goal, 12)
     local dubinsSolution = dubinsSolver:solve(start, goal, turnRadius)
     dubinsPath = dubinsSolution:getWaypoints(start, turnRadius)
@@ -158,7 +158,7 @@ local function find(start, goal, allowReverse)
 
     if done and path then
         printPath(path)
-        --print(love.profiler.report(profilerReportLength))
+        print(love.profiler.report(profilerReportLength))
         love.profiler.reset()
 
     end
@@ -353,7 +353,7 @@ function love.draw()
         if done and path then
             printPath(path)
             print(string.format('Done in %.2f seconds', love.timer.getTime() - startTime))
-            --print(love.profiler.report(profilerReportLength))
+            print(love.profiler.report(profilerReportLength))
             love.profiler.reset()
             io.stdout:flush()
         end
