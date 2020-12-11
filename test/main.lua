@@ -10,6 +10,7 @@ local goalHeading = 0 * math.pi / 4
 local startHeading = 0 * math.pi / 4
 
 local start = State3D(0, 0, startHeading, 0)
+start:setTrailerHeading(startHeading)
 --local goal = State3D(120, 8, goalHeading, 0)
 local goal = State3D(15, -60, goalHeading, 0)
 
@@ -146,6 +147,7 @@ end
 local function find(start, goal, allowReverse)
     love.profiler.start()
     startTime = love.timer.getTime()
+    start:setTrailerHeading(start.t)
     --heuristic:update(goal, isValidNode)
 
     done, path, goalNodeInvalid = pathfinders[currentPathfinderIndex]:start(start, goal, vehicleData.turnRadius, allowReverse,
