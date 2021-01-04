@@ -32,21 +32,21 @@ local islandBypassMode = Island.BYPASS_MODE_CIRCLE
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
 headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
-headlandSettings.headlandFirst = true
-headlandSettings.nPasses = 0
+headlandSettings.headlandFirst = false
+headlandSettings.nPasses = 1
 
 headlandSettings.overlapPercent = 7
 headlandSettings.minHeadlandTurnAngleDeg = 45
-headlandSettings.isClockwise = true
+headlandSettings.isClockwise = false
 local doSmooth = true
 field.roundCorners = false
 
 
-local centerSettings = { mode = courseGenerator.CENTER_MODE_UP_DOWN, useBestAngle = true, useLongestEdgeAngle = false,
+local centerSettings = { mode = courseGenerator.CENTER_MODE_LANDS, useBestAngle = true, useLongestEdgeAngle = false,
                          rowAngle = 0, nRowsToSkip = 0, nRowsPerLand = 6, pipeOnLeftSide = false }
 
 local multiTool = 0
-local width = 10.8
+local width = 8
 local turnRadius = 6
 local minDistanceBetweenPoints = 0.5
 local minSmoothingAngleDeg = 25
@@ -470,8 +470,9 @@ function drawCoursePoints( course )
       love.graphics.setPointSize( ps * 1.2 )
       love.graphics.setColor( 255, 255, 255 )
     elseif point.isConnectingTrack then
-      love.graphics.setPointSize( ps * 0.5 )
-      love.graphics.setColor( 255, 0, 255 )
+        love.graphics.setPointSize( ps * 0.5 )
+        love.graphics.setColor( 255, 0, 255 )
+        love.graphics.circle( "line", point.x, point.y, 2 )
     elseif point.onIsland then
       love.graphics.setPointSize( ps * 1.5 )
       love.graphics.setColor( 255, 255, 255 )
