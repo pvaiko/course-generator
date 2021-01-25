@@ -2,6 +2,7 @@ dofile( 'include.lua' )
 profile = require("profile")
 
 local field = {}
+local courseObject
 marks = {}
 lines = {}
 local helperPolygon = {}
@@ -33,7 +34,7 @@ local islandBypassMode = Island.BYPASS_MODE_CIRCLE
 headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = false
-headlandSettings.nPasses = 1
+headlandSettings.nPasses = 2
 
 headlandSettings.overlapPercent = 7
 headlandSettings.minHeadlandTurnAngleDeg = 45
@@ -45,8 +46,8 @@ field.roundCorners = false
 local centerSettings = { mode = courseGenerator.CENTER_MODE_LANDS, useBestAngle = true, useLongestEdgeAngle = false,
                          rowAngle = 0, nRowsToSkip = 0, nRowsPerLand = 6, pipeOnLeftSide = false }
 
-local multiTool = 0
-local width = 8
+local multiTool = 5
+local width = 12
 local turnRadius = 6
 local minDistanceBetweenPoints = 0.5
 local minSmoothingAngleDeg = 25
@@ -262,9 +263,15 @@ function drawSettings()
         local origTrack = cWp.originalTrackNumber or 'n/a'
         local ridgeMarker = cWp.ridgeMarker or 'n/a'
 	    local adjacentToIsland = cWp.adjacentIslands and #cWp.adjacentIslands or 'no'
-        love.graphics.print(string.format("pass=%s track =%s(%s) r=%s adj=%s rm=%s islandbp=%s",
-					tostring( pass), tostring( track ), tostring( origTrack ), radius, adjacentToIsland, tostring( ridgeMarker ), tostring(cWp.islandBypass)),
-          windowWidth - 400, windowHeight - 20, 0, 1)
+        local progress = courseObject.getProgress and
+                string.format('%.1f %% (%.1f/%.1f)',
+                        100 * courseObject:getProgress(currentWaypointIndex),
+                        courseObject.waypoints[currentWaypointIndex].dToHere,
+                        courseObject.waypoints[currentWaypointIndex].dToHereOnHeadland or -1) or ''
+        love.graphics.print(string.format("pass=%s track =%s(%s) r=%s adj=%s rm=%s islandbp=%s %s",
+                tostring( pass), tostring( track ), tostring( origTrack ), radius, adjacentToIsland,
+                tostring( ridgeMarker ), tostring(cWp.islandBypass), progress),
+          windowWidth - 540, windowHeight - 20, 0, 1)
 
       end
   end
@@ -738,9 +745,11 @@ function generate()
     if multiTool > 1 and offset ~= 0 then
         marks = {}
         local course = Course.createFromGeneratedCourse({}, field.course)
-        local offsetCourse = course:calculateOffsetCourse(multiTool, offset, width / multiTool, symmetricLaneChange)
-        field.course = Polygon:new(courseGenerator.pointsToXyInPlace(offsetCourse.waypoints))
+        courseObject = course:calculateOffsetCourse(multiTool, offset, width / multiTool, symmetricLaneChange)
+        field.course = Polygon:new(courseGenerator.pointsToXyInPlace(courseObject.waypoints))
         field.course:calculateData()
+    else
+        courseObject = Course.createFromGeneratedCourse({}, field.course)
     end
 	io.stdout:flush()
 end
