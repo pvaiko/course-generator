@@ -34,20 +34,20 @@ local islandBypassMode = Island.BYPASS_MODE_CIRCLE
 headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = false
-headlandSettings.nPasses = 2
+headlandSettings.nPasses = 5
 
 headlandSettings.overlapPercent = 7
 headlandSettings.minHeadlandTurnAngleDeg = 45
 headlandSettings.isClockwise = false
-local doSmooth = true
+local doSmooth = false
 field.roundCorners = false
 
 
-local centerSettings = { mode = courseGenerator.CENTER_MODE_LANDS, useBestAngle = true, useLongestEdgeAngle = false,
+local centerSettings = { mode = courseGenerator.CENTER_MODE_UP_DOWN, useBestAngle = true, useLongestEdgeAngle = false,
                          rowAngle = 0, nRowsToSkip = 0, nRowsPerLand = 6, pipeOnLeftSide = false }
 
-local multiTool = 5
-local width = 12
+local multiTool = 1
+local width = 4.2
 local turnRadius = 6
 local minDistanceBetweenPoints = 0.5
 local minSmoothingAngleDeg = 25
