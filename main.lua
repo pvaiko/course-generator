@@ -30,11 +30,11 @@ local showSettings = true
 local symmetricLaneChange = false
 
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
---headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
-headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
+headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
+--headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = false
-headlandSettings.nPasses = 5
+headlandSettings.nPasses = 3
 
 headlandSettings.overlapPercent = 7
 headlandSettings.minHeadlandTurnAngleDeg = 45
@@ -47,7 +47,7 @@ local centerSettings = { mode = courseGenerator.CENTER_MODE_UP_DOWN, useBestAngl
                          rowAngle = 0, nRowsToSkip = 0, nRowsPerLand = 6, pipeOnLeftSide = false }
 
 local multiTool = 1
-local width = 4.2
+local width = 9
 local turnRadius = 6
 local minDistanceBetweenPoints = 0.5
 local minSmoothingAngleDeg = 25
@@ -700,6 +700,13 @@ function love.draw()
     if showSettings then
         drawSettings()
     end
+
+		if debugPoints then
+			love.graphics.setColor( 255, 255, 255 )
+			love.graphics.points( getVertices( debugPoints ))
+
+		end
+
     vehicle:draw()
 end
 
