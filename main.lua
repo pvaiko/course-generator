@@ -30,8 +30,8 @@ local showSettings = true
 local symmetricLaneChange = false
 
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
-headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
---headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
+--headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
+headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = false
 headlandSettings.nPasses = 3
