@@ -4,7 +4,7 @@ LOVE app to test the Courseplay pathfinding
 
 ]]--
 
-dofile( 'test/include.lua' )
+dofile( 'include.lua' )
 
 local goalHeading = 0 * math.pi / 4
 local startHeading = 0 * math.pi / 4
@@ -12,7 +12,7 @@ local startHeading = 0 * math.pi / 4
 local start = State3D(0, 0, startHeading, 0)
 start:setTrailerHeading(startHeading)
 --local goal = State3D(120, 8, goalHeading, 0)
-local goal = State3D(120, 8, goalHeading, 0)
+local goal = State3D(15, -60, goalHeading, 0)
 
 
 local scale, width, height = 8, 500, 400
@@ -29,38 +29,9 @@ local obstacles = {
     { x1 = -10, y1 = 5, x2 = -60, y2 = 10 },
 }
 local fruit = {
-    { x1 = 25, y1 = 4, x2 = 110, y2 = 25 },
+    { x1 = 25, y1 = 5, x2 = 110, y2 = 25 },
     { x1 = 80, y1 = 25, x2 = 325, y2 = 40 }
 }
-
-
-local dragging = false
-local continue = true
-local startTime
-local profilerReportLength = 40
-
-local constraints = TestPathfinderConstraints(obstacles, fruit)
-local dubinsPath = {}
-local rsPath = {}
-local rsSolver = ReedsSheppSolver()
-local dubinsSolver = DubinsSolver()
-local pathfinders = {
-	JumpPointSearch(200, 10000),
-	AStar(200, 40000),
-	--HybridAStarWithAStarInTheMiddle(20, 200, 10000),
-	--HybridAStar(200, 20000)
-}
-local pathfinderTexts = {
-	'JPS',
-	'AStar'
-	--'HybridAStarWithJpsInTheMiddle',
-	--'HybridAStarWithAStarInTheMiddle',
-	--'HybridAStar'
-}
-local currentHighlight = 1
-local currentPathfinderIndex = 1
-local done, path, goalNodeInvalid
-
 
 ---@param node State3D
 ---@param table {dFront, dRear, dLeft, dRight}
@@ -77,6 +48,94 @@ local function getVehicleRectangle(node, data, heading, frontOffset)
     return {fl, fr, rr, rl}
 end
 
+
+---@class TestPathfinderConstraints : PathfinderConstraintInterface
+local TestPathfinderConstraints = CpObject(PathfinderConstraintInterface)
+
+function TestPathfinderConstraints:init()
+    self:resetConstraints()
+end
+
+---@param node State3D
+---@param userdata table
+function TestPathfinderConstraints:isValidNode(node)
+    for _, obstacle in ipairs(obstacles) do
+        local isInObstacle = node.x >= obstacle.x1 and node.x <= obstacle.x2 and node.y >= obstacle.y1 and node.y <= obstacle.y2
+        if isInObstacle then
+            return false
+        end
+        if PathfinderUtil.doRectanglesOverlap(
+                {{x = obstacle.x1, z = obstacle.y1},
+                 {x = obstacle.x2, z = obstacle.y1},
+                 {x = obstacle.x2, z = obstacle.y2},
+                 {x = obstacle.x1, z = obstacle.y2}},
+                getVehicleRectangle(node, vehicleData, node.t, 0)) then
+            --print('vehicle')
+            return false
+        end
+        if PathfinderUtil.doRectanglesOverlap(
+                        {{x = obstacle.x1, z = obstacle.y1},
+                         {x = obstacle.x2, z = obstacle.y1},
+                         {x = obstacle.x2, z = obstacle.y2},
+                         {x = obstacle.x1, z = obstacle.y2}},
+                        getVehicleRectangle(node, trailerData, node.tTrailer, -trailerData.dFront))
+        then
+            --print('trailer', math.deg(node.tTrailer))
+            return false
+        end
+    end
+    return true
+end
+
+function TestPathfinderConstraints:getNodePenalty(node)
+    for _, obstacle in ipairs(fruit) do
+        local isInObstacle = node.x >= obstacle.x1 and node.x <= obstacle.x2 and node.y >= obstacle.y1 and node.y <= obstacle.y2
+        if isInObstacle then
+            return 200
+        end
+    end
+    return 0
+end
+
+function TestPathfinderConstraints:isValidAnalyticSolutionNode(node)
+    local fruitValue = self:getNodePenalty(node)
+    if fruitValue > self.fruitLimit then return false end
+    return self:isValidNode(node)
+end
+
+function TestPathfinderConstraints:relaxConstraints()
+    print('Relaxing fruit limit to math.huge')
+    self.fruitLimit = math.huge
+end
+
+function TestPathfinderConstraints:resetConstraints()
+    print('Resetting fruit limit to 100')
+    self.fruitLimit = 100
+end
+
+local dragging = false
+local startTime
+local profilerReportLength = 40
+
+local constraints = TestPathfinderConstraints()
+
+local dubinsPath = {}
+local rsPath = {}
+local rsSolver = ReedsSheppSolver()
+local dubinsSolver = DubinsSolver()
+local pathfinders = {
+    HybridAStarWithAStarInTheMiddle(20, 200, 10000),
+    HybridAStar(200, 20000)
+}
+local pathfinderTexts = {
+    'HybridAStarWithAStarInTheMiddle',
+    'HybridAStarWithHeuristic',
+    'HybridAStar'
+}
+local currentHighlight = 1
+local currentPathfinderIndex = 1
+local done, path, goalNodeInvalid
+
 local line = {}
 
 local function printPath(path)
@@ -89,10 +148,11 @@ local function find(start, goal, allowReverse)
     love.profiler.start()
     startTime = love.timer.getTime()
     start:setTrailerHeading(start.t)
+    --heuristic:update(goal, isValidNode)
 
     done, path, goalNodeInvalid = pathfinders[currentPathfinderIndex]:start(start, goal, vehicleData.turnRadius, allowReverse,
             constraints, trailerData.hitchLength)
-
+    --plotThickLine(start, goal, 12)
     local dubinsSolution = dubinsSolver:solve(start, goal, turnRadius)
     dubinsPath = dubinsSolution:getWaypoints(start, turnRadius)
     local rsActionSet = rsSolver:solve(start, goal, turnRadius)
@@ -101,7 +161,7 @@ local function find(start, goal, allowReverse)
     if done and path then
         printPath(path)
         print(love.profiler.report(profilerReportLength))
-        love.profiler.stop()
+        love.profiler.reset()
 
     end
     love.profiler.stop()
@@ -164,16 +224,6 @@ local function drawPath(path, pointSize, r, g, b)
     end
 end
 
-local function drawMarkers(markers)
-	for _, marker in pairs(markers) do
-		love.graphics.circle( "fill", marker.x, marker.y, 1 )
-		if markers.label then
-			love.graphics.print( marker.label, marker.x, -marker.y, 0, 0.04, -0.04 )
-		end
-
-	end
-end
-
 local function drawNodes(nodes)
     if nodes then
         for _, row in pairs(nodes.nodes) do
@@ -205,7 +255,6 @@ local function drawNodes(nodes)
         end
     end
 end
-
 function love.load()
 
     --require("mobdebug").start()
@@ -215,7 +264,7 @@ function love.load()
     --dbg.tcpListen('localhost', 9966)
     --dbg.waitIDE()
 
-    love.profiler = require('profiler')
+    love.profiler = require('profile')
 
     love.window.setMode(1000, 800)
     love.graphics.setPointSize(3)
@@ -228,8 +277,6 @@ local function showStatus()
     love.graphics.setColor(1,1,1)
 
     love.graphics.print(pathfinderTexts[currentPathfinderIndex], 10, 10)
-	love.graphics.print(string.format('Goal: %.1f %.1f (%.1f)', goal.x, goal.y,
-		math.sqrt(goal.x * goal.x + goal.y * goal.y)), 100, 10)
 
     if path then
         if constraints:isValidNode(path[math.min(#path, currentHighlight)]) then
@@ -264,9 +311,6 @@ function love.draw()
         if pathfinders[currentPathfinderIndex].hybridAStarPathfinder and pathfinders[currentPathfinderIndex].hybridAStarPathfinder.nodes then
             drawNodes(pathfinders[currentPathfinderIndex].hybridAStarPathfinder.nodes)
         end
-		if pathfinders[currentPathfinderIndex].markers then
-			drawMarkers(pathfinders[currentPathfinderIndex].markers)
-		end
     end
 
     love.graphics.setColor(0.8, 0.8, 0)
@@ -304,15 +348,14 @@ function love.draw()
     end
     drawPath(pathfinders[currentPathfinderIndex].middlePath, 6, 0.7, 0.7, 0.0)
 
-    if pathfinders[currentPathfinderIndex]:isActive() and continue then
+    if pathfinders[currentPathfinderIndex]:isActive() then
         love.profiler.start()
         done, path = pathfinders[currentPathfinderIndex]:resume()
-		--continue = false
         love.profiler.stop()
         if done and path then
             printPath(path)
             print(string.format('Done in %.2f seconds', love.timer.getTime() - startTime))
-            --print(love.profiler.report(profilerReportLength))
+            print(love.profiler.report(profilerReportLength))
             love.profiler.reset()
             io.stdout:flush()
         end
@@ -354,8 +397,6 @@ function love.keypressed(key, scancode, isrepeat)
         if path then currentHighlight = math.min(currentHighlight + 1, #path) end
     elseif key == ',' then
         if path then currentHighlight = math.max(currentHighlight - 1, 1) end
-	elseif key == 'space' then
-		continue = true
     end
     io.stdout:flush()
 end
