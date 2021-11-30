@@ -17,7 +17,7 @@ local showWidth = false
 local currentWaypointIndex = 1
 local offset = 0
 
-local pathFinder = HybridAStarWithAStarInTheMiddle(20)
+--local pathFinder = HybridAStarWithAStarInTheMiddle(20)
 
 local drawConnectingTracks = true
 local drawCourse = true
@@ -30,24 +30,24 @@ local showSettings = true
 local symmetricLaneChange = false
 
 local islandBypassMode = Island.BYPASS_MODE_CIRCLE
---headlandSettings.mode = courseGenerator.HEADLAND_MODE_TWO_SIDE
-headlandSettings.mode = courseGenerator.HEADLAND_MODE_NORMAL
---headlandSettings.mode = courseGenerator.HEADLAND_MODE_NARROW_FIELD
-headlandSettings.headlandFirst = false
-headlandSettings.nPasses = 3
+--headlandSettings.mode = CourseGenerator.HEADLAND_MODE_TWO_SIDE
+headlandSettings.mode = CourseGenerator.HEADLAND_MODE_NORMAL
+--headlandSettings.mode = CourseGenerator.HEADLAND_MODE_NARROW_FIELD
+headlandSettings.headlandFirst = true
+headlandSettings.nPasses = 2
 
 headlandSettings.overlapPercent = 7
-headlandSettings.minHeadlandTurnAngleDeg = 45
-headlandSettings.isClockwise = false
+headlandSettings.minHeadlandTurnAngleDeg = 150
+headlandSettings.isClockwise = true
 local doSmooth = false
 field.roundCorners = false
 
 
-local centerSettings = { mode = courseGenerator.CENTER_MODE_UP_DOWN, useBestAngle = true, useLongestEdgeAngle = false,
+local centerSettings = { mode = CourseGenerator.CENTER_MODE_UP_DOWN, useBestAngle = true, useLongestEdgeAngle = false,
                          rowAngle = 0, nRowsToSkip = 0, nRowsPerLand = 6, pipeOnLeftSide = false }
 
 local multiTool = 1
-local width = 9
+local width = 3
 local turnRadius = 6
 local minDistanceBetweenPoints = 0.5
 local minSmoothingAngleDeg = 25
@@ -88,7 +88,7 @@ function love.load( arg )
     -- generation, that is, the field.boundary is actually
     -- a headland pass of a course
     -- calculate the boundary from the headland track
-    field.boundary = calculateHeadlandTrack( field.boundary, courseGenerator.HEADLAND_MODE_NORMAL, field.boundary.isClockwise,width / 2,
+    field.boundary = calculateHeadlandTrack( field.boundary, CourseGenerator.HEADLAND_MODE_NORMAL, field.boundary.isClockwise,width / 2,
                                              minDistanceBetweenPoints, math.rad( minSmoothingAngleDeg), 0,
                                              doSmooth, false, turnRadius, nil, nil )
   end
@@ -217,9 +217,9 @@ function drawSettings()
     roundCorners = "sharp"
   end
   love.graphics.print( string.format( "HEADLAND %s, width: %.1f m, overlap %d%% number of passes: %d, direction %s, corners: %s, radius: %.1f",
-           courseGenerator.headlandModeTexts[headlandSettings.mode], width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, turnRadius), 10, 30, 0, 1 )
+           CourseGenerator.headlandModeTexts[headlandSettings.mode], width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, turnRadius), 10, 30, 0, 1 )
   love.graphics.print( string.format( "CENTER mode: %s, skipping %d tracks",
-           courseGenerator.centerModeTexts[centerSettings.mode], centerSettings.nRowsToSkip ), 10, 50, 0, 1 )
+           CourseGenerator.centerModeTexts[centerSettings.mode], centerSettings.nRowsToSkip ), 10, 50, 0, 1 )
            
   local smoothingStatus 
   if doSmooth then smoothingStatus = "on" else smoothingStatus = "off" end
@@ -233,7 +233,7 @@ function drawSettings()
 	  elseif centerSettings.useLongestEdgeAngle then
 		  angle = string.format( '%d (longest edge)', field.bestAngle )
 	  else
-		  angle = string.format( '%d (%s)', field.bestAngle, courseGenerator.getCompassAngleDeg( field.bestAngle ))
+		  angle = string.format( '%d (%s)', field.bestAngle, CourseGenerator.getCompassAngleDeg( field.bestAngle ))
 	  end
     love.graphics.setColor( 200, 200, 00 )
     love.graphics.print( string.format( "Options: angle: %s has %d tracks", angle, field.nTracks ), 10, 90, 0, 1 )
@@ -753,7 +753,7 @@ function generate()
         marks = {}
         local course = Course.createFromGeneratedCourse({}, field.course)
         courseObject = course:calculateOffsetCourse(multiTool, offset, width / multiTool, symmetricLaneChange)
-        field.course = Polygon:new(courseGenerator.pointsToXyInPlace(courseObject.waypoints))
+        field.course = Polygon:new(CourseGenerator.pointsToXyInPlace(courseObject.waypoints))
         field.course:calculateData()
     else
         courseObject = Course.createFromGeneratedCourse({}, field.course)
@@ -815,26 +815,26 @@ function love.textinput(key)
         generate()
     elseif key == "h" then
         headlandSettings.mode = headlandSettings.mode + 1
-        if headlandSettings.mode > courseGenerator.HEADLAND_MODE_MAX then
-            headlandSettings.mode = courseGenerator.HEADLAND_MODE_MIN
+        if headlandSettings.mode > CourseGenerator.HEADLAND_MODE_TWO_SIDE then
+            headlandSettings.mode = CourseGenerator.HEADLAND_MODE_NONE
         end
         generate()
     elseif key == "H" then
         headlandSettings.mode = headlandSettings.mode - 1
-        if headlandSettings.mode < courseGenerator.HEADLAND_MODE_MIN then
-            headlandSettings.mode = courseGenerator.HEADLAND_MODE_MAX
+        if headlandSettings.mode < CourseGenerator.HEADLAND_MODE_MONE then
+            headlandSettings.mode = CourseGenerator.HEADLAND_MODE_TWO_SIDE
         end
         generate()
     elseif key == "l" then
         centerSettings.mode = centerSettings.mode + 1
-        if centerSettings.mode > courseGenerator.CENTER_MODE_MAX then
-            centerSettings.mode = courseGenerator.CENTER_MODE_MIN
+        if centerSettings.mode > CourseGenerator.CENTER_MODE_MAX then
+            centerSettings.mode = CourseGenerator.CENTER_MODE_MIN
         end
         generate()
     elseif key == "L" then
         centerSettings.mode = centerSettings.mode - 1
-        if centerSettings.mode < courseGenerator.CENTER_MODE_MIN then
-            centerSettings.mode = courseGenerator.CENTER_MODE_MAX
+        if centerSettings.mode < CourseGenerator.CENTER_MODE_MIN then
+            centerSettings.mode = CourseGenerator.CENTER_MODE_MAX
         end
         generate()
     elseif key == "r" then
@@ -1044,20 +1044,20 @@ function love.update(dt)
 		love.timer.sleep(1/10 - dt)
 	end
 	--vehicle:update(dt)
-	if pathFinder:isActive() then
-		path.done, path.course, path.grid = pathFinder:resume()
-		if path.done then
-			print( string.format( "Pathfinding ran for %.2f seconds", os.clock() - path.started ))
-			if path.course then
-				print(string.format('Path found, %d waypoints', #path.course))
-			else
-				print('Path not found')
-			end
-			--profile.stop()
-			--print(profile.report('time', 10))
-			io.stdout:flush()
-		end
-	end
+	--if pathFinder:isActive() then
+	--	path.done, path.course, path.grid = pathFinder:resume()
+	--	if path.done then
+	--		print( string.format( "Pathfinding ran for %.2f seconds", os.clock() - path.started ))
+	--		if path.course then
+	--			print(string.format('Path found, %d waypoints', #path.course))
+	--		else
+	--			print('Path not found')
+	--		end
+	--		--profile.stop()
+	--		--print(profile.report('time', 10))
+	--		io.stdout:flush()
+	--	end
+	--end
 	--if reversePathfinder:isActive() then
 	--	path.done, reversePath.course, path.grid = reversePathfinder:resume()
 	--end
