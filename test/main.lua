@@ -333,9 +333,9 @@ function love.draw()
         love.graphics.setPointSize(0.5 * scale)
         for i = 2, #path do
             local p = path[i]
-            if p.gear == HybridAStar.Gear.Backward then
+            if p.gear == Gear.Backward then
                 love.graphics.setColor(0, 0.4, 1)
-            elseif p.gear == HybridAStar.Gear.Forward then
+            elseif p.gear == Gear.Forward then
                 love.graphics.setColor( 1, 1, 1 )
             else
                 love.graphics.setColor(0.4, 0, 0)

@@ -7,6 +7,7 @@ courseplay.RIDGEMARKER_RIGHT = 2
 
 
 dofile('courseplay/scripts/CpObject.lua')
+dofile('courseplay/scripts/CpUtil.lua')
 dofile( courseGeneratorPath .. 'geo.lua' )
 dofile( courseGeneratorPath .. 'Island.lua' )
 dofile( courseGeneratorPath .. 'Genetic.lua' )
@@ -14,6 +15,7 @@ dofile( courseGeneratorPath .. 'CourseGenerator.lua' )
 dofile( courseGeneratorPath .. 'track.lua' )
 dofile( courseGeneratorPath .. 'headland.lua' )
 dofile( courseGeneratorPath .. 'center.lua' )
+dofile('test/MockNode.lua')
 dofile('test/mock-GiantsEngine.lua')
 dofile('test/mock-Courseplay.lua')
 
