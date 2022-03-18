@@ -20,6 +20,7 @@ dofile('test/mock-GiantsEngine.lua')
 dofile('test/mock-Courseplay.lua')
 
 dofile('courseplay/scripts/Waypoint.lua')
+dofile('courseplay/scripts/Course.lua')
 dofile('courseplay/scripts/courseGenerator/Vector.lua')
 --dofile('courseplay/scripts/courseGenerator/BinaryHeap.lua')
 --dofile('courseplay/scripts/courseGenerator/State3D.lua')
@@ -34,3 +35,4 @@ dofile('courseplay/scripts/courseGenerator/Vector.lua')
 
 dofile( 'Vehicle.lua' )
 dofile( 'file.lua' )
+dofile( 'AdjustableParameter.lua' )

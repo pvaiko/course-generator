@@ -12,7 +12,6 @@ marks = {}
 
 local minSmoothingAngleDeg = 30
 local minHeadlandTurnAngleDeg = 60
-local doSmooth = true
 
 -- force bypass on any size of island
 Island.maxRowsToBypassIsland = 500
@@ -35,7 +34,7 @@ field.nHeadlandPasses = 2
 
 local expectedNumberOfWaypoints = 52
 
-setupIslands( field, 2, 6, 10, 0.5, math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), doSmooth, field.islandNodes )
+setupIslands( field, 2, 6, 10, 0.5, math.rad( minSmoothingAngleDeg ), math.rad( minHeadlandTurnAngleDeg ), field.islandNodes )
 
 assertEquals( #field.islands , 1 )
 local island = field.islands[ 1 ]

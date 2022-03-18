@@ -34,21 +34,24 @@ local islandBypassMode = Island.BYPASS_MODE_CIRCLE
 headlandSettings.mode = CourseGenerator.HEADLAND_MODE_NORMAL
 --headlandSettings.mode = CourseGenerator.HEADLAND_MODE_NARROW_FIELD
 headlandSettings.headlandFirst = true
-headlandSettings.nPasses = 2
 
 headlandSettings.overlapPercent = 7
-headlandSettings.minHeadlandTurnAngleDeg = 150
+headlandSettings.minHeadlandTurnAngleDeg = 160
 headlandSettings.isClockwise = true
-local doSmooth = false
-field.roundCorners = false
-
+local nRowsToSkip = AdjustableParameter(3, 'J', 'j', 1, 0, 10)
 
 local centerSettings = { mode = CourseGenerator.CENTER_MODE_UP_DOWN, useBestAngle = true, useLongestEdgeAngle = false,
-                         rowAngle = 0, nRowsToSkip = 0, nRowsPerLand = 6, pipeOnLeftSide = false }
+                         rowAngle = math.deg(102), nRowsToSkip = nRowsToSkip:get(),
+						 leaveSkippedRowsUnworked = false,
+						 nRowsPerLand = 6, pipeOnLeftSide = false }
 
-local multiTool = 1
-local width = 3
-local turnRadius = 6
+local fieldMargin = -0
+local multiTool = 3
+local headlandCornerType = AdjustableParameter(CourseGenerator.HEADLAND_CORNER_TYPE_SMOOTH, 'K', 'k', 1,
+	CourseGenerator.HEADLAND_CORNER_TYPE_SMOOTH, CourseGenerator.HEADLAND_CORNER_TYPE_ROUND)
+local width = AdjustableParameter(5, 'W', 'w', 0.1, 0, 100)
+local turnRadius = AdjustableParameter(6, 'T', 't', 0.1, 2, 20)
+local nPasses = AdjustableParameter(2, 'P', 'p', 1, 0, 60)
 local minDistanceBetweenPoints = 0.5
 local minSmoothingAngleDeg = 25
 
@@ -90,7 +93,7 @@ function love.load( arg )
     -- calculate the boundary from the headland track
     field.boundary = calculateHeadlandTrack( field.boundary, CourseGenerator.HEADLAND_MODE_NORMAL, field.boundary.isClockwise,width / 2,
                                              minDistanceBetweenPoints, math.rad( minSmoothingAngleDeg), 0,
-                                             doSmooth, false, turnRadius, nil, nil )
+                                             false, turnRadius, nil, nil )
   end
   field.boundary = Polygon:new( field.boundary )
   field.boundingBox = field.boundary:getBoundingBox()
@@ -204,28 +207,21 @@ function drawSettings()
   love.graphics.setColor( 200, 200, 200 )
   love.graphics.print( string.format( "file: %s", arg[ 3 ]), 10, 10, 0, 1 )
   love.graphics.setColor( 00, 200, 00 )
-  local headlandDirection, roundCorners
+  local headlandDirection
   if headlandSettings.isClockwise then
     headlandDirection = "clockwise"
   else
     headlandDirection = "counterclockwise"
   end
 
-  if field.roundCorners then
-    roundCorners = "round"
-  else
-    roundCorners = "sharp"
-  end
-  love.graphics.print( string.format( "HEADLAND %s, width: %.1f m, overlap %d%% number of passes: %d, direction %s, corners: %s, radius: %.1f",
-           CourseGenerator.headlandModeTexts[headlandSettings.mode], width, headlandSettings.overlapPercent, headlandSettings.nPasses, headlandDirection, roundCorners, turnRadius), 10, 30, 0, 1 )
-  love.graphics.print( string.format( "CENTER mode: %s, skipping %d tracks",
-           CourseGenerator.centerModeTexts[centerSettings.mode], centerSettings.nRowsToSkip ), 10, 50, 0, 1 )
+  love.graphics.print( string.format( "HEADLAND %s, corners: %s, width: %.1f m, overlap %d%% number of passes: %d, direction %s, radius: %.1f",
+	  CourseGenerator.headlandModeTexts[headlandSettings.mode], CourseGenerator.headlandCornerTypeTexts[headlandCornerType:get()],
+	  width:get(), headlandSettings.overlapPercent, nPasses:get(), headlandDirection, turnRadius:get()), 10, 30, 0, 1 )
+  love.graphics.print( string.format( "CENTER mode: %s, skipping %d rows",
+           CourseGenerator.centerModeTexts[centerSettings.mode], nRowsToSkip:get()), 10, 50, 0, 1 )
            
-  local smoothingStatus 
-  if doSmooth then smoothingStatus = "on" else smoothingStatus = "off" end
-  
-  love.graphics.print( string.format( "min point distance: %.2f m, corner smoothing: %s, min. smoothing angle: %d, min. headland turn angle = %d", 
-    minDistanceBetweenPoints, smoothingStatus, minSmoothingAngleDeg, headlandSettings.minHeadlandTurnAngleDeg ), 10, 70, 0, 1 )
+  love.graphics.print( string.format( "min point distance: %.2f m, min. smoothing angle: %d, min. headland turn angle = %d",
+    minDistanceBetweenPoints, minSmoothingAngleDeg, headlandSettings.minHeadlandTurnAngleDeg ), 10, 70, 0, 1 )
   if field.bestAngle then
 	  local angle
 	  if centerSettings.useBestAngle then
@@ -259,8 +255,8 @@ function drawSettings()
         end
       end
       local pass = cWp.passNumber or 'n/a'
-      local track = cWp.trackNumber or 'n/a' 
-        local origTrack = cWp.originalTrackNumber or 'n/a'
+      local track = cWp.rowNumber or 'n/a'
+        local origTrack = cWp.originalRowNumber or 'n/a'
         local ridgeMarker = cWp.ridgeMarker or 'n/a'
 	    local adjacentToIsland = cWp.adjacentIslands and #cWp.adjacentIslands or 'no'
         local progress = courseObject.getProgress and
@@ -268,7 +264,7 @@ function drawSettings()
                         100 * courseObject:getProgress(currentWaypointIndex),
                         courseObject.waypoints[currentWaypointIndex].dToHere,
                         courseObject.waypoints[currentWaypointIndex].dToHereOnHeadland or -1) or ''
-        love.graphics.print(string.format("pass=%s track =%s(%s) r=%s adj=%s rm=%s islandbp=%s %s",
+        love.graphics.print(string.format("pass=%s row=%s(%s) r=%s adj=%s rm=%s islandbp=%s %s",
                 tostring( pass), tostring( track ), tostring( origTrack ), radius, adjacentToIsland,
                 tostring( ridgeMarker ), tostring(cWp.islandBypass), progress),
           windowWidth - 540, windowHeight - 20, 0, 1)
@@ -291,15 +287,13 @@ function drawSettings()
   y = y + 20
   love.graphics.print( "c - toggle headland direction (cw/ccw)", 10,y, 0, 1 )
   y = y + 20
-  love.graphics.print( "d - toggle round headland corners", 10,y, 0, 1 )
-  y = y + 20
   love.graphics.print( "h - toggle headland mode", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "w/W - -/+ work width", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "t/T - -/+ turning radius", 10, y, 0, 1 )
   y = y + 20
-  love.graphics.print( "x/X - -/+ extend center tracks into headland (m)", 10, y, 0, 1 )
+  love.graphics.print( "x - leave skipped rows unworked", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "o/O - left/right offset", 10, y, 0, 1 )
   y = y + 20
@@ -309,9 +303,7 @@ function drawSettings()
   y = y + 20
   love.graphics.print( "./> - -/+ min. smoothing angle", 10, y, 0, 1 )
   y = y + 20
-  love.graphics.print( "k/K - -/+ min headland turn angle", 10, y, 0, 1 )
-  y = y + 20
-  love.graphics.print( "m - toggle corner smoothing", 10, y, 0, 1 )
+  love.graphics.print( "k/K - toggle headland corner type", 10, y, 0, 1 )
   y = y + 20
   love.graphics.print( "r - reverse course", 10, y, 0, 1 )
   y = y + 20
@@ -458,7 +450,6 @@ function drawPointAsArrow( point )
 end
 
 function drawCoursePoints( course )
-  highlightPoint()
 	-- course starts green and turns red towards the end
 	local colorStep = 256 / #course
 	local red, green = 0, 255
@@ -509,6 +500,7 @@ function drawCoursePoints( course )
       end
     end
   end
+  highlightPoint()
 end
 
 -- draw connected headland passes with width
@@ -633,7 +625,7 @@ function drawIslands( points )
     for _, island in ipairs( field.islands ) do
       love.graphics.polygon('line', getVertices( island.nodes ))
       if showWidth then
-        love.graphics.setLineWidth( width )
+        love.graphics.setLineWidth( width:get() )
         love.graphics.setColor( 100, 200, 100, 100 )
       else
         love.graphics.setLineWidth( lineWidth * 6 )
@@ -720,15 +712,25 @@ function generate()
     marks = {}
     lines = {}
     helperPolygon = {}
-    headlandSettings.width = width
-    centerSettings.width = width
+	headlandSettings.nPasses = nPasses:get()
+    headlandSettings.width = width:get()
+    centerSettings.width = width:get()
+	centerSettings.nRowsToSkip = nRowsToSkip:get()
+
+	if headlandSettings.mode == CourseGenerator.HEADLAND_MODE_NORMAL and headlandSettings.nPasses == 0 then
+		headlandSettings.mode = CourseGenerator.HEADLAND_MODE_NONE
+	elseif headlandSettings.mode == CourseGenerator.HEADLAND_MODE_NONE and headlandSettings.nPasses > 0 then
+		headlandSettings.mode = CourseGenerator.HEADLAND_MODE_NORMAL
+	end
+
 
     status, ok = xpcall( generateCourseForField, errorHandler,
-            field, width, headlandSettings,
-            minDistanceBetweenPoints,
-            math.rad( minSmoothingAngleDeg ), math.rad( headlandSettings.minHeadlandTurnAngleDeg ), doSmooth,
-            field.roundCorners, turnRadius,
-            islandNodes, islandBypassMode, centerSettings
+		field, width:get(), headlandSettings,
+		minDistanceBetweenPoints,
+		headlandCornerType:get(),
+		headlandCornerType:get() == CourseGenerator.HEADLAND_CORNER_TYPE_ROUND,
+		turnRadius:get(),
+		islandNodes, islandBypassMode, centerSettings, fieldMargin
     )
 
   if not status then
@@ -752,7 +754,7 @@ function generate()
     if multiTool > 1 and offset ~= 0 then
         marks = {}
         local course = Course.createFromGeneratedCourse({}, field.course)
-        courseObject = course:calculateOffsetCourse(multiTool, offset, width / multiTool, symmetricLaneChange)
+        courseObject = course:calculateOffsetCourse(multiTool, offset, width:get() / multiTool, symmetricLaneChange)
         field.course = Polygon:new(CourseGenerator.pointsToXyInPlace(courseObject.waypoints))
         field.course:calculateData()
     else
@@ -773,45 +775,26 @@ function love.keypressed(key, scancode, isrepeat)
 end
 
 function love.textinput(key)
-    if key == "g" then
+	width:onKey(key, generate)
+	turnRadius:onKey(key, generate)
+	nPasses:onKey(key, generate)
+	headlandCornerType:onKey(key, generate)
+	nRowsToSkip:onKey(key, generate)
+	if key == "g" then
         gridSpacing = gridSpacing - 0.5
     elseif key == "G" then
         gridSpacing = gridSpacing + 0.5
-    elseif key == "s" then
-        saveFile()
-    elseif key == "W" then
-        width = width + 0.1
-        generate()
-    elseif key == "w" then
-        width = width - 0.1
-        generate()
-    elseif key == "X" then
     elseif key == "x" then
+		centerSettings.leaveSkippedRowsUnworked = not centerSettings.leaveSkippedRowsUnworked
+		generate()
     elseif key == "o" then
         offset = offset - 1
         generate()
     elseif key == "O" then
         offset = offset + 1
         generate()
-    elseif key == "P" then
-        headlandSettings.nPasses = headlandSettings.nPasses + 1
-        generate()
-    elseif key == "p" then
-        if headlandSettings.nPasses > 0 then
-            headlandSettings.nPasses = headlandSettings.nPasses - 1
-            generate()
-        end
     elseif key == "c" then
         headlandSettings.isClockwise = not headlandSettings.isClockwise
-        generate()
-    elseif key == "d" then
-        field.roundCorners = not field.roundCorners
-        generate()
-    elseif key == "t" then
-        turnRadius = turnRadius - 0.5
-        generate()
-    elseif key == "T" then
-        turnRadius = turnRadius + 0.5
         generate()
     elseif key == "h" then
         headlandSettings.mode = headlandSettings.mode + 1
@@ -821,7 +804,7 @@ function love.textinput(key)
         generate()
     elseif key == "H" then
         headlandSettings.mode = headlandSettings.mode - 1
-        if headlandSettings.mode < CourseGenerator.HEADLAND_MODE_MONE then
+        if headlandSettings.mode <= CourseGenerator.HEADLAND_MODE_NONE then
             headlandSettings.mode = CourseGenerator.HEADLAND_MODE_TWO_SIDE
         end
         generate()
@@ -858,18 +841,10 @@ function love.textinput(key)
     elseif key == "a" then
         centerSettings.rowAngle = centerSettings.rowAngle - math.pi / 16
         generate()
-    elseif key == "J" then
-        centerSettings.nRowsToSkip = centerSettings.nRowsToSkip + 1
-        generate()
-    elseif key == "j" then
-        if centerSettings.nRowsToSkip > 0 then
-            centerSettings.nRowsToSkip = centerSettings.nRowsToSkip - 1
-            generate()
-        end
     elseif key == "i" then
         islandBypassMode = islandBypassMode + 1
-        if islandBypassMode > Island.BYPASS_MODE_MAX then
-            islandBypassMode = Island.BYPASS_MODE_MIN
+        if islandBypassMode > Island.BYPASS_MODE_CIRCLE then
+            islandBypassMode = Island.BYPASS_MODE_NONE
         end
         islandNodes = ( islandBypassMode ~= Island.BYPASS_MODE_NONE ) and field.islandNodes or {}
         generate()
@@ -888,17 +863,6 @@ function love.textinput(key)
         end
     elseif key == ">" then
         minSmoothingAngleDeg = minSmoothingAngleDeg + 5
-        generate()
-    elseif key == "k" then
-        if headlandSettings.minHeadlandTurnAngleDeg > 5 then
-            headlandSettings.minHeadlandTurnAngleDeg = headlandSettings.minHeadlandTurnAngleDeg - 5
-            generate()
-        end
-    elseif key == "K" then
-        headlandSettings.minHeadlandTurnAngleDeg = headlandSettings.minHeadlandTurnAngleDeg + 5
-        generate()
-    elseif key == "m" then
-        doSmooth = not doSmooth
         generate()
     elseif key == "y" then
         symmetricLaneChange = not symmetricLaneChange

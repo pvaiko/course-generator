@@ -29,6 +29,7 @@ dofile('test/mock-Courseplay.lua')
 --dofile(courseGeneratorPath .. 'JumpPoint.lua')
 --dofile(courseGeneratorPath .. 'Rrt.lua')
 dofile('courseplay/scripts/Waypoint.lua')
+dofile('courseplay/scripts/Course.lua')
 --dofile('courseplay/settings.lua')
 --dofile(courseGeneratorPath .. 'CourseGeneratorSettings.lua')
 

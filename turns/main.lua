@@ -5,6 +5,7 @@ LOVE app to test the Courseplay pathfinding
 ]]--
 
 dofile( 'include.lua' )
+dofile( '../AdjustableParameter.lua' )
 
 local startHeading = 2 * math.pi / 4
 local startPosition = State3D(0, 0, startHeading, 0)
@@ -15,15 +16,15 @@ local goalPosition = State3D(15, 0, goalHeading, 0)
 local lastGoalPosition = State3D.copy(goalPosition)
 
 local vehicle, turnStartIx, turnContext
-local workWidth = 6
+local workWidth = 30
 -- length of the 180 course
 local courseLength = 20
-local frontMarkerDistance, backMarkerDistance, steeringLength, turningRadius, distanceToFieldEdge = 0, 0, 3, 6, 10
+local frontMarkerDistance, backMarkerDistance, steeringLength, turningRadius, distanceToFieldEdge = -12.5, -13.5, 5, 6, 11
+local zOffset = AdjustableParameter(0, 'Z', 'z', 0.5, -40, 40)
 
 startPosition:setTrailerHeading(startHeading)
 
 local scale, width, height = 30, 500, 400
-local origin = {x = -width / 8, y = -height / 4}
 local xOffset, yOffset = width / scale / 4 - 20, height / scale + 25
 
 local vehicleData ={name = 'name', turningRadius = turningRadius, dFront = 4, dRear = 2, dLeft = 1.5, dRight = 1.5}
@@ -31,7 +32,6 @@ local trailerData ={name = 'name', turningRadius = turningRadius, dFront = 3, dR
 
 local dragging = false
 local startTime
-local profilerReportLength = 40
 
 local dubinsPath = {}
 local rsPath = {}
@@ -52,8 +52,8 @@ local function find(start, goal, allowReverse)
     start:setTrailerHeading(start.t)
     local dubinsSolution = dubinsSolver:solve(start, goal, turningRadius)
     dubinsPath = dubinsSolution:getWaypoints(start, turningRadius)
-    local rsActionSet = rsSolver:solve(start, goal, turningRadius)
-    rsPath = rsActionSet:getWaypoints(start, turningRadius)
+    local rsActionSet = rsSolver:solve(start, goal, turningRadius, {ReedsShepp.PathWords.LbRfLb})
+    if rsActionSet:getLength(turningRadius) < 100 then rsPath = rsActionSet:getWaypoints(start, turningRadius) end
     io.stdout:flush()
 	lastStartPosition = State3D.copy(startPosition)
 	lastGoalPosition = State3D.copy(goalPosition)
@@ -70,8 +70,9 @@ local function calculateTurn()
 	turnContexts[1] = turnContext
 	turnCourses[1] = HeadlandCornerTurnManeuver(vehicle, turnContext, turnContext.vehicleAtTurnStartNode, turningRadius,
 		workWidth, steeringLength > 0, steeringLength):getCourse()
+
 	x, z = 0, 20
-	courses[2], turnStartIx = TurnTestHelper.create180Course(vehicle, x, z, workWidth, courseLength)
+	courses[2], turnStartIx = TurnTestHelper.create180Course(vehicle, x, z, workWidth, courseLength, zOffset:get())
 	turnContext = TurnTestHelper.createTurnContext(courses[2], turnStartIx, workWidth, frontMarkerDistance, backMarkerDistance)
 	turnContexts[2] = turnContext
 	AIUtil = { getTowBarLength = function () return steeringLength end }
@@ -80,8 +81,13 @@ local function calculateTurn()
 	-- distanceToFieldEdge is measured from the turn waypoints, not from the vehicle here in the test tool,
 	-- therefore, we need to add the distance between the turn end and the vehicle to calculate the distance
 	-- in front of the vehicle. This calculation works only in this tool as the 180 turn course is in the x direction...
-	turnCourses[2] = DubinsTurnManeuver(vehicle, turnContext, turnContext.vehicleAtTurnStartNode,
-		turningRadius, workWidth, steeringLength, distanceToFieldEdge + x2 - x):getCourse()
+	if distanceToFieldEdge > workWidth then
+		turnCourses[2] = DubinsTurnManeuver(vehicle, turnContext, turnContext.vehicleAtTurnStartNode,
+			turningRadius, workWidth, steeringLength, distanceToFieldEdge + x2 - x):getCourse()
+	else
+		turnCourses[2] = ReedsSheppTurnManeuver(vehicle, turnContext, turnContext.vehicleAtTurnStartNode,
+			turningRadius, workWidth, steeringLength, distanceToFieldEdge + x2 - x):getCourse()
+	end
 
 end
 
@@ -193,7 +199,7 @@ end
 
 function love.draw()
 	if startPosition ~= lastStartPosition or goalPosition ~= lastGoalPosition then
-		find(startPosition, goalPosition)
+		--find(startPosition, goalPosition)
 	end
 
     love.graphics.push()
@@ -245,7 +251,7 @@ function love.draw()
 		drawCourse(c.waypoints, workWidth, 8, 0.5, 0.5, 0.5)
 	end
 	for _, c in pairs(turnCourses) do
-		drawCourse(c.waypoints, 0.1, 2)
+		drawCourse(c.waypoints, 0.1, 4)
 	end
 	for _, c in pairs(turnContexts) do
 		c:drawDebug()
@@ -318,12 +324,13 @@ function love.textinput(key)
 		workWidth = workWidth + 0.2
 		calculateTurn()
 	elseif key == 'e' then
-		distanceToFieldEdge = math.max(1, distanceToFieldEdge - 0.5)
+		distanceToFieldEdge = math.max(1, distanceToFieldEdge - 0.1)
 		calculateTurn()
 	elseif key == 'E' then
-		distanceToFieldEdge = distanceToFieldEdge + 0.5
+		distanceToFieldEdge = distanceToFieldEdge + 0.1
 		calculateTurn()
 	end
+	zOffset:onKey(key, calculateTurn)
 end
 
 function love.mousepressed(x, y, button, istouch)

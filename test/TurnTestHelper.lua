@@ -22,11 +22,11 @@ function TurnTestHelper.createCornerCourse(vehicle, startX, startZ)
 end
 
 -- create a course with 180 turn
-function TurnTestHelper.create180Course(vehicle, startX, startZ, workWidth, length)
+function TurnTestHelper.create180Course(vehicle, startX, startZ, workWidth, length, zOffset)
 	local course = Course.createFromTwoWorldPositions(vehicle, startX, startZ, startX + length, startZ, 0, 0, 0, 5, false)
 	local turnStartIx = course:getNumberOfWaypoints()
 	course.waypoints[#course.waypoints].turnStart = true
-	local courseAfterTurn = Course.createFromTwoWorldPositions(vehicle, startX + length, startZ + workWidth, startX, startZ + workWidth, 0, 0, 0, 5, false)
+	local courseAfterTurn = Course.createFromTwoWorldPositions(vehicle, startX + length + zOffset, startZ + workWidth, startX, startZ + workWidth, 0, 0, 0, 5, false)
 	-- remove first point as it would be the same as the last point of course
 	courseAfterTurn.waypoints[1].turnEnd = true
 	course:append(courseAfterTurn)
@@ -39,7 +39,7 @@ function TurnTestHelper.createTurnContext(course, turnStartIx, workWidth, frontM
 	local turnNodes = {}
 	local turnEndSideOffset, turnEndForwardOffset = 0, 0
 
-	return TurnContext(course, turnStartIx, turnNodes, workWidth,
+	return TurnContext(course, turnStartIx, turnStartIx + 1, turnNodes, workWidth,
 		frontMarkerDistance, backMarkerDistance, turnEndSideOffset, turnEndForwardOffset)
 end
 

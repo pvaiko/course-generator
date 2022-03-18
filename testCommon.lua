@@ -28,7 +28,7 @@ end
 
 
 function point( x, y )
-  return { x = x, y = y, trackNumber = 1 }
+  return { x = x, y = y, rowNumber = 1 }
 end
  
 function printPoints( points )

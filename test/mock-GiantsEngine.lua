@@ -63,6 +63,10 @@ function MathUtil.getYRotationFromDirection(dx, dz)
 	return math.atan2(dx, dz)
 end
 
+function MathUtil.getDirectionFromYRotation(rotY)
+	return math.sin(rotY), math.cos(rotY)
+end
+
 function MathUtil.getPointPointDistance(x1, y1, x2, y2)
 	local dx = x1 - x2
 	local dy = y1 - y2

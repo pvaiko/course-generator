@@ -8,7 +8,6 @@ local implementWidth = 6
 local minDistanceBetweenPoints = 0.5
 local minSmoothAngleDeg = 30
 local maxSmoothAngleDeg = 60
-local doSmooth = true
 local fromInside = false
 local turnRadius = 6
 local returnToFirst = false
@@ -28,7 +27,6 @@ function printParameters()
   print( "minDistanceBetweenPoints = ", minDistanceBetweenPoints )
   print( "minSmoothAngleDeg = ", minSmoothAngleDeg )
   print( "maxSmoothAngleDeg =", maxSmoothAngleDeg )
-  print( "doSmooth = ", tostring( doSmooth ))
   print( "fromInside = ", tostring( fromInside ))
   print( "turnRadius = ", turnRadius )
 	print( "returnToFirst = ", tostring( returnToFirst ))
@@ -44,11 +42,12 @@ function assertAndShowSettings( condition, ... )
 end
 
 function generate()
- local status, err = xpcall( generateCourseForField, function() print( err, debug.traceback()) printParameters() end,
-                             field, implementWidth, headlandSettings,
-                             minDistanceBetweenPoints, math.rad( minSmoothAngleDeg ), math.rad( maxSmoothAngleDeg ), doSmooth, fromInside,
-                             turnRadius, field.islandNodes,
-                             islandBypassMode, centerSettings )
+	centerSettings.nRowsToSkip = nRowsToSkip:get()
+	local status, err = xpcall( generateCourseForField, function() print( err, debug.traceback()) printParameters() end,
+		field, implementWidth, headlandSettings,
+		minDistanceBetweenPoints, math.rad( minSmoothAngleDeg ), math.rad( maxSmoothAngleDeg ), fromInside,
+		turnRadius, field.islandNodes,
+		islandBypassMode, centerSettings )
 	if headlandSettings.nPasses < 10 then
 		countGlitches(field.course,0)
 	else
@@ -113,7 +112,6 @@ function resetParameter()
   minDistanceBetweenPoints = 0.5
   minSmoothAngleDeg = 30
   maxSmoothAngleDeg = 60
-  doSmooth = true
   fromInside = false
   turnRadius = 6
   returnToFirst = false
